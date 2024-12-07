@@ -10,7 +10,7 @@ const Chat: React.FC = () => {
     // Connect to chat hub on mount
     useEffect(() => {
         const newConnection = new signalR.HubConnectionBuilder()
-            .withUrl("https://localhost:7216/chatHub")
+            .withUrl("https://localhost:7058/ChatHub")
             .withAutomaticReconnect()
             .build();
 
@@ -42,6 +42,7 @@ const Chat: React.FC = () => {
         }
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const chatMessages: any[] = messages.map((message, index) => (
         <li key={index}>{message}</li>
     ))
