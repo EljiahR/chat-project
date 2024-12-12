@@ -4,6 +4,7 @@ import "./Chat.css";
 
 const Chat: React.FC = () => {
     const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
+    const [username, setUsername] = useState<string>("Jim");
     const [message, setMessage] = useState<string>("");
     const [messages, setMessages] = useState<string[]>([]);
 
@@ -34,7 +35,7 @@ const Chat: React.FC = () => {
     const SendMessage = async () => {
         if (connection && message) {
             try {
-                await connection.invoke("SendMessage", "User1", message);
+                await connection.invoke("SendMessage", username, message);
                 setMessage("");
             } catch (e) {
                 console.log(e);
@@ -50,6 +51,14 @@ const Chat: React.FC = () => {
     return (
         <div id="chat">
             <h1>Chat</h1>
+            <label htmlFor="username">Username: </label>
+            <input 
+                type="text"
+                id="username"
+                value={username}
+                onChange={e => setUsername(e.target.value)}
+            />
+            
             <input 
                 type="text" 
                 placeholder="Type your message..."
