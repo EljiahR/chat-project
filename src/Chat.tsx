@@ -43,31 +43,39 @@ const Chat: React.FC = () => {
         }
     };
 
+    const handleMessageInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.value.length < 251) {
+            setMessage(e.target.value);
+        }
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const chatMessages: any[] = messages.map((message, index) => (
-        <li key={index}>{message}</li>
+        <div className="chat-message" key={index}>{message}</div>
     ))
 
     return (
         <div id="chat">
-            <h1>Chat</h1>
-            <label htmlFor="username">Username: </label>
-            <input 
-                type="text"
-                id="username"
-                value={username}
-                onChange={e => setUsername(e.target.value)}
-            />
-            
-            <input 
-                type="text" 
-                placeholder="Type your message..."
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-            />
-            <button onClick={SendMessage}>Send Message</button>
+            <h1 id="title">Chat</h1>
             <div id="chatbox">
-                <ul>{chatMessages}</ul>
+                {chatMessages}
+            </div>
+            <div id="user-controls">
+                <label htmlFor="username">Username: </label>
+                <input 
+                    type="text"
+                    id="username"
+                    value={username}
+                    onChange={e => setUsername(e.target.value)}
+                />
+                
+                <input 
+                    type="text" 
+                    placeholder="Type your message..."
+                    value={message}
+                    onChange={(e) => handleMessageInput(e)}
+                />
+                <button onClick={SendMessage}>Send Message</button>
             </div>
         </div>
     )
