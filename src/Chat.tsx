@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import * as signalR from "@microsoft/signalr";
 import "./Chat.css";
+import axios from "axios";
+import Message from "./_lib/message";
 
 const Chat: React.FC = () => {
     const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
@@ -8,13 +10,22 @@ const Chat: React.FC = () => {
     const [message, setMessage] = useState<string>("");
     const [messages, setMessages] = useState<string[]>([]);
 
-    // Connect to chat hub on mount
+    // Connect to chat hub on mount and retrieve all messages
     useEffect(() => {
         const newConnection = new signalR.HubConnectionBuilder()
             .withUrl("https://localhost:7058/ChatHub")
             .withAutomaticReconnect()
             .build();
 
+        axios.get("https://localhost:7058/api/Message")
+            .then(response => {
+                console.log(response.data);
+                setMessages(response.data.map((x: Message): string => {
+                    return `${x.username}: ${x.content}`;
+                }));
+            }).catch(error => {
+                console.log(error);
+            });
         setConnection(newConnection);
     }, []);
 
