@@ -6,31 +6,38 @@ interface Props {
     component: JSX.Element
 }
 
-const useAuth = () => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+enum AuthenticationStates {
+    Loading,
+    Authorized,
+    Unauthorized
+}
+
+const ProtectedRoutes: FC<Props> = ({ component }) => {
+    const [authenticationState, setAuthenticationState] = useState(AuthenticationStates.Loading);
 
     useEffect(() => {
         const checkAuthStatus = async () => {
             try {
                 const response = await axios.get("https://localhost:7058/user/status", {withCredentials: true});
                 console.log(response.data);
-                setIsAuthenticated(true);
+                setAuthenticationState(AuthenticationStates.Authorized);
             } catch (error) {
-                setIsAuthenticated(false);
+                setAuthenticationState(AuthenticationStates.Unauthorized);
                 console.error(error);
             }
         }
 
         checkAuthStatus();
+        console.log(authenticationState);
     }, []);
-
-    return isAuthenticated;
-}
-
-const ProtectedRoutes: FC<Props> = ({ component }) => {
-    const isAuthenticated = useAuth();
     
-    return isAuthenticated ? component : <Navigate to={"/"} />
+    return (
+        authenticationState == AuthenticationStates.Loading ? 
+            <></> : 
+            authenticationState == AuthenticationStates.Authorized ? 
+                component : 
+                <Navigate to={"/"} />
+    )
 }
 
 export default ProtectedRoutes;

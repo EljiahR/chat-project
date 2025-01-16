@@ -16,7 +16,7 @@ const Login: React.FC = () => {
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         try {
-            const response = await axios.post("https://localhost:7058/user/login", credentials);
+            const response = await axios.post("https://localhost:7058/user/login", credentials, {withCredentials: true});
             console.log("Login attempted. " + response.data);
             navigate("/chat");
         } catch (error) {
