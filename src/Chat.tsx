@@ -3,6 +3,7 @@ import * as signalR from "@microsoft/signalr";
 import "./Chat.css";
 import axios from "axios";
 import Message from "./_lib/message";
+import NavBar from "./_components/NavBar";
 
 const Chat: React.FC = () => {
     const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
@@ -66,29 +67,33 @@ const Chat: React.FC = () => {
     ))
 
     return (
-        <div id="chat">
-            <h1 id="title">Chat</h1>
-            <div id="chatbox">
-                {chatMessages}
-            </div>
-            <div id="user-controls">
-                <label htmlFor="username">Username: </label>
-                <input 
-                    type="text"
-                    id="username"
-                    value={username}
-                    onChange={e => setUsername(e.target.value)}
-                />
-                
-                <input 
-                    type="text" 
-                    placeholder="Type your message..."
-                    value={message}
-                    onChange={(e) => handleMessageInput(e)}
-                />
-                <button onClick={SendMessage}>Send Message</button>
+        <div id="chat-app">
+            <NavBar />
+            <div id="chat">
+                <h1 id="title">Chat</h1>
+                <div id="chatbox">
+                    {chatMessages}
+                </div>
+                <div id="user-controls">
+                    <label htmlFor="username">Username: </label>
+                    <input 
+                        type="text"
+                        id="username"
+                        value={username}
+                        onChange={e => setUsername(e.target.value)}
+                    />
+                    
+                    <input 
+                        type="text" 
+                        placeholder="Type your message..."
+                        value={message}
+                        onChange={(e) => handleMessageInput(e)}
+                    />
+                    <button onClick={SendMessage}>Send Message</button>
+                </div>
             </div>
         </div>
+        
     )
 };
 

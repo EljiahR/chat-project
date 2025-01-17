@@ -18,7 +18,7 @@ const Login: React.FC = () => {
         try {
             const response = await axios.post("https://localhost:7058/user/login", credentials, {withCredentials: true});
             console.log("Login attempted. " + response.data);
-            navigate("/chat");
+            navigate("/");
         } catch (error) {
             console.error("Trouble attempting login. " + error);
         }
