@@ -9,8 +9,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<Login />} />
-        <Route path="/chat" element={<ProtectedRoutes component={<Chat />} />} />
+        <Route path='/login' element={<Login />} />
+        <Route path="/" element={<ProtectedRoutes component={<Chat />} />} />
       </Routes>
     </BrowserRouter>
   )

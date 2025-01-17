@@ -36,7 +36,7 @@ const ProtectedRoutes: FC<Props> = ({ component }) => {
             <></> : 
             authenticationState == AuthenticationStates.Authorized ? 
                 component : 
-                <Navigate to={"/"} />
+                <Navigate to={"/login"} />
     )
 }
 
