@@ -1,5 +1,5 @@
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import instance from "../_lib/axiosBase";
 
 const NavBar: React.FC = () => {
     const navigate = useNavigate();
@@ -7,18 +7,18 @@ const NavBar: React.FC = () => {
     const handleLogout = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
         try {
-            await axios.post("https://localhost:7058/user/logout", {}, {withCredentials: true});
+            await instance.post("/user/signout", {}, {withCredentials: true});
             console.log("Logged out successfully!");
         } catch (error) {
             console.error(error);
         } finally {
-            navigate("/login");
+            navigate("/signin");
         }
     }
     
     return (
         <div id="nav-bar">
-            <button id="logout-btn" onClick={(e) => handleLogout(e)}>Logout</button>
+            <button id="signout-btn" onClick={(e) => handleLogout(e)}>Sign Out</button>
         </div>
     )
 }

@@ -1,33 +1,54 @@
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import * as signalR from "@microsoft/signalr";
 import "./Chat.css";
-import axios from "axios";
-import Message from "./_lib/message";
 import NavBar from "./_components/NavBar";
+import instance from "./_lib/axiosBase";
+
+interface Starter {
+    username: string,
+    messages: Message
+};
+
+interface Message {
+    id: number,
+    username: string,
+    content: string,
+    sentAt: Date
+}
 
 const Chat: React.FC = () => {
     const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
-    const [username, setUsername] = useState<string>("Jim");
+    const [username, setUsername] = useState<string>("");
     const [message, setMessage] = useState<string>("");
     const [messages, setMessages] = useState<string[]>([]);
 
     // Connect to chat hub on mount and retrieve all messages
     useEffect(() => {
-        const newConnection = new signalR.HubConnectionBuilder()
-            .withUrl("https://localhost:7058/ChatHub")
-            .withAutomaticReconnect()
-            .build();
+        const getHubConntection = async () => {
+            const newConnection = new signalR.HubConnectionBuilder()
+                .withUrl("https://localhost:7058/ChatHub")
+                .withAutomaticReconnect()
+                .build();
 
-        axios.get("https://localhost:7058/api/Message")
-            .then(response => {
+            setConnection(newConnection);
+        };
+        
+        const getAllMessages = async () => {
+            try {
+                const response = await instance.get("/Message/ChatStarter", {withCredentials: true})
+            
                 console.log(response.data);
-                setMessages(response.data.map((x: Message): string => {
-                    return `${x.username}: ${x.content}`;
+                setMessages(response.data.map((x: Starter): string => {
+                    return `${x.messages.username}: ${x.messages.content}`;
                 }));
-            }).catch(error => {
-                console.log(error);
-            });
-        setConnection(newConnection);
+                setUsername(response.data.username);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        
+        getHubConntection();
+        getAllMessages();
     }, []);
 
     // 
@@ -44,7 +65,8 @@ const Chat: React.FC = () => {
         }
     }, [connection]);
 
-    const SendMessage = async () => {
+    const SendMessage = async (e: FormEvent) => {
+        e.preventDefault();
         if (connection && message) {
             try {
                 await connection.invoke("SendMessage", username, message);
@@ -74,23 +96,15 @@ const Chat: React.FC = () => {
                 <div id="chatbox">
                     {chatMessages}
                 </div>
-                <div id="user-controls">
-                    <label htmlFor="username">Username: </label>
-                    <input 
-                        type="text"
-                        id="username"
-                        value={username}
-                        onChange={e => setUsername(e.target.value)}
-                    />
-                    
+                <form id="user-controls" onSubmit={(e) => SendMessage(e)}>                
                     <input 
                         type="text" 
                         placeholder="Type your message..."
                         value={message}
                         onChange={(e) => handleMessageInput(e)}
                     />
-                    <button onClick={SendMessage}>Send Message</button>
-                </div>
+                    <button type="submit">Send Message</button>
+                </form>
             </div>
         </div>
         
