@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import instance from "./_lib/axiosBase";
 
 const Login: React.FC = () => {
     const [credentials, setCredentials] = useState({
@@ -16,7 +16,7 @@ const Login: React.FC = () => {
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         try {
-            const response = await axios.post("https://localhost:7058/user/login", credentials, {withCredentials: true});
+            const response = await instance.post("/user/login", credentials, {withCredentials: true});
             console.log("Login attempted. " + response.data);
             navigate("/");
         } catch (error) {
