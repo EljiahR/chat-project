@@ -38,8 +38,8 @@ const Chat: React.FC = () => {
                 const response = await instance.get("/Message/ChatStarter", {withCredentials: true})
             
                 console.log(response.data);
-                setMessages(response.data.map((x: Starter): string => {
-                    return `${x.messages.username}: ${x.messages.content}`;
+                setMessages(response.data.messages.map((x: Message): string => {
+                    return `${x.username}: ${x.content}`;
                 }));
                 setUsername(response.data.username);
             } catch (error) {
