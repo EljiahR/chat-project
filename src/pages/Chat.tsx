@@ -1,13 +1,8 @@
 import { FormEvent, useEffect, useState } from "react";
 import * as signalR from "@microsoft/signalr";
 import "./Chat.css";
-import NavBar from "./_components/NavBar";
-import instance from "./_lib/axiosBase";
-
-interface Starter {
-    username: string,
-    messages: Message
-};
+import NavBar from "../_components/NavBar";
+import instance from "../_lib/axiosBase";
 
 interface Message {
     id: number,

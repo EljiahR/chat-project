@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import instance from "./_lib/axiosBase";
+import instance from "../_lib/axiosBase";
 
 const SignIn: React.FC = () => {
     const [credentials, setCredentials] = useState({

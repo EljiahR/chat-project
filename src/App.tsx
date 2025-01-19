@@ -1,8 +1,8 @@
 // import Chat from './Chat'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import Chat from './Chat'
-import ProtectedRoutes from './ProtectedRoutes'
-import SignIn from './SignIn'
+import Chat from './pages/Chat'
+import ProtectedRoutes from './_components/ProtectedRoutes'
+import SignIn from './pages/SignIn'
 
 function App() {
 
