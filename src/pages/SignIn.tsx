@@ -25,8 +25,8 @@ const SignIn: React.FC = () => {
     }
     
     return (
-        <>
-            <div id="login-div">
+        <div id="signin-page-div">
+            <div id="signin-div">
                 <form onSubmit={(e) => handleSubmit(e)}>
                     <label htmlFor="username">Username: </label>
                     <input type="text" id="username" name="userName" value={credentials["userName"]} onChange={(e) => handleChange(e)} />
@@ -35,7 +35,10 @@ const SignIn: React.FC = () => {
                     <button type="submit">Login</button>
                 </form>
             </div>
-        </>
+            <div id="register-div">
+
+            </div>
+        </div>
     )
 }
 

@@ -2,18 +2,11 @@ import { FormEvent, useEffect, useState } from "react";
 import * as signalR from "@microsoft/signalr";
 import "./Chat.css";
 import NavBar from "../_components/NavBar";
-import instance from "../_lib/axiosBase";
+import { Message, UserInfo } from "../_lib/responseTypes";
 
-interface Message {
-    id: number,
-    username: string,
-    content: string,
-    sentAt: Date
-}
 
-const Chat: React.FC = () => {
+const Chat = ({username}: UserInfo) => {
     const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
-    const [username, setUsername] = useState<string>("");
     const [message, setMessage] = useState<string>("");
     const [messages, setMessages] = useState<string[]>([]);
 
@@ -28,22 +21,9 @@ const Chat: React.FC = () => {
             setConnection(newConnection);
         };
         
-        const getAllMessages = async () => {
-            try {
-                const response = await instance.get("/Message/ChatStarter", {withCredentials: true})
-            
-                console.log(response.data);
-                setMessages(response.data.messages.map((x: Message): string => {
-                    return `${x.username}: ${x.content}`;
-                }));
-                setUsername(response.data.username);
-            } catch (error) {
-                console.error(error);
-            }
-        }
+        
         
         getHubConntection();
-        getAllMessages();
     }, []);
 
     // 
@@ -51,10 +31,14 @@ const Chat: React.FC = () => {
         if (connection){
             connection.start()
                 .then(() => {
+                    connection.on("ReceiveChatHistory", (messages: Message[]) => {
+                        setMessages(messages.map(message => {
+                            return `${message.username}: ${message.content}`
+                        }));
+                    });
                     connection.on("ReceiveMessage", (user, message) => {
-                        setMessages(previousMessages => [...previousMessages, `${user}: ${message}`]);
-                        
-                    })
+                        setMessages(previousMessages => [...previousMessages, `${user}: ${message}`]); 
+                    });
                 })
                 .catch(e => console.log("Connection Error: " + e));
         }

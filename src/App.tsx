@@ -1,7 +1,7 @@
 // import Chat from './Chat'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Chat from './pages/Chat'
-import ProtectedRoutes from './_components/ProtectedRoutes'
+import ProtectedRoutes from './_components/ProtectedRoute'
 import SignIn from './pages/SignIn'
 
 function App() {
@@ -10,7 +10,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path='/signin' element={<SignIn />} />
-        <Route path="/" element={<ProtectedRoutes component={<Chat />} />} />
+        <Route path="/" element={<ProtectedRoutes component={Chat} />} />
       </Routes>
     </BrowserRouter>
   )
