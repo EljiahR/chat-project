@@ -5,7 +5,7 @@ import NavBar from "../_components/NavBar";
 import { Message, UserInfo } from "../_lib/responseTypes";
 
 
-const Chat = ({username}: UserInfo) => {
+const Chat = ({userName}: UserInfo) => {
     const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
     const [message, setMessage] = useState<string>("");
     const [messages, setMessages] = useState<string[]>([]);
@@ -48,7 +48,7 @@ const Chat = ({username}: UserInfo) => {
         e.preventDefault();
         if (connection && message) {
             try {
-                await connection.invoke("SendMessage", username, message);
+                await connection.invoke("SendMessage", userName, message);
                 setMessage("");
             } catch (e) {
                 console.log(e);

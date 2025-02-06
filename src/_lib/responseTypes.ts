@@ -7,7 +7,8 @@ interface Message {
 
 interface UserInfo
 {
-    username: string
+    userName: string,
+    channelIds: number[]
 }
 
 export type {Message, UserInfo};
