@@ -35,6 +35,7 @@ const ProtectedRoute = ({ component: Component }: Props) => {
 
         checkAuthStatus();
         console.log(authenticationState);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     
     return (

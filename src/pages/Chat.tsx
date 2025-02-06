@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useState } from "react";
 import * as signalR from "@microsoft/signalr";
-import "./Chat.css";
+import "../_styles/Chat.css"
 import NavBar from "../_components/NavBar";
 import { Message, UserInfo } from "../_lib/responseTypes";
 
