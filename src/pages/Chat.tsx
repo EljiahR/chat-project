@@ -5,16 +5,12 @@ import NavBar from "../_components/NavBar";
 import { Message, UserInfo } from "../_lib/responseTypes";
 import ChannelList from "../_components/ChannelList";
 
-interface Props {
-    userInfo: UserInfo
-}
-
 interface ChannelHistory {
     channelId: number,
     messages: Message[]
 }
 
-const Chat = ({userInfo}: Props) => {
+const Chat = ({userName, channels}: UserInfo) => {
     const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
     const [message, setMessage] = useState<string>("");
     const [messages, setMessages] = useState<Map<number, Message[]>>(new Map([]));
@@ -22,6 +18,8 @@ const Chat = ({userInfo}: Props) => {
 
     // Attempt to connect to hub on mount
     useEffect(() => {
+        console.log("userinfo")
+        console.log(userName);
         const getHubConntection = async () => {
             const newConnection = new signalR.HubConnectionBuilder()
                 .withUrl("https://localhost:7058/ChatHub")
@@ -60,13 +58,14 @@ const Chat = ({userInfo}: Props) => {
                 })
                 .catch(e => console.log("Connection Error: " + e));
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [connection]);
 
     const SendMessage = async (e: FormEvent) => {
         e.preventDefault();
         if (connection && message) {
             try {
-                await connection.invoke("SendMessage", userInfo.userName, message);
+                await connection.invoke("SendMessage", message, selectedChannel);
                 setMessage("");
             } catch (e) {
                 console.log(e);
@@ -98,7 +97,7 @@ const Chat = ({userInfo}: Props) => {
     return (
         <div id="chat-app">
             <NavBar />
-            <ChannelList {...userInfo} setSelectedChannel={setSelectedChannel} />
+            <ChannelList channels={channels} setSelectedChannel={setSelectedChannel} />
             <div id="chat">
                 <h1 id="title">Chat</h1>
                 <div id="chatbox">
