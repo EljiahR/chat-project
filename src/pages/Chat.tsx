@@ -1,16 +1,26 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import * as signalR from "@microsoft/signalr";
 import "../_styles/Chat.css"
 import NavBar from "../_components/NavBar";
 import { Message, UserInfo } from "../_lib/responseTypes";
+import ChannelList from "../_components/ChannelList";
 
+interface Props {
+    userInfo: UserInfo
+}
 
-const Chat = ({userName}: UserInfo) => {
+interface ChannelHistory {
+    channelId: number,
+    messages: Message[]
+}
+
+const Chat = ({userInfo}: Props) => {
     const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
     const [message, setMessage] = useState<string>("");
-    const [messages, setMessages] = useState<string[]>([]);
+    const [messages, setMessages] = useState<Map<number, Message[]>>(new Map([]));
+    const [selectedChannel, setSelectedChannel] = useState<number | null>(null);
 
-    // Connect to chat hub on mount and retrieve all messages
+    // Attempt to connect to hub on mount
     useEffect(() => {
         const getHubConntection = async () => {
             const newConnection = new signalR.HubConnectionBuilder()
@@ -20,24 +30,32 @@ const Chat = ({userName}: UserInfo) => {
 
             setConnection(newConnection);
         };
-        
-        
-        
         getHubConntection();
     }, []);
 
-    // 
+    //  
     useEffect(() => {
         if (connection){
             connection.start()
                 .then(() => {
-                    connection.on("ReceiveChatHistory", (messages: Message[]) => {
-                        setMessages(messages.map(message => {
-                            return `${message.username}: ${message.content}`
-                        }));
+                    connection.on("ReceiveChatHistory", (channelHistories: ChannelHistory[]) => {
+                        const messageHistory: Map<number, Message[]> = new Map([]);
+                        channelHistories.forEach(channelHistory => {
+                            messageHistory.set(channelHistory.channelId, channelHistory.messages);
+                        });
+
+                        setMessages(messageHistory);
                     });
-                    connection.on("ReceiveMessage", (user, message) => {
-                        setMessages(previousMessages => [...previousMessages, `${user}: ${message}`]); 
+                    
+                    connection.on("ReceiveMessage", (messageReceived: Message) => {
+                        const previousHistory = new Map(messages);
+                        const previousMessages = previousHistory.get(messageReceived.channelId);
+                        if (previousMessages) {
+                            previousHistory.set(messageReceived.channelId, [...previousMessages, messageReceived]);
+                        } else {
+                            previousHistory.set(messageReceived.channelId, [messageReceived]);
+                        }
+                        setMessages(previousHistory); 
                     });
                 })
                 .catch(e => console.log("Connection Error: " + e));
@@ -48,7 +66,7 @@ const Chat = ({userName}: UserInfo) => {
         e.preventDefault();
         if (connection && message) {
             try {
-                await connection.invoke("SendMessage", userName, message);
+                await connection.invoke("SendMessage", userInfo.userName, message);
                 setMessage("");
             } catch (e) {
                 console.log(e);
@@ -62,14 +80,25 @@ const Chat = ({userName}: UserInfo) => {
         }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const chatMessages: any[] = messages.map((message, index) => (
-        <div className="chat-message" key={index}>{message}</div>
-    ))
+    const chatMessages = useMemo(() => {
+        if (selectedChannel == null) { 
+            return [];
+        }
+        else {
+            const channelMessages = messages.get(selectedChannel);
+            if (channelMessages) {
+                return channelMessages.map((channelMessage, index) => {
+                    return <div className="chat-message" key={index}>{`${channelMessage.username}: ${channelMessage.content}`}</div>
+                })
+            }
+        }
+    }, [selectedChannel, messages])
+    
 
     return (
         <div id="chat-app">
             <NavBar />
+            <ChannelList {...userInfo} setSelectedChannel={setSelectedChannel} />
             <div id="chat">
                 <h1 id="title">Chat</h1>
                 <div id="chatbox">

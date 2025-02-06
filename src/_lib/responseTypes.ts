@@ -2,13 +2,19 @@ interface Message {
     id: number,
     username: string,
     content: string,
-    sentAt: Date
+    sentAt: Date,
+    channelId: number
+}
+
+interface Channel {
+    id: number,
+    name: string,
 }
 
 interface UserInfo
 {
     userName: string,
-    channelIds: number[]
+    channels: Channel[]
 }
 
-export type {Message, UserInfo};
+export type {Message, UserInfo, Channel};
