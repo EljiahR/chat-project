@@ -2,7 +2,7 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 import * as signalR from "@microsoft/signalr";
 import "../_styles/Chat.css"
 import NavBar from "../_components/NavBar";
-import { Message, UserInfo } from "../_lib/responseTypes";
+import { Channel, Message, UserInfo } from "../_lib/responseTypes";
 import ChannelList from "../_components/ChannelList";
 
 interface ChannelHistory {
@@ -14,7 +14,7 @@ const Chat = ({userName, channels}: UserInfo) => {
     const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
     const [message, setMessage] = useState<string>("");
     const [messages, setMessages] = useState<Map<number, Message[]>>(new Map([]));
-    const [selectedChannel, setSelectedChannel] = useState<number | null>(null);
+    const [selectedChannel, setSelectedChannel] = useState<Channel | null>(null);
 
     // Attempt to connect to hub on mount
     useEffect(() => {
@@ -63,9 +63,10 @@ const Chat = ({userName, channels}: UserInfo) => {
 
     const SendMessage = async (e: FormEvent) => {
         e.preventDefault();
-        if (connection && message) {
+        if (connection && message && selectedChannel) {
             try {
-                await connection.invoke("SendMessage", message, selectedChannel);
+                console.log("Sending to: " + selectedChannel);
+                await connection.invoke("SendMessage", message, selectedChannel.id);
                 setMessage("");
             } catch (e) {
                 console.log(e);
@@ -84,7 +85,7 @@ const Chat = ({userName, channels}: UserInfo) => {
             return [];
         }
         else {
-            const channelMessages = messages.get(selectedChannel);
+            const channelMessages = messages.get(selectedChannel.id);
             if (channelMessages) {
                 return channelMessages.map((channelMessage, index) => {
                     return <div className="chat-message" key={index}>{`${channelMessage.username}: ${channelMessage.content}`}</div>
@@ -99,19 +100,23 @@ const Chat = ({userName, channels}: UserInfo) => {
             <NavBar />
             <ChannelList channels={channels} setSelectedChannel={setSelectedChannel} />
             <div id="chat">
-                <h1 id="title">Chat</h1>
-                <div id="chatbox">
-                    {chatMessages}
-                </div>
-                <form id="user-controls" onSubmit={(e) => SendMessage(e)}>                
-                    <input 
-                        type="text" 
-                        placeholder="Type your message..."
-                        value={message}
-                        onChange={(e) => handleMessageInput(e)}
-                    />
-                    <button type="submit">Send Message</button>
-                </form>
+                {selectedChannel == null ? 
+                <div><h2>Home</h2></div> :
+                <>
+                    <h1 id="title">{selectedChannel == null ? "Home" : selectedChannel.name}</h1>
+                    <div id="chatbox">
+                        {chatMessages}
+                    </div>
+                    <form id="user-controls" onSubmit={(e) => SendMessage(e)}>                
+                        <input 
+                            type="text" 
+                            placeholder="Type your message..."
+                            value={message}
+                            onChange={(e) => handleMessageInput(e)}
+                        />
+                        <button type="submit">Send Message</button>
+                    </form>
+                </>}
             </div>
         </div>
         

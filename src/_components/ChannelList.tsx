@@ -3,12 +3,13 @@ import {  Channel } from "../_lib/responseTypes";
 
 interface Props {
     channels: Channel[],
-    setSelectedChannel: React.Dispatch<React.SetStateAction<number | null>>
+    setSelectedChannel: React.Dispatch<React.SetStateAction<Channel | null>>
 }
 
 const ChannelList = ({channels, setSelectedChannel}: Props) => {
-    const handleSelectedChannel = (id: number) => {
-        setSelectedChannel(id);
+    const handleSelectedChannel = (channel: Channel) => {
+        setSelectedChannel(channel);
+        console.log("channel: " + channel);
     }
 
     const handleNewChannel = async () => {
@@ -27,7 +28,7 @@ const ChannelList = ({channels, setSelectedChannel}: Props) => {
             <button className="new-channel" onClick={handleNewChannel}>+</button>
             {channels.map(channel => {
                 return (
-                    <button className="channel-selector" onClick={() => handleSelectedChannel(channel.id)}>{channel.name}</button>
+                    <button className="channel-selector" onClick={() => handleSelectedChannel(channel)}>{channel.name}</button>
                 )
             })}
         </div>
