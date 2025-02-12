@@ -5,15 +5,14 @@ import NavBar from "../_components/NavBar";
 import { Channel, Message, UserInfo } from "../_lib/responseTypes";
 import ChannelList from "../_components/ChannelList";
 
-interface ChannelHistory {
-    channelId: number,
-    messages: Message[]
+interface ChatHistory {
+    [channelId: number]: Message[];
 }
 
 const Chat = ({userName, channels}: UserInfo) => {
     const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
     const [message, setMessage] = useState<string>("");
-    const [messages, setMessages] = useState<Map<number, Message[]>>(new Map([]));
+    const [messages, setMessages] = useState<Map<number, Message[]>>(new Map());
     const [selectedChannel, setSelectedChannel] = useState<Channel | null>(null);
 
     // Attempt to connect to hub on mount
@@ -36,25 +35,35 @@ const Chat = ({userName, channels}: UserInfo) => {
         if (connection){
             connection.start()
                 .then(() => {
-                    connection.on("ReceiveChatHistory", (channelHistories: ChannelHistory[]) => {
-                        const messageHistory: Map<number, Message[]> = new Map([]);
-                        channelHistories.forEach(channelHistory => {
-                            messageHistory.set(channelHistory.channelId, channelHistory.messages);
-                        });
-
-                        setMessages(messageHistory);
+                    connection.on("ReceiveMessageHistory", (channelHistories: ChatHistory) => {
+                        try {
+                            const messageHistory: Map<number, Message[]> = new Map<number, Message[]>([]);
+                            
+                            Object.keys(channelHistories).forEach(channelId => {
+                                const id = parseInt(channelId)
+                                messageHistory.set(id, channelHistories[id] as Message[]);
+                            });
+                       
+                            setMessages(messageHistory);
+                        } catch(error) {
+                            console.error("Error receiving history", error);
+                        }
+                        
                     });
                     
                     connection.on("ReceiveMessage", (messageReceived: Message) => {
-                        const previousHistory = new Map(messages);
-                        const previousMessages = previousHistory.get(messageReceived.channelId);
-                        if (previousMessages) {
-                            previousHistory.set(messageReceived.channelId, [...previousMessages, messageReceived]);
-                        } else {
-                            previousHistory.set(messageReceived.channelId, [messageReceived]);
-                        }
-                        setMessages(previousHistory); 
+                        
+                        setMessages(previousMessages => {
+                            const updatedMessages = new Map(previousMessages);
+
+                            const channelMessages = updatedMessages.get(messageReceived.channelId) || [];
+                            updatedMessages.set(messageReceived.channelId, [...channelMessages, messageReceived]);
+
+                            return updatedMessages;
+                        });
                     });
+
+                    connection.invoke("AfterConnectedAsync");
                 })
                 .catch(e => console.log("Connection Error: " + e));
         }
