@@ -9,7 +9,7 @@ interface ChatHistory {
     [channelId: number]: Message[];
 }
 
-const Chat = ({userName, channels}: UserInfo) => {
+const ChatHome = (userInfo: UserInfo) => {
     const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
     const [message, setMessage] = useState<string>("");
     const [messages, setMessages] = useState<Map<number, Message[]>>(new Map());
@@ -17,8 +17,6 @@ const Chat = ({userName, channels}: UserInfo) => {
 
     // Attempt to connect to hub on mount
     useEffect(() => {
-        console.log("userinfo")
-        console.log(userName);
         const getHubConntection = async () => {
             const newConnection = new signalR.HubConnectionBuilder()
                 .withUrl("https://localhost:7058/ChatHub")
@@ -107,7 +105,7 @@ const Chat = ({userName, channels}: UserInfo) => {
     return (
         <div id="chat-app">
             <NavBar />
-            <ChannelList channels={channels} setSelectedChannel={setSelectedChannel} />
+            <ChannelList channels={userInfo.channels} setSelectedChannel={setSelectedChannel} />
             <div id="chat">
                 {selectedChannel == null ? 
                 <div><h2>Home</h2></div> :
@@ -132,4 +130,4 @@ const Chat = ({userName, channels}: UserInfo) => {
     )
 };
 
-export default Chat
+export default ChatHome

@@ -4,7 +4,8 @@ import { Navigate } from "react-router-dom";
 import { UserInfo } from "../_lib/responseTypes";
 
 interface Props {
-    component: ComponentType<UserInfo>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    component: ComponentType<any>
 }
 
 enum AuthenticationStates {
@@ -42,7 +43,7 @@ const ProtectedRoute = ({ component: Component }: Props) => {
         authenticationState == AuthenticationStates.Loading ? 
             <></> : 
             authenticationState == AuthenticationStates.Authorized ? 
-                <Component {...userInfo} /> : 
+                <Component userInfo={userInfo} /> : 
                 <Navigate to={"/signin"} />
     )
 }
