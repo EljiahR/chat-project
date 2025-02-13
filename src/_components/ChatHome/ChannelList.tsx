@@ -1,5 +1,6 @@
-import instance from "../_lib/axiosBase";
-import {  Channel } from "../_lib/responseTypes";
+import "../../_styles/ChannelList.css"
+import instance from "../../_lib/axiosBase";
+import {  Channel } from "../../_lib/responseTypes";
 
 interface Props {
     channels: Channel[],
@@ -25,12 +26,12 @@ const ChannelList = ({channels, setSelectedChannel}: Props) => {
     
     return (
         <div id="channel-list">
-            <button className="new-channel" onClick={handleNewChannel}>+</button>
             {channels.map(channel => {
                 return (
-                    <button className="channel-selector" onClick={() => handleSelectedChannel(channel)}>{channel.name}</button>
+                    <button key={channel.id} title={channel.name} className="channel-selector" onClick={() => handleSelectedChannel(channel)}>{channel.name}</button>
                 )
             })}
+            <button className="new-channel" onClick={handleNewChannel}>+</button>
         </div>
     )
 }

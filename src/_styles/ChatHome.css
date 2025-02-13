@@ -1,0 +1,32 @@
+#chat-main {
+    box-sizing: border-box;
+    height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 8fr;
+    grid-template-rows: 1fr;
+    padding: 5px;
+    gap: 10px;
+}
+
+#chat-container {
+    box-sizing: border-box;
+    display: grid;
+    height: 100%;
+    width: 100%;
+    grid-template-rows: 10fr 1fr;
+    grid-template-columns: 1fr;
+}
+
+#sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#active-chat {
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 6fr 1fr;
+}

@@ -1,22 +1,31 @@
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import * as signalR from "@microsoft/signalr";
-import "../_styles/Chat.css"
-import NavBar from "../_components/NavBar";
+import "../_styles/ChatHome.css"
+import NavBar from "../_components/ChatHome/NavBar";
 import { Channel, Message, UserInfo } from "../_lib/responseTypes";
-import ChannelList from "../_components/ChannelList";
+import ChannelList from "../_components/ChatHome/ChannelList";
+import MessageControls from "../_components/ChatHome/MessageControls";
+import Chat from "../_components/ChatHome/Chat";
+import HomeChannel from "../_components/ChatHome/HomeChannel";
 
 interface ChatHistory {
     [channelId: number]: Message[];
 }
 
-const ChatHome = (userInfo: UserInfo) => {
+interface Props {
+    userInfo: UserInfo
+}
+
+const ChatHome: React.FC<Props> = ({userInfo}) => {
     const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
     const [message, setMessage] = useState<string>("");
     const [messages, setMessages] = useState<Map<number, Message[]>>(new Map());
     const [selectedChannel, setSelectedChannel] = useState<Channel | null>(null);
-
+    console.log("userinfo", userInfo);
     // Attempt to connect to hub on mount
     useEffect(() => {
+        const previousTitle = document.title;
+        document.title = "Home";
         const getHubConntection = async () => {
             const newConnection = new signalR.HubConnectionBuilder()
                 .withUrl("https://localhost:7058/ChatHub")
@@ -26,6 +35,8 @@ const ChatHome = (userInfo: UserInfo) => {
             setConnection(newConnection);
         };
         getHubConntection();
+
+        return (() => {document.title = previousTitle;});
     }, []);
 
     //  
@@ -65,7 +76,6 @@ const ChatHome = (userInfo: UserInfo) => {
                 })
                 .catch(e => console.log("Connection Error: " + e));
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [connection]);
 
     const SendMessage = async (e: FormEvent) => {
@@ -81,7 +91,7 @@ const ChatHome = (userInfo: UserInfo) => {
         }
     };
 
-    const handleMessageInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleMessageInput = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.value.length < 251) {
             setMessage(e.target.value);
         }
@@ -103,26 +113,17 @@ const ChatHome = (userInfo: UserInfo) => {
     
 
     return (
-        <div id="chat-app">
-            <NavBar />
-            <ChannelList channels={userInfo.channels} setSelectedChannel={setSelectedChannel} />
-            <div id="chat">
+        <div id="chat-main">
+            <div id="sidebar">
+                <ChannelList channels={userInfo.channels ?? []} setSelectedChannel={setSelectedChannel} />
+                <NavBar />
+            </div>
+            <div id="chat-container">
                 {selectedChannel == null ? 
-                <div><h2>Home</h2></div> :
+                <HomeChannel /> :
                 <>
-                    <h1 id="title">{selectedChannel == null ? "Home" : selectedChannel.name}</h1>
-                    <div id="chatbox">
-                        {chatMessages}
-                    </div>
-                    <form id="user-controls" onSubmit={(e) => SendMessage(e)}>                
-                        <input 
-                            type="text" 
-                            placeholder="Type your message..."
-                            value={message}
-                            onChange={(e) => handleMessageInput(e)}
-                        />
-                        <button type="submit">Send Message</button>
-                    </form>
+                    <Chat channelName={selectedChannel.name} chatMessages={chatMessages!} />
+                    <MessageControls message={message} handleMessageInput={handleMessageInput} SendMessage={SendMessage}  />
                 </>}
             </div>
         </div>

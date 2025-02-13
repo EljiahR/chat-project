@@ -25,7 +25,6 @@ const ProtectedRoute = ({ component: Component }: Props) => {
         const checkAuthStatus = async () => {
             try {
                 const response = await axios.get("https://localhost:7058/user/status", {withCredentials: true});
-                console.log(response.data);
                 setUserInfo(response.data);
                 setAuthenticationState(AuthenticationStates.Authorized);
             } catch (error) {
@@ -35,7 +34,6 @@ const ProtectedRoute = ({ component: Component }: Props) => {
         }
 
         checkAuthStatus();
-        console.log(authenticationState);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     
