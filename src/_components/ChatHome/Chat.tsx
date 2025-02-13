@@ -1,5 +1,3 @@
-import "../../_styles/Chat.css"
-
 interface Props {
     channelName: string;
     chatMessages: JSX.Element[];

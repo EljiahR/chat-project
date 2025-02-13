@@ -11,22 +11,39 @@
 
 #chat-container {
     box-sizing: border-box;
-    display: grid;
     height: 100%;
     width: 100%;
-    grid-template-rows: 10fr 1fr;
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Prevents unintended expansion */
 }
 
 #sidebar {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    height: 100%;
 }
 
-#active-chat {
-    height: 100%;
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: 6fr 1fr;
+#chat {
+    flex: 1; /* Use flex instead of fixed 80% height */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Prevents growth beyond container */
+}
+
+#title {
+    min-height: 10%;
+    flex-shrink: 0; /* Ensures it doesn't get squeezed */
+}
+
+#chat-box {
+    flex: 1; /* Let it take available space */
+    min-height: 0; /* Fixes overflow issue */
+    overflow-y: auto; /* Enables scrolling */
+}
+
+#user-controls {
+    height: 5%;
+    flex-shrink: 0; /* Prevents unexpected resizing */
 }
