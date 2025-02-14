@@ -36,6 +36,8 @@
     min-height: 10%;
     flex-shrink: 0; /* Ensures it doesn't get squeezed */
     align-self: center;
+    display: flex;
+    align-items: center;
 }
 
 #chat-box {
@@ -44,10 +46,29 @@
     overflow-y: auto; /* Enables scrolling */
     display: flex;
     flex-direction: column-reverse;
-
+    border-radius: 12px;
+    padding: 0 10px;
+    background-color: #363636;
+    box-shadow: #292929 5px 5px 5px inset;
 }
 
+/* Hiding scrollbars */
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+#chat-box::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+#chat-box {
+-ms-overflow-style: none;  /* IE and Edge */
+scrollbar-width: none;  /* Firefox */
+}
+
+/* End Hiding scrollbars */
+
+
 #user-controls {
-    height: 5%;
+    height: 10%;
     flex-shrink: 0; /* Prevents unexpected resizing */
 }

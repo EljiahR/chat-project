@@ -11,7 +11,7 @@
 #signin-page > * {
     background-color: rgb(51, 51, 51);
     border-radius: 5px;
-    box-shadow: black 5px 5px 5px;
+    box-shadow: rgb(19, 19, 19) 5px 5px 5px inset;
     padding: 10px;
     display: flex;
     flex-direction: column;

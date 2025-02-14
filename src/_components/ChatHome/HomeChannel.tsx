@@ -1,6 +1,10 @@
+import "../../_styles/HomeChannel.css"
+
 const HomeChannel = () => {
     return (
-        <div><h2>Home</h2></div> 
+        <div id="home-channel">
+            <h2 id="home-title">Home</h2>
+        </div> 
     );
 }
 
