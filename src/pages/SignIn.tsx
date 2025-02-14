@@ -1,6 +1,7 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import instance from "../_lib/axiosBase";
+import "../_styles/SignIn.css"
 
 const SignIn: React.FC = () => {
     const [loginCredentials, setLoginCredentials] = useState({
@@ -32,7 +33,12 @@ const SignIn: React.FC = () => {
 
     const navigate = useNavigate();
 
-    
+    useEffect(() => {
+        const previousTitle = document.title;
+        document.title = "Chat - Login";
+
+        return (() => {document.title = previousTitle;});
+    }, []);
 
     const handleLoginSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -63,8 +69,9 @@ const SignIn: React.FC = () => {
     };
     
     return (
-        <div id="signin-page-div">
+        <div id="signin-page">
             <div id="signin-div">
+                <h3>Sign In</h3>
                 <form onSubmit={(e) => handleLoginSubmit(e)} id="signin-form">
                     <label htmlFor="login-username">Username: </label>
                     <input type="text" id="login-username" name="userName" value={loginCredentials["userName"]} onChange={(e) => handleLoginChange(e)} />
@@ -74,6 +81,7 @@ const SignIn: React.FC = () => {
                 </form>
             </div>
             <div id="register-div">
+                <h3>Register</h3>
                 <form id="register-form" onSubmit={(e) => handleRegisterSubmit(e)}>
                     <label htmlFor="register-username">Username: </label>
                     <input type="text" id="register-username" name="userName" value={registerCredentials["userName"]} onChange={(e) => handleRegisterChange(e)}  />

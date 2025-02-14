@@ -21,7 +21,7 @@ const ChatHome: React.FC<Props> = ({userInfo}) => {
     const [message, setMessage] = useState<string>("");
     const [messages, setMessages] = useState<Map<number, Message[]>>(new Map());
     const [selectedChannel, setSelectedChannel] = useState<Channel | null>(null);
-    console.log("userinfo", userInfo);
+
     // Attempt to connect to hub on mount
     useEffect(() => {
         const previousTitle = document.title;
@@ -110,6 +110,16 @@ const ChatHome: React.FC<Props> = ({userInfo}) => {
             }
         }
     }, [selectedChannel, messages])
+
+    useEffect(() => {
+        if (selectedChannel) {
+            const previousTitle = document.title;
+            document.title = selectedChannel.name;
+
+            return (() => {document.title = previousTitle;});
+        }
+        
+    }, [selectedChannel])
     
 
     return (
@@ -122,7 +132,7 @@ const ChatHome: React.FC<Props> = ({userInfo}) => {
                 {selectedChannel == null ? 
                 <HomeChannel /> :
                 <>
-                    <Chat channelName={selectedChannel.name} chatMessages={chatMessages!} />
+                    <Chat channelName={selectedChannel.name} chatMessages={chatMessages!.reverse()} />
                     <MessageControls message={message} handleMessageInput={handleMessageInput} SendMessage={SendMessage}  />
                 </>}
             </div>

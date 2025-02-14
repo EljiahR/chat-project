@@ -1,0 +1,30 @@
+#signin-page {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+#signin-page > * {
+    background-color: rgb(51, 51, 51);
+    border-radius: 5px;
+    box-shadow: black 5px 5px 5px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#signin-page > * > form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+#register-errors {
+    height: 24px;;
+}

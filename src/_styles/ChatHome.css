@@ -35,12 +35,16 @@
 #title {
     min-height: 10%;
     flex-shrink: 0; /* Ensures it doesn't get squeezed */
+    align-self: center;
 }
 
 #chat-box {
     flex: 1; /* Let it take available space */
     min-height: 0; /* Fixes overflow issue */
     overflow-y: auto; /* Enables scrolling */
+    display: flex;
+    flex-direction: column-reverse;
+
 }
 
 #user-controls {
