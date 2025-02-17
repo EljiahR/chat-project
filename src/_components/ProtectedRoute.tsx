@@ -1,7 +1,7 @@
-import axios from "axios";
 import { ComponentType, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { UserInfo } from "../_lib/responseTypes";
+import instance from "../_lib/axiosBase";
 
 interface Props {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -18,13 +18,14 @@ const ProtectedRoute = ({ component: Component }: Props) => {
     const [authenticationState, setAuthenticationState] = useState(AuthenticationStates.Loading);
     const [userInfo, setUserInfo] = useState<UserInfo>({
         userName: "",
-        channels: []
+        channels: [],
+        friends: []
     });
 
     useEffect(() => {
         const checkAuthStatus = async () => {
             try {
-                const response = await axios.get("https://localhost:7058/user/status", {withCredentials: true});
+                const response = await instance.get("/user/status", {withCredentials: true});
                 setUserInfo(response.data);
                 setAuthenticationState(AuthenticationStates.Authorized);
             } catch (error) {

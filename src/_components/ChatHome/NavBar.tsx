@@ -61,9 +61,15 @@ const PeopleSubMenu = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [searchResults, setSearchResults] = useState<Person[]>([]);
 
-    const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleSearch = async (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key == "Enter") {
-            console.log("Enter was pressed");
+            try {
+                const response = await instance.get(`/User/FindByName/${searchQuery}`, {withCredentials: true});
+                console.log("Search results", response.data);
+                setSearchResults(response.data);
+            } catch (error) {
+                console.error(error);
+            }
         }
     }
     
