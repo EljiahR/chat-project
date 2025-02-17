@@ -1,13 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import instance from "../../_lib/axiosBase";
-import { Friend, UserInfo } from "../../_lib/responseTypes";
+import { Friend, Person, UserInfo } from "../../_lib/responseTypes";
 import { useState } from "react";
 
 interface NavBarProps {
     userInfo: UserInfo
 }
 
-interface FriendsDisplayProps {
+interface FriendSubMenuProps {
     friends: Friend[]
 }
 
@@ -19,6 +19,7 @@ enum SubMenuOptions {
 
 const NavBar = ({userInfo}: NavBarProps) => {
     const [subMenu, setSubMenu] = useState<SubMenuOptions>(SubMenuOptions.None);
+
     const handleSubMenu = (option: SubMenuOptions) => {
         setSubMenu(option);
     }
@@ -46,9 +47,9 @@ const NavBar = ({userInfo}: NavBarProps) => {
             <button id="signout-btn" onClick={(e) => handleLogout(e)}>Sign Out</button>
         </div>
         {subMenu == SubMenuOptions.People ? 
-            <></> :
+            <PeopleSubMenu /> :
         subMenu == SubMenuOptions.Friends ?
-            <FriendsDisplay friends={userInfo.friends} /> :
+            <FriendSubMenu friends={userInfo.friends} /> :
             <></>
         }
         </>
@@ -56,14 +57,36 @@ const NavBar = ({userInfo}: NavBarProps) => {
     )
 }
 
-const FriendsDisplay = ({friends}: FriendsDisplayProps) => {
-    
+const PeopleSubMenu = () => {
+    const [searchQuery, setSearchQuery] = useState("");
+    const [searchResults, setSearchResults] = useState<Person[]>([]);
+
+    const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key == "Enter") {
+            console.log("Enter was pressed");
+        }
+    }
     
     return (
-        <div id="friend-list">
+        <div id="people-search"className="submenu">
+            <input type="text" id="people-search-bar" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={(e) => handleSearch(e)} />
+            <div id="search-results">
+                {searchResults.map(person => {
+                    return (
+                        <div className="person-result">{person.userName}</div>
+                    )
+                })}
+            </div>
+        </div>
+    )
+}
+
+const FriendSubMenu = ({friends}: FriendSubMenuProps) => {
+    return (
+        <div id="friend-list" className="submenu">
             {friends.map(friend => {
                 return (
-                    <div>{friend.userName}</div>
+                    <div className="friend-item">{friend.userName}</div>
                 )
             })}
         </div>

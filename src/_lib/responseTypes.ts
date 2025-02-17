@@ -11,6 +11,11 @@ interface Channel {
     name: string,
 }
 
+interface Person {
+    userName: string,
+    userId: string
+}
+
 interface Friend {
     userName: string,
     userId: string
@@ -23,4 +28,4 @@ interface UserInfo
     friends: Friend[]
 }
 
-export type {Message, UserInfo, Channel, Friend};
+export type {Message, UserInfo, Channel, Person, Friend};
