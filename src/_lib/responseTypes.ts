@@ -11,10 +11,16 @@ interface Channel {
     name: string,
 }
 
+interface Friend {
+    userName: string,
+    userId: string
+}
+
 interface UserInfo
 {
     userName: string,
     channels: Channel[]
+    friends: Friend[]
 }
 
 export type {Message, UserInfo, Channel};
