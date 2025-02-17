@@ -13,14 +13,15 @@ interface ChatHistory {
 }
 
 interface Props {
-    userInfo: UserInfo
+    userInfoReceived: UserInfo
 }
 
-const ChatHome: React.FC<Props> = ({userInfo}) => {
+const ChatHome: React.FC<Props> = ({userInfoReceived}) => {
     const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
     const [message, setMessage] = useState<string>("");
     const [messages, setMessages] = useState<Map<number, Message[]>>(new Map());
     const [selectedChannel, setSelectedChannel] = useState<Channel | null>(null);
+    const [userInfo, setUserInfo] = useState<UserInfo>(userInfoReceived);
 
     // Attempt to connect to hub on mount
     useEffect(() => {
@@ -125,8 +126,8 @@ const ChatHome: React.FC<Props> = ({userInfo}) => {
     return (
         <div id="chat-main">
             <div id="sidebar">
-                <ChannelList channels={userInfo.channels ?? []} setSelectedChannel={setSelectedChannel} />
-                <NavBar />
+                <ChannelList userInfo={userInfo} setUserInfo={setUserInfo} setSelectedChannel={setSelectedChannel} />
+                <NavBar userInfo={userInfo} />
             </div>
             <div id="chat-container">
                 {selectedChannel == null ? 

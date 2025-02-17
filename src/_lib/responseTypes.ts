@@ -23,4 +23,4 @@ interface UserInfo
     friends: Friend[]
 }
 
-export type {Message, UserInfo, Channel};
+export type {Message, UserInfo, Channel, Friend};

@@ -1,13 +1,14 @@
 import "../../_styles/ChannelList.css"
 import instance from "../../_lib/axiosBase";
-import {  Channel } from "../../_lib/responseTypes";
+import {  Channel, UserInfo } from "../../_lib/responseTypes";
 
 interface Props {
-    channels: Channel[],
+    userInfo: UserInfo,
+    setUserInfo: React.Dispatch<React.SetStateAction<UserInfo>>
     setSelectedChannel: React.Dispatch<React.SetStateAction<Channel | null>>
 }
 
-const ChannelList = ({channels, setSelectedChannel}: Props) => {
+const ChannelList = ({userInfo, setUserInfo, setSelectedChannel}: Props) => {
     const handleSelectedChannel = (channel: Channel) => {
         setSelectedChannel(channel);
     }
@@ -18,6 +19,13 @@ const ChannelList = ({channels, setSelectedChannel}: Props) => {
         try {
             const response = await instance.post("/channel/new", newChannel, {withCredentials: true});
             console.log("New channel created", response.data);
+            
+            setUserInfo(previousInfo => {
+                const newInfo = {...previousInfo};
+                newInfo.channels = [...newInfo.channels, response.data];
+                return newInfo;
+            });
+
         } catch (error) {
             console.error("Failed to create channel: " + error);
         }
@@ -25,7 +33,7 @@ const ChannelList = ({channels, setSelectedChannel}: Props) => {
     
     return (
         <div id="channel-list">
-            {channels.map(channel => {
+            {userInfo.channels.map(channel => {
                 return (
                     <button key={channel.id} title={channel.name} className="channel-selector" onClick={() => handleSelectedChannel(channel)}>{channel.name}</button>
                 )
