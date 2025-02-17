@@ -1,3 +1,4 @@
+import "../../_styles/NavBar.css";
 import { useNavigate } from "react-router-dom";
 import instance from "../../_lib/axiosBase";
 import { Friend, Person, UserInfo } from "../../_lib/responseTypes";
@@ -75,7 +76,7 @@ const PeopleSubMenu = () => {
     
     return (
         <div id="people-search"className="submenu">
-            <input type="text" id="people-search-bar" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={(e) => handleSearch(e)} />
+            <input type="text" id="people-search-bar" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={(e) => handleSearch(e)} placeholder="Search by name..." />
             <div id="search-results">
                 {searchResults.map(person => {
                     return (

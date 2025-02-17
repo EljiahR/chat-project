@@ -75,7 +75,7 @@ const ChatHome: React.FC<Props> = ({userInfoReceived}) => {
 
                     connection.invoke("AfterConnectedAsync");
                 })
-                .catch(e => console.log("Connection Error: " + e));
+                .catch(e => console.log("Connection Error: ", e));
         }
     }, [connection]);
 
@@ -83,7 +83,7 @@ const ChatHome: React.FC<Props> = ({userInfoReceived}) => {
         e.preventDefault();
         if (connection && message && selectedChannel) {
             try {
-                console.log("Sending to: " + selectedChannel);
+                console.log("Sending to: ", selectedChannel);
                 await connection.invoke("SendMessage", message, selectedChannel.id);
                 setMessage("");
             } catch (e) {
@@ -91,6 +91,14 @@ const ChatHome: React.FC<Props> = ({userInfoReceived}) => {
             }
         }
     };
+
+    const addNewChannel = (id: number) => {
+        setMessages(previousMessages => {
+            const updatedMessages = new Map(previousMessages);
+            updatedMessages.set(id, []);
+            return updatedMessages;
+        })
+    }
 
     const handleMessageInput = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.value.length < 251) {
@@ -126,7 +134,7 @@ const ChatHome: React.FC<Props> = ({userInfoReceived}) => {
     return (
         <div id="chat-main">
             <div id="sidebar">
-                <ChannelList userInfo={userInfo} setUserInfo={setUserInfo} setSelectedChannel={setSelectedChannel} />
+                <ChannelList userInfo={userInfo} setUserInfo={setUserInfo} setSelectedChannel={setSelectedChannel} addNewChannel={addNewChannel} />
                 <NavBar userInfo={userInfo} />
             </div>
             <div id="chat-container">

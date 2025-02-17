@@ -44,7 +44,7 @@ const SignIn: React.FC = () => {
         e.preventDefault();
         try {
             const response = await instance.post("/user/signin", loginCredentials, {withCredentials: true});
-            console.log("Login successful. " + response.data);
+            console.log("Login successful. ", response.data);
             navigate("/");
         } catch (error) {
             console.error("Trouble attempting login. " + error);
@@ -56,7 +56,7 @@ const SignIn: React.FC = () => {
         if (!passwordsMatch) return;
         try {
             const response = await instance.post("/user/register", registerCredentials, {withCredentials: true});
-            console.log("Register successful " + response.data);
+            console.log("Register successful ", response.data);
             setRegisterCredentials({
                 userName: "",
                 email: "",

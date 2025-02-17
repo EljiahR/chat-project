@@ -42,7 +42,7 @@ const ProtectedRoute = ({ component: Component }: Props) => {
         authenticationState == AuthenticationStates.Loading ? 
             <></> : 
             authenticationState == AuthenticationStates.Authorized ? 
-                <Component userInfo={userInfo} /> : 
+                <Component userInfoReceived={userInfo} /> : 
                 <Navigate to={"/signin"} />
     )
 }
