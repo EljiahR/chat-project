@@ -135,7 +135,7 @@ const ChatHome: React.FC<Props> = ({userInfoReceived}) => {
         <div id="chat-main">
             <div id="sidebar">
                 <ChannelList userInfo={userInfo} setUserInfo={setUserInfo} setSelectedChannel={setSelectedChannel} addNewChannel={addNewChannel} />
-                <NavBar userInfo={userInfo} />
+                <NavBar userInfo={userInfo} setUserInfo={setUserInfo} />
             </div>
             <div id="chat-container">
                 {selectedChannel == null ? 

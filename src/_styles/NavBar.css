@@ -7,3 +7,12 @@
     top: 10%;
     padding: 10px;
 }
+
+.person-result {
+    display: flex;
+    height: 5%;
+}
+
+.person-result > button {
+    font-size: 0.8em;
+}
