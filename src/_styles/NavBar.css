@@ -1,0 +1,9 @@
+.submenu {
+    position: fixed;
+    height: 40%;
+    width: 25%;
+    background-color: #1a1a1a;
+    left: 25%;
+    top: 10%;
+    padding: 10px;
+}

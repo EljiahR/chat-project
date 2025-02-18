@@ -22,7 +22,11 @@ const NavBar = ({userInfo}: NavBarProps) => {
     const [subMenu, setSubMenu] = useState<SubMenuOptions>(SubMenuOptions.None);
 
     const handleSubMenu = (option: SubMenuOptions) => {
-        setSubMenu(option);
+        if (subMenu == option) {
+            setSubMenu(SubMenuOptions.None);
+        } else {
+            setSubMenu(option);
+        }
     }
     
     const navigate = useNavigate();
@@ -70,6 +74,7 @@ const PeopleSubMenu = () => {
                 setSearchResults(response.data);
             } catch (error) {
                 console.error(error);
+                setSearchResults([]);
             }
         }
     }
@@ -78,11 +83,15 @@ const PeopleSubMenu = () => {
         <div id="people-search"className="submenu">
             <input type="text" id="people-search-bar" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={(e) => handleSearch(e)} placeholder="Search by name..." />
             <div id="search-results">
-                {searchResults.map(person => {
-                    return (
-                        <div className="person-result">{person.userName}</div>
-                    )
-                })}
+                {searchResults.length > 0 ?
+                    searchResults.map(person => {
+                        return (
+                            <div key={person.userId} className="person-result">{person.userName}</div>
+                        )
+                    }) :
+                    <div className="person-result">No users found</div>
+
+                }
             </div>
         </div>
     )

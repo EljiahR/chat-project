@@ -16,6 +16,8 @@ const ChannelList = ({userInfo, setUserInfo, setSelectedChannel, addNewChannel}:
 
     const handleNewChannel = async () => {
         const newChannelName = prompt("Enter new channel name: ");
+        if (newChannelName == null || newChannelName.trim() == "") return;
+        
         const newChannel = {name: newChannelName};
         try {
             const response = await instance.post("/channel/new", newChannel, {withCredentials: true});
