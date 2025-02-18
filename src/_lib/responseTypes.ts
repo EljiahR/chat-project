@@ -13,7 +13,8 @@ interface Channel {
 
 interface Person {
     userName: string,
-    userId: string
+    userId: string,
+    isFriend: boolean
 }
 
 interface Friend {

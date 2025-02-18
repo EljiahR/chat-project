@@ -113,7 +113,7 @@ const PeopleSubMenu = ({handleNewFriend}: PeopleSubMenuProps) => {
                         return (
                             <div key={person.userId} className="person-result">
                                 <p>{person.userName}</p>
-                                <button onClick={() => handleNewFriend(person.userId)}>Add</button>
+                                <button onClick={() => handleNewFriend(person.userId)} disabled={person.isFriend}>Add</button>
                             </div>
                         )
                     }) :
