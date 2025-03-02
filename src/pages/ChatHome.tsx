@@ -7,6 +7,7 @@ import ChannelList from "../_components/ChatHome/ChannelList";
 import MessageControls from "../_components/ChatHome/MessageControls";
 import Chat from "../_components/ChatHome/Chat";
 import HomeChannel from "../_components/ChatHome/HomeChannel";
+import ChannelMenu from "../_components/ChatHome/ChannelMenu";
 
 interface ChatHistory {
     [channelId: number]: Message[];
@@ -106,6 +107,17 @@ const ChatHome: React.FC<Props> = ({userInfoReceived}) => {
         }
     }
 
+    const handleChannelMenuDisplay = (forceClose = false) => {
+        const menu = document.querySelector("#channel-menu");
+        if (menu == null) return;
+
+        if (menu.classList.contains("display") || forceClose) {
+            menu.classList.remove("display");
+        } else {
+            menu.classList.add("display");
+        }
+    }
+
     const chatMessages = useMemo(() => {
         if (selectedChannel == null) { 
             return [];
@@ -141,10 +153,11 @@ const ChatHome: React.FC<Props> = ({userInfoReceived}) => {
                 {selectedChannel == null ? 
                 <HomeChannel /> :
                 <>
-                    <Chat channelName={selectedChannel.name} chatMessages={chatMessages!.reverse()} />
+                    <Chat channelName={selectedChannel.name} chatMessages={chatMessages!.reverse()} handleChannelMenuDisplay={handleChannelMenuDisplay} />
                     <MessageControls message={message} handleMessageInput={handleMessageInput} SendMessage={SendMessage}  />
                 </>}
             </div>
+            {selectedChannel != null ? <ChannelMenu channel={selectedChannel} /> : null}
         </div>
         
     )

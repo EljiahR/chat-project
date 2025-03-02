@@ -1,12 +1,17 @@
 interface Props {
     channelName: string;
     chatMessages: JSX.Element[];
+    handleChannelMenuDisplay: () => void;
 }
 
-const Chat: React.FC<Props> = ({channelName, chatMessages}) => {
+const Chat: React.FC<Props> = ({channelName, chatMessages, handleChannelMenuDisplay}) => {
     return (
             <div id="chat">
-                <h1 id="title">{channelName}</h1>
+                <div id="chat-header">
+                    <h1 id="title">{channelName}</h1>
+                    <button onClick={() => handleChannelMenuDisplay()}>Options</button>
+                </div>
+                
                 <div id="chat-box">
                     {chatMessages}
                 </div>
