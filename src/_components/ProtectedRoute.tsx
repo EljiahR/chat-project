@@ -27,6 +27,7 @@ const ProtectedRoute = ({ component: Component }: Props) => {
             try {
                 const response = await instance.get("/user/status", {withCredentials: true});
                 setUserInfo(response.data);
+                console.log(response.data)
                 setAuthenticationState(AuthenticationStates.Authorized);
             } catch (error) {
                 setAuthenticationState(AuthenticationStates.Unauthorized);

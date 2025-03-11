@@ -7,8 +7,12 @@ interface Message {
 }
 
 interface Channel {
-    id: number,
+    id: string,
     name: string,
+    owner: Person,
+    admins: Person[],
+    members: Person[],
+    channelMessages: Message[]
 }
 
 interface Person {
@@ -24,6 +28,7 @@ interface Friend {
 
 interface UserInfo
 {
+    id: string,
     userName: string,
     channels: Channel[]
     friends: Friend[]
