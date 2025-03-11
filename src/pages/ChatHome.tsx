@@ -10,7 +10,7 @@ import HomeChannel from "../_components/ChatHome/HomeChannel";
 import ChannelMenu from "../_components/ChatHome/ChannelMenu";
 
 interface ChatHistory {
-    [channelId: number]: Message[];
+    [channelId: string]: Message[];
 }
 
 interface Props {
@@ -20,7 +20,7 @@ interface Props {
 const ChatHome: React.FC<Props> = ({userInfoReceived}) => {
     const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
     const [message, setMessage] = useState<string>("");
-    const [messages, setMessages] = useState<Map<number, Message[]>>(new Map());
+    const [messages, setMessages] = useState<Map<string, Message[]>>(new Map());
     const [selectedChannel, setSelectedChannel] = useState<Channel | null>(null);
     const [userInfo, setUserInfo] = useState<UserInfo>(userInfoReceived);
 
@@ -48,11 +48,11 @@ const ChatHome: React.FC<Props> = ({userInfoReceived}) => {
                 .then(() => {
                     connection.on("ReceiveMessageHistory", (channelHistories: ChatHistory) => {
                         try {
-                            const messageHistory: Map<number, Message[]> = new Map<number, Message[]>([]);
+                            const messageHistory: Map<string, Message[]> = new Map<string, Message[]>([]);
                             
                             Object.keys(channelHistories).forEach(channelId => {
-                                const id = parseInt(channelId)
-                                messageHistory.set(id, channelHistories[id] as Message[]);
+                                
+                                messageHistory.set(channelId, channelHistories[channelId] as Message[]);
                             });
                        
                             setMessages(messageHistory);
@@ -93,7 +93,7 @@ const ChatHome: React.FC<Props> = ({userInfoReceived}) => {
         }
     };
 
-    const addNewChannel = (id: number) => {
+    const addNewChannel = (id: string) => {
         setMessages(previousMessages => {
             const updatedMessages = new Map(previousMessages);
             updatedMessages.set(id, []);

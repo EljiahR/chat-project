@@ -1,9 +1,9 @@
 interface Message {
-    id: number,
+    id: string,
     username: string,
     content: string,
     sentAt: Date,
-    channelId: number
+    channelId: string
 }
 
 interface Channel {

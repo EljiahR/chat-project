@@ -6,7 +6,7 @@ interface Props {
     userInfo: UserInfo,
     setUserInfo: React.Dispatch<React.SetStateAction<UserInfo>>,
     setSelectedChannel: React.Dispatch<React.SetStateAction<Channel | null>>,
-    addNewChannel: (id: number) => void;
+    addNewChannel: (id: string) => void;
 }
 
 const ChannelList = ({userInfo, setUserInfo, setSelectedChannel, addNewChannel}: Props) => {
