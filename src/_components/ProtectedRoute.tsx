@@ -16,12 +16,7 @@ enum AuthenticationStates {
 
 const ProtectedRoute = ({ component: Component }: Props) => {
     const [authenticationState, setAuthenticationState] = useState(AuthenticationStates.Loading);
-    const [userInfo, setUserInfo] = useState<UserInfo>({
-        id: "",
-        userName: "",
-        channels: [],
-        friends: []
-    });
+    const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
 
     useEffect(() => {
         const checkAuthStatus = async () => {

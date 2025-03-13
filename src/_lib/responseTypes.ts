@@ -17,13 +17,13 @@ interface Channel {
 
 interface Person {
     userName: string,
-    userId: string,
+    id: string,
     isFriend: boolean
 }
 
 interface Friend {
     userName: string,
-    userId: string
+    id: string
 }
 
 interface UserInfo

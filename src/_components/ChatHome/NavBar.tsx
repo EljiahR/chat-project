@@ -1,13 +1,10 @@
 import "../../_styles/NavBar.css";
 import { useNavigate } from "react-router-dom";
 import instance from "../../_lib/axiosBase";
-import { Friend, Person, UserInfo } from "../../_lib/responseTypes";
+import { Friend, Person } from "../../_lib/responseTypes";
 import { useState } from "react";
-
-interface NavBarProps {
-    userInfo: UserInfo;
-    setUserInfo: React.Dispatch<React.SetStateAction<UserInfo>>;
-}
+import { useAppDispatch } from "../../_lib/redux/hooks";
+import { addFriend } from "../../_lib/redux/userSlice";
 
 interface PeopleSubMenuProps {
     handleNewFriend: (id: string) => void
@@ -23,7 +20,8 @@ enum SubMenuOptions {
     None
 }
 
-const NavBar = ({userInfo, setUserInfo}: NavBarProps) => {
+const NavBar = () => {
+    const dispatch = useAppDispatch();
     const [subMenu, setSubMenu] = useState<SubMenuOptions>(SubMenuOptions.None);
 
     const handleSubMenu = (option: SubMenuOptions) => {
@@ -36,18 +34,9 @@ const NavBar = ({userInfo, setUserInfo}: NavBarProps) => {
 
     const handleNewFriend = async (id: string) => {
         try {
-            const response = await instance.post("/User/AddFriend", {id: id}, {withCredentials: true});
+            const response = await instance.post<Friend>("/User/AddFriend", {id: id}, {withCredentials: true});
             console.log("New friend added :)", response.data);
-            setUserInfo(previousInfo => {
-                const newInfo = {...previousInfo};
-                if (newInfo.friends.length > 0) {
-                    newInfo.friends = [...newInfo.friends, response.data];
-                } else {
-                    newInfo.friends = [response.data];
-                }
-
-                return newInfo;
-            })
+            dispatch(addFriend(response.data));
 
         } catch (error) {
             console.error("Error adding new friend", error);
@@ -130,7 +119,10 @@ const FriendSubMenu = ({friends}: FriendSubMenuProps) => {
         <div id="friend-list" className="submenu">
             {friends.map(friend => {
                 return (
-                    <div className="friend-item">{friend.userName}</div>
+                    <div className="friend-item">
+                        <p>{friend.userName}</p>
+                        <button>Invite</button>
+                    </div>
                 )
             })}
         </div>
