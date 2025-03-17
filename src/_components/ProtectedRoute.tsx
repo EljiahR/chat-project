@@ -1,7 +1,8 @@
 import { ComponentType, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { UserInfo } from "../_lib/responseTypes";
 import instance from "../_lib/axiosBase";
+import { useAppDispatch, useAppSelector } from "../_lib/redux/hooks";
+import { setUser } from "../_lib/redux/userSlice";
 
 interface Props {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -15,14 +16,15 @@ enum AuthenticationStates {
 }
 
 const ProtectedRoute = ({ component: Component }: Props) => {
+    const userInfo = useAppSelector((state) => state.user);
+    const dispatch = useAppDispatch();
     const [authenticationState, setAuthenticationState] = useState(AuthenticationStates.Loading);
-    const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
 
     useEffect(() => {
         const checkAuthStatus = async () => {
             try {
                 const response = await instance.get("/user/status", {withCredentials: true});
-                setUserInfo(response.data);
+                dispatch(setUser(response.data));
                 console.log(response.data)
                 setAuthenticationState(AuthenticationStates.Authorized);
             } catch (error) {

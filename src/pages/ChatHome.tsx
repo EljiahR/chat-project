@@ -17,12 +17,11 @@ interface Props {
     userInfoReceived: UserInfo
 }
 
-const ChatHome: React.FC<Props> = ({userInfoReceived}) => {
+const ChatHome: React.FC<Props> = () => {
     const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
     const [message, setMessage] = useState<string>("");
     const [messages, setMessages] = useState<Map<string, Message[]>>(new Map());
     const [selectedChannel, setSelectedChannel] = useState<Channel | null>(null);
-    const [userInfo, setUserInfo] = useState<UserInfo>(userInfoReceived);
 
     // Attempt to connect to hub on mount
     useEffect(() => {
@@ -146,8 +145,8 @@ const ChatHome: React.FC<Props> = ({userInfoReceived}) => {
     return (
         <div id="chat-main">
             <div id="sidebar">
-                <ChannelList userInfo={userInfo} setUserInfo={setUserInfo} setSelectedChannel={setSelectedChannel} addNewChannel={addNewChannel} />
-                <NavBar userInfo={userInfo} setUserInfo={setUserInfo} />
+                <ChannelList setSelectedChannel={setSelectedChannel} addNewChannel={addNewChannel} />
+                <NavBar  />
             </div>
             <div id="chat-container">
                 {selectedChannel == null ? 

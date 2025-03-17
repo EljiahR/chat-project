@@ -1,15 +1,18 @@
 import "../../_styles/ChannelList.css"
 import instance from "../../_lib/axiosBase";
-import {  Channel, UserInfo } from "../../_lib/responseTypes";
+import {  Channel } from "../../_lib/responseTypes";
+import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
+import { addChannel, selectAllChannels } from "../../_lib/redux/userSlice";
 
 interface Props {
-    userInfo: UserInfo,
-    setUserInfo: React.Dispatch<React.SetStateAction<UserInfo>>,
     setSelectedChannel: React.Dispatch<React.SetStateAction<Channel | null>>,
     addNewChannel: (id: string) => void;
 }
 
-const ChannelList = ({userInfo, setUserInfo, setSelectedChannel, addNewChannel}: Props) => {
+const ChannelList = ({setSelectedChannel, addNewChannel}: Props) => {
+    const userInfo = useAppSelector((state) => state.user);
+    const channels = useAppSelector(selectAllChannels);
+    const dispatch = useAppDispatch();
     const handleSelectedChannel = (channel: Channel) => {
         setSelectedChannel(channel);
     }
@@ -24,15 +27,7 @@ const ChannelList = ({userInfo, setUserInfo, setSelectedChannel, addNewChannel}:
             console.log("New channel created", response.data);
             const createdChannel: Channel = response.data;
 
-            setUserInfo(previousInfo => {
-                const newInfo = {...previousInfo};
-                if (newInfo.channels.length > 0) {
-                    newInfo.channels = [...newInfo.channels, createdChannel];
-                } else {
-                    newInfo.channels = [response.data];
-                }
-                return newInfo;
-            });
+            dispatch(addChannel(createdChannel));
             addNewChannel(createdChannel.id);
         } catch (error) {
             console.error("Failed to create channel: " + error);
@@ -42,7 +37,7 @@ const ChannelList = ({userInfo, setUserInfo, setSelectedChannel, addNewChannel}:
     return (
         <div id="channel-list">
             {userInfo != null ? 
-                userInfo.channels.map(channel => {
+                channels.map(channel => {
                     return (
                         <button key={channel.id} title={channel.name} className="channel-selector" onClick={() => handleSelectedChannel(channel)}>{channel.name}</button>
                     )

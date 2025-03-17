@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import instance from "../../_lib/axiosBase";
 import { Friend, Person } from "../../_lib/responseTypes";
 import { useState } from "react";
-import { useAppDispatch } from "../../_lib/redux/hooks";
-import { addFriend } from "../../_lib/redux/userSlice";
+import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
+import { addFriend, selectAllFriends } from "../../_lib/redux/userSlice";
 
 interface PeopleSubMenuProps {
     handleNewFriend: (id: string) => void
@@ -21,6 +21,7 @@ enum SubMenuOptions {
 }
 
 const NavBar = () => {
+    const friends = useAppSelector(selectAllFriends);
     const dispatch = useAppDispatch();
     const [subMenu, setSubMenu] = useState<SubMenuOptions>(SubMenuOptions.None);
 
@@ -68,7 +69,7 @@ const NavBar = () => {
         {subMenu == SubMenuOptions.People ? 
             <PeopleSubMenu handleNewFriend={handleNewFriend} /> :
         subMenu == SubMenuOptions.Friends ?
-            <FriendSubMenu friends={userInfo.friends} /> :
+            <FriendSubMenu friends={friends} /> :
             <></>
         }
         </>
@@ -100,9 +101,9 @@ const PeopleSubMenu = ({handleNewFriend}: PeopleSubMenuProps) => {
                 {searchResults.length > 0 ?
                     searchResults.map(person => {
                         return (
-                            <div key={person.userId} className="person-result">
+                            <div key={person.id} className="person-result">
                                 <p>{person.userName}</p>
-                                <button onClick={() => handleNewFriend(person.userId)} disabled={person.isFriend}>Add</button>
+                                <button onClick={() => handleNewFriend(person.id)} disabled={person.isFriend}>Add</button>
                             </div>
                         )
                     }) :
