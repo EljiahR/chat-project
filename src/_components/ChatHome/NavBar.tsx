@@ -1,17 +1,18 @@
 import "../../_styles/NavBar.css";
 import { useNavigate } from "react-router-dom";
 import instance from "../../_lib/axiosBase";
-import { Friend, Person } from "../../_lib/responseTypes";
+import { Channel, Friend, Person } from "../../_lib/responseTypes";
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
-import { addFriend, selectAllFriends } from "../../_lib/redux/userSlice";
+import { addFriend, addUserToChannel, selectAllFriends } from "../../_lib/redux/userSlice";
 
 interface PeopleSubMenuProps {
     handleNewFriend: (id: string) => void
 }
 
 interface FriendSubMenuProps {
-    friends: Friend[]
+    friends: Friend[],
+    handleAddToChannel: (userId: string) => void
 }
 
 enum SubMenuOptions {
@@ -20,7 +21,11 @@ enum SubMenuOptions {
     None
 }
 
-const NavBar = () => {
+interface Props {
+    selectedChannel: Channel | null
+}
+
+const NavBar = ({selectedChannel}: Props) => {
     const friends = useAppSelector(selectAllFriends);
     const dispatch = useAppDispatch();
     const [subMenu, setSubMenu] = useState<SubMenuOptions>(SubMenuOptions.None);
@@ -43,6 +48,19 @@ const NavBar = () => {
             console.error("Error adding new friend", error);
         }
     }
+
+    const handleAddToChannel = async (userId: string) => {
+        if (!selectedChannel) return;
+        try {
+            const response = await instance.post<{message: string, user: Person}>(`/Channel/AddUserToChannel`, {userId, channelId: selectedChannel.id},{withCredentials: true}) ;
+            if (response.status == 200) {
+                dispatch(addUserToChannel({channelId: selectedChannel.id, user: response.data.user}));
+                console.log(response.data.message);
+            }
+        } catch(error) {
+            console.error("Error adding user to channel", error);
+        }
+    };
     
     const navigate = useNavigate();
 
@@ -69,7 +87,7 @@ const NavBar = () => {
         {subMenu == SubMenuOptions.People ? 
             <PeopleSubMenu handleNewFriend={handleNewFriend} /> :
         subMenu == SubMenuOptions.Friends ?
-            <FriendSubMenu friends={friends} /> :
+            <FriendSubMenu friends={friends} handleAddToChannel={handleAddToChannel} /> :
             <></>
         }
         </>
@@ -101,9 +119,9 @@ const PeopleSubMenu = ({handleNewFriend}: PeopleSubMenuProps) => {
                 {searchResults.length > 0 ?
                     searchResults.map(person => {
                         return (
-                            <div key={person.id} className="person-result">
+                            <div key={"people"+person.userId} className="person-result">
                                 <p>{person.userName}</p>
-                                <button onClick={() => handleNewFriend(person.id)} disabled={person.isFriend}>Add</button>
+                                <button onClick={() => handleNewFriend(person.userId)} disabled={person.isFriend}>Add</button>
                             </div>
                         )
                     }) :
@@ -115,14 +133,14 @@ const PeopleSubMenu = ({handleNewFriend}: PeopleSubMenuProps) => {
     )
 }
 
-const FriendSubMenu = ({friends}: FriendSubMenuProps) => {
+const FriendSubMenu = ({friends, handleAddToChannel}: FriendSubMenuProps) => {
     return (
         <div id="friend-list" className="submenu">
             {friends.map(friend => {
                 return (
-                    <div className="friend-item">
+                    <div key={"friend"+friend.userId} className="friend-item">
                         <p>{friend.userName}</p>
-                        <button>Invite</button>
+                        <button onClick={() => handleAddToChannel(friend.userId)}>Invite</button>
                     </div>
                 )
             })}

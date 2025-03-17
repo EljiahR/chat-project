@@ -146,7 +146,7 @@ const ChatHome: React.FC<Props> = () => {
         <div id="chat-main">
             <div id="sidebar">
                 <ChannelList setSelectedChannel={setSelectedChannel} addNewChannel={addNewChannel} />
-                <NavBar  />
+                <NavBar selectedChannel={selectedChannel}  />
             </div>
             <div id="chat-container">
                 {selectedChannel == null ? 

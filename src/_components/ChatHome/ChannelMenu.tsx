@@ -16,7 +16,7 @@ const ChannelMenu = ({channel}: Props) => {
             <div id="channel-members">
                 {channel.members.concat(channel.admins).map(u => {
                     return (
-                        <p>{u.userName}</p>
+                        <p key={"members"+u.userId}>{u.userName}</p>
                     )
                 })}
             </div>

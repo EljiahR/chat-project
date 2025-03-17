@@ -17,13 +17,14 @@ interface Channel {
 
 interface Person {
     userName: string,
-    id: string,
+    userId: string,
     isFriend: boolean
 }
 
 interface Friend {
     userName: string,
-    id: string
+    userId: string,
+    id: string // This is purely for entity adapter to function
 }
 
 interface UserInfo
