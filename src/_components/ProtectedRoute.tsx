@@ -29,7 +29,7 @@ const ProtectedRoute = ({ component: Component }: Props) => {
                 setAuthenticationState(AuthenticationStates.Authorized);
             } catch (error) {
                 setAuthenticationState(AuthenticationStates.Unauthorized);
-                console.error(error);
+                console.error("Not authorized", error);
             }
         }
 
