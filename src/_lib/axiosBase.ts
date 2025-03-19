@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const instance = axios.create({
-    baseURL: "https://localhost:7058"
+    baseURL: "https://chatproject-reck.onrender.com"
 })
 
 export default instance;
