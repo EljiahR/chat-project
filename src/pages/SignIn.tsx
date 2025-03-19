@@ -1,7 +1,7 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import instance from "../_lib/axiosBase";
-import "../_styles/SignIn.css"
+import { Button, Form, Stack } from "react-bootstrap";
 
 const SignIn: React.FC = () => {
     const [loginCredentials, setLoginCredentials] = useState({
@@ -9,8 +9,8 @@ const SignIn: React.FC = () => {
         password: ""
     });
 
-    const handleLoginChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setLoginCredentials({...loginCredentials, [e.target.name]: e.target.value});
+    const handleLoginChange = (name: string, value: string) => {
+        setLoginCredentials({...loginCredentials, [name]: value});
     };
 
     const [registerCredentials, setRegisterCredentials] = useState({
@@ -19,8 +19,8 @@ const SignIn: React.FC = () => {
         password: ""
     });
 
-    const handleRegisterChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setRegisterCredentials({...registerCredentials, [e.target.name]: e.target.value});
+    const handleRegisterChange = (name: string, value: string) => {
+        setRegisterCredentials({...registerCredentials, [name]: value});
     };
 
     const [repeatPassword, setRepeatPassword] = useState("");
@@ -69,28 +69,43 @@ const SignIn: React.FC = () => {
     };
     
     return (
-        <div id="signin-page">
-            <div id="signin-div">
-                <h3>Sign In</h3>
-                <form onSubmit={(e) => handleLoginSubmit(e)} id="signin-form">
-                    <label htmlFor="login-username">Username: </label>
-                    <input type="text" id="login-username" name="userName" value={loginCredentials["userName"]} onChange={(e) => handleLoginChange(e)} />
-                    <label htmlFor="login-password">Password: </label>
-                    <input type="password" id="login-password" name="password" value={loginCredentials["password"]} onChange={(e) => handleLoginChange(e)} />
-                    <button type="submit">Login</button>
-                </form>
-            </div>
-            <div id="register-div">
-                <h3>Register</h3>
-                <form id="register-form" onSubmit={(e) => handleRegisterSubmit(e)}>
-                    <label htmlFor="register-username">Username: </label>
-                    <input type="text" id="register-username" name="userName" value={registerCredentials["userName"]} onChange={(e) => handleRegisterChange(e)}  />
-                    <label htmlFor="register-password">Password: </label>
-                    <input type="password" id="register-password" name="password" value={registerCredentials["password"]} onChange={(e) => handleRegisterChange(e)}  />
-                    <label htmlFor="register-repeat-password">Repeat Password: </label>
-                    <input type="password" id="register-repeat-password" name="repeat-password" value={repeatPassword} onChange={(e) => setRepeatPassword(e.target.value)} />
-                    <button type="submit">Register</button>
-                </form>
+        <Stack id="signin-page"className="max-vh-100 py-2 d-flex justify-content-center align-items-center">
+            <h2>Elijah's Chat Project</h2>
+            <div className="w-100 max-w-md py-2 px-3 d-flex flex-grow-1 flex-column gap-4">
+                <Form onSubmit={(e) => handleLoginSubmit(e)} id="signin-form">
+                    <Stack gap={3} className="col-md-5 mx-auto">
+                        <h3 className="align-self-center">Sign In</h3>
+                        <Form.Group controlId="login-username">
+                            <Form.Label>Username</Form.Label>
+                            <Form.Control type="text" placeholder="Enter your username..." onChange={(e) => handleLoginChange(e.target.name, e.target.value)} />
+                        </Form.Group>
+                        <Form.Group controlId="login-password">
+                            <Form.Label>Password</Form.Label>
+                            <Form.Control type="password" placeholder="Password" onChange={(e) => handleLoginChange(e.target.name, e.target.value)} />
+                        </Form.Group>
+                        <Button variant="primary" type="submit">Sign In</Button>
+                    </Stack>
+                </Form>
+                
+                
+                <Form id="register-form" onSubmit={(e) => handleRegisterSubmit(e)}>
+                    <Stack gap={3} className="col-md-5 mx-auto">
+                        <h3 className="align-self-center">Register</h3>
+                        <Form.Group controlId="register-username">
+                            <Form.Label>Username</Form.Label>
+                            <Form.Control type="text" placeholder="Enter your username..." name="userName" value={registerCredentials["userName"]} onChange={(e) => handleRegisterChange(e.target.name, e.target.value)} />
+                        </Form.Group>
+                        <Form.Group controlId="register-password">
+                            <Form.Label>Password</Form.Label>
+                            <Form.Control type="password" placeholder="Password" name="password" value={registerCredentials["password"]} onChange={(e) => handleRegisterChange(e.target.name, e.target.value)} />
+                        </Form.Group>
+                        <Form.Group controlId="register-repeat-password">
+                            <Form.Label>Repeat Password</Form.Label>
+                            <Form.Control type="password" placeholder="Repeat password" name="repeat-password" value={repeatPassword} onChange={(e) => setRepeatPassword(e.target.value)} />
+                        </Form.Group>
+                        <Button variant="primary" type="submit">Register</Button>
+                    </Stack>
+                </Form>
                 <div id="register-errors">
                     {!passwordsMatch ? 
                         <p>Passwords don't match</p> :
@@ -98,7 +113,8 @@ const SignIn: React.FC = () => {
                     }
                 </div>
             </div>
-        </div>
+        </Stack>
+        
     )
 }
 
