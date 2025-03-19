@@ -43,7 +43,7 @@ const SignIn: React.FC = () => {
     const handleLoginSubmit = async (e: FormEvent) => {
         e.preventDefault();
         try {
-            const response = await instance.post("/user/signin", loginCredentials, {withCredentials: true});
+            const response = await instance.postForm("/user/signin", loginCredentials, {withCredentials: true});
             console.log("Login successful. ", response.data);
             navigate("/");
         } catch (error) {
