@@ -69,12 +69,12 @@ const SignIn: React.FC = () => {
     };
     
     return (
-        <Stack id="signin-page"className="max-vh-100 py-2 d-flex justify-content-center align-items-center">
-            <h2>Elijah's Chat Project</h2>
-            <div className="w-100 max-w-md py-2 px-3 d-flex flex-grow-1 flex-column gap-4">
+        <Stack id="signin-page"className="max-h-100 py-2 d-flex justify-content-center align-items-center">
+            <h3>Elijah's Chat Project</h3>
+            <div className="w-100 max-w-md py-2 px-3 d-flex flex-column gap-3">
                 <Form onSubmit={(e) => handleLoginSubmit(e)} id="signin-form">
-                    <Stack gap={3} className="col-md-5 mx-auto">
-                        <h3 className="align-self-center">Sign In</h3>
+                    <Stack gap={2} className="col-md-5 mx-auto">
+                        <h4 className="align-self-center">Sign In</h4>
                         <Form.Group controlId="login-username">
                             <Form.Label>Username</Form.Label>
                             <Form.Control type="text" placeholder="Enter your username..." onChange={(e) => handleLoginChange(e.target.name, e.target.value)} />
@@ -89,8 +89,8 @@ const SignIn: React.FC = () => {
                 
                 
                 <Form id="register-form" onSubmit={(e) => handleRegisterSubmit(e)}>
-                    <Stack gap={3} className="col-md-5 mx-auto">
-                        <h3 className="align-self-center">Register</h3>
+                    <Stack gap={2} className="col-md-5 mx-auto">
+                        <h4 className="align-self-center">Register</h4>
                         <Form.Group controlId="register-username">
                             <Form.Label>Username</Form.Label>
                             <Form.Control type="text" placeholder="Enter your username..." name="userName" value={registerCredentials["userName"]} onChange={(e) => handleRegisterChange(e.target.name, e.target.value)} />
