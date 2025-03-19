@@ -8,6 +8,7 @@ import MessageControls from "../_components/ChatHome/MessageControls";
 import Chat from "../_components/ChatHome/Chat";
 import HomeChannel from "../_components/ChatHome/HomeChannel";
 import ChannelMenu from "../_components/ChatHome/ChannelMenu";
+import backendUrl from "../_lib/backendUrl";
 
 interface ChatHistory {
     [channelId: string]: Message[];
@@ -29,7 +30,7 @@ const ChatHome: React.FC<Props> = () => {
         document.title = "Home";
         const getHubConntection = async () => {
             const newConnection = new signalR.HubConnectionBuilder()
-                .withUrl("https://localhost:7058/ChatHub")
+                .withUrl(backendUrl + "/ChatHub")
                 .withAutomaticReconnect()
                 .build();
 
