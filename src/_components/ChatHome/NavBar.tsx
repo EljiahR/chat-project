@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import instance from "../../_lib/axiosBase";
 import { Channel, Friend, Person } from "../../_lib/responseTypes";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
 import { addFriend, addUserToChannel, selectAllFriends } from "../../_lib/redux/userSlice";
 import { Button, Stack } from "react-bootstrap";
@@ -107,6 +107,7 @@ const NavBar = ({selectedChannel}: Props) => {
 const PeopleSubMenu = ({handleNewFriend}: PeopleSubMenuProps) => {
     const [searchQuery, setSearchQuery] = useState("");
     const [searchResults, setSearchResults] = useState<Person[]>([]);
+    const nodeRef = useRef(null);
 
     const handleSearch = async (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key == "Enter") {
@@ -122,8 +123,8 @@ const PeopleSubMenu = ({handleNewFriend}: PeopleSubMenuProps) => {
     }
     
     return (
-        <Draggable>
-            <div id="people-search"className="submenu">
+        <Draggable nodeRef={nodeRef} bounds="#chat-main">
+            <div id="people-search"className="submenu" ref={nodeRef}>
                 <input type="text" id="people-search-bar" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={(e) => handleSearch(e)} placeholder="Search by name..." />
                 <div id="search-results">
                     {searchResults.length > 0 ?
@@ -145,9 +146,10 @@ const PeopleSubMenu = ({handleNewFriend}: PeopleSubMenuProps) => {
 }
 
 const FriendSubMenu = ({friends, handleAddToChannel}: FriendSubMenuProps) => {
+    const nodeRef = useRef(null);
     return (
-        <Draggable>
-            <div id="friend-list" className="submenu">
+        <Draggable nodeRef={nodeRef} bounds="#chat-main">
+            <div id="friend-list" className="submenu" ref={nodeRef}>
                 {friends.map(friend => {
                     return (
                         <div key={"friend"+friend.userId} className="friend-item">
