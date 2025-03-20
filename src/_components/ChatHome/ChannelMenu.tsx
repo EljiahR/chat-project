@@ -1,5 +1,4 @@
 import { Channel } from "../../_lib/responseTypes";
-import "../../_styles/ChannelMenu.css"
 
 interface Props {
     channel: Channel
@@ -7,7 +6,7 @@ interface Props {
 
 const ChannelMenu = ({channel}: Props) => {
     return (
-        <div id="channel-menu">
+        <div id="channel-menu" className="position-absolute end-0 vh-100 bg-light" hidden>
             <h3>Owner</h3>
             <div id="channel-owner">
                 <p>{channel.owner.userName}</p>

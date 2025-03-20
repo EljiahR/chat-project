@@ -2,7 +2,7 @@ interface Message {
     id: string,
     username: string,
     content: string,
-    sentAt: Date,
+    sentAt: string,
     channelId: string
 }
 

@@ -1,14 +1,13 @@
-import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import * as signalR from "@microsoft/signalr";
-import "../_styles/ChatHome.css"
 import NavBar from "../_components/ChatHome/NavBar";
 import { Channel, Message, UserInfo } from "../_lib/responseTypes";
 import ChannelList from "../_components/ChatHome/ChannelList";
-import MessageControls from "../_components/ChatHome/MessageControls";
 import Chat from "../_components/ChatHome/Chat";
 import HomeChannel from "../_components/ChatHome/HomeChannel";
 import ChannelMenu from "../_components/ChatHome/ChannelMenu";
 import backendUrl from "../_lib/backendUrl";
+import { Stack } from "react-bootstrap";
 
 interface ChatHistory {
     [channelId: string]: Message[];
@@ -101,20 +100,20 @@ const ChatHome: React.FC<Props> = () => {
         })
     }
 
-    const handleMessageInput = (e: ChangeEvent<HTMLInputElement>) => {
-        if (e.target.value.length < 251) {
-            setMessage(e.target.value);
+    const handleMessageInput = (value: string) => {
+        if (value.length < 251) {
+            setMessage(value);
         }
     }
 
     const handleChannelMenuDisplay = (forceClose = false) => {
-        const menu = document.querySelector("#channel-menu");
+        const menu = document.querySelector("#channel-menu") as HTMLDivElement;
         if (menu == null) return;
 
-        if (menu.classList.contains("display") || forceClose) {
-            menu.classList.remove("display");
+        if (!menu.hidden || forceClose) {
+            menu.hidden = true;
         } else {
-            menu.classList.add("display");
+            menu.hidden = false;
         }
     }
 
@@ -144,21 +143,27 @@ const ChatHome: React.FC<Props> = () => {
     
 
     return (
-        <div id="chat-main">
-            <div id="sidebar">
+        <Stack direction="horizontal" id="chat-main" className="max-vh-100 vh-100 blue-500">
+            <Stack id="sidebar" className="w-25 p-2">
                 <ChannelList setSelectedChannel={setSelectedChannel} addNewChannel={addNewChannel} />
                 <NavBar selectedChannel={selectedChannel}  />
-            </div>
-            <div id="chat-container">
+            </Stack>
+            <Stack id="chat-container" className="max-vh-100 vh-100 w-75">
                 {selectedChannel == null ? 
-                <HomeChannel /> :
-                <>
-                    <Chat channelName={selectedChannel.name} chatMessages={chatMessages!.reverse()} handleChannelMenuDisplay={handleChannelMenuDisplay} />
-                    <MessageControls message={message} handleMessageInput={handleMessageInput} SendMessage={SendMessage}  />
-                </>}
-            </div>
+                <HomeChannel /> 
+                :
+                <Chat 
+                    channelName={selectedChannel.name} 
+                    chatMessages={[...chatMessages!].reverse()} 
+                    handleChannelMenuDisplay={handleChannelMenuDisplay}
+                    message={message} 
+                    handleMessageInput={handleMessageInput} 
+                    SendMessage={SendMessage}
+                />
+                }
+            </Stack>
             {selectedChannel != null ? <ChannelMenu channel={selectedChannel} /> : null}
-        </div>
+        </Stack>
         
     )
 };
