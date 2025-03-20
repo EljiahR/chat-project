@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
 import { addFriend, addUserToChannel, selectAllFriends } from "../../_lib/redux/userSlice";
 import { Button, Stack } from "react-bootstrap";
+import Draggable from "react-draggable";
 
 interface PeopleSubMenuProps {
     handleNewFriend: (id: string) => void
@@ -121,38 +122,42 @@ const PeopleSubMenu = ({handleNewFriend}: PeopleSubMenuProps) => {
     }
     
     return (
-        <div id="people-search"className="submenu">
-            <input type="text" id="people-search-bar" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={(e) => handleSearch(e)} placeholder="Search by name..." />
-            <div id="search-results">
-                {searchResults.length > 0 ?
-                    searchResults.map(person => {
-                        return (
-                            <div key={"people"+person.userId} className="person-result">
-                                <p>{person.userName}</p>
-                                <button onClick={() => handleNewFriend(person.userId)} disabled={person.isFriend}>Add</button>
-                            </div>
-                        )
-                    }) :
-                    <div className="person-result">No users found</div>
+        <Draggable>
+            <div id="people-search"className="submenu">
+                <input type="text" id="people-search-bar" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={(e) => handleSearch(e)} placeholder="Search by name..." />
+                <div id="search-results">
+                    {searchResults.length > 0 ?
+                        searchResults.map(person => {
+                            return (
+                                <div key={"people"+person.userId} className="person-result">
+                                    <p>{person.userName}</p>
+                                    <button onClick={() => handleNewFriend(person.userId)} disabled={person.isFriend}>Add</button>
+                                </div>
+                            )
+                        }) :
+                        <div className="person-result">No users found</div>
 
-                }
+                    }
+                </div>
             </div>
-        </div>
+        </Draggable>
     )
 }
 
 const FriendSubMenu = ({friends, handleAddToChannel}: FriendSubMenuProps) => {
     return (
-        <div id="friend-list" className="submenu">
-            {friends.map(friend => {
-                return (
-                    <div key={"friend"+friend.userId} className="friend-item">
-                        <p>{friend.userName}</p>
-                        <button onClick={() => handleAddToChannel(friend.userId)}>Invite</button>
-                    </div>
-                )
-            })}
-        </div>
+        <Draggable>
+            <div id="friend-list" className="submenu">
+                {friends.map(friend => {
+                    return (
+                        <div key={"friend"+friend.userId} className="friend-item">
+                            <p>{friend.userName}</p>
+                            <button onClick={() => handleAddToChannel(friend.userId)}>Invite</button>
+                        </div>
+                    )
+                })}
+            </div>
+        </Draggable>
     )
 }
 

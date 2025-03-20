@@ -107,13 +107,13 @@ const ChatHome: React.FC<Props> = () => {
     }
 
     const handleChannelMenuDisplay = (forceClose = false) => {
-        const menu = document.querySelector("#channel-menu");
+        const menu = document.querySelector("#channel-menu") as HTMLDivElement;
         if (menu == null) return;
 
-        if (menu.classList.contains("display") || forceClose) {
-            menu.classList.remove("display");
+        if (!menu.hidden || forceClose) {
+            menu.hidden = true;
         } else {
-            menu.classList.add("display");
+            menu.hidden = false;
         }
     }
 
@@ -154,7 +154,7 @@ const ChatHome: React.FC<Props> = () => {
                 :
                 <Chat 
                     channelName={selectedChannel.name} 
-                    chatMessages={chatMessages!.reverse()} 
+                    chatMessages={[...chatMessages!].reverse()} 
                     handleChannelMenuDisplay={handleChannelMenuDisplay}
                     message={message} 
                     handleMessageInput={handleMessageInput} 
