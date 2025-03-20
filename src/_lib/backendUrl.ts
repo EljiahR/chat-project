@@ -1,3 +1,3 @@
-const backendUrl = "https://chatproject-reck.onrender.com";
+const backendUrl = import.meta.env.BASE_URL;
 
 export default backendUrl;
