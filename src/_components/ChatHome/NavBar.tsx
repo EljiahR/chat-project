@@ -1,4 +1,3 @@
-import "../../_styles/NavBar.css";
 import { useNavigate } from "react-router-dom";
 import instance from "../../_lib/axiosBase";
 import { Channel, Friend, Person } from "../../_lib/responseTypes";

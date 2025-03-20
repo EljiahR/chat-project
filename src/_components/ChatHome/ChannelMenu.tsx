@@ -1,5 +1,4 @@
 import { Channel } from "../../_lib/responseTypes";
-import "../../_styles/ChannelMenu.css"
 
 interface Props {
     channel: Channel

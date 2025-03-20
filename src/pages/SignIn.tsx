@@ -77,11 +77,11 @@ const SignIn: React.FC = () => {
                         <h4 className="align-self-center">Sign In</h4>
                         <Form.Group controlId="login-username">
                             <Form.Label>Username</Form.Label>
-                            <Form.Control type="text" placeholder="Enter your username..." onChange={(e) => handleLoginChange(e.target.name, e.target.value)} />
+                            <Form.Control type="text" placeholder="Enter your username..." onChange={(e) => handleLoginChange("userName", e.target.value)} />
                         </Form.Group>
                         <Form.Group controlId="login-password">
                             <Form.Label>Password</Form.Label>
-                            <Form.Control type="password" placeholder="Password" onChange={(e) => handleLoginChange(e.target.name, e.target.value)} />
+                            <Form.Control type="password" placeholder="Password" onChange={(e) => handleLoginChange("password", e.target.value)} />
                         </Form.Group>
                         <Button variant="primary" type="submit">Sign In</Button>
                     </Stack>
@@ -93,11 +93,11 @@ const SignIn: React.FC = () => {
                         <h4 className="align-self-center">Register</h4>
                         <Form.Group controlId="register-username">
                             <Form.Label>Username</Form.Label>
-                            <Form.Control type="text" placeholder="Enter your username..." name="userName" value={registerCredentials["userName"]} onChange={(e) => handleRegisterChange(e.target.name, e.target.value)} />
+                            <Form.Control type="text" placeholder="Enter your username..." name="userName" value={registerCredentials["userName"]} onChange={(e) => handleRegisterChange("userName", e.target.value)} />
                         </Form.Group>
                         <Form.Group controlId="register-password">
                             <Form.Label>Password</Form.Label>
-                            <Form.Control type="password" placeholder="Password" name="password" value={registerCredentials["password"]} onChange={(e) => handleRegisterChange(e.target.name, e.target.value)} />
+                            <Form.Control type="password" placeholder="Password" name="password" value={registerCredentials["password"]} onChange={(e) => handleRegisterChange("password", e.target.value)} />
                         </Form.Group>
                         <Form.Group controlId="register-repeat-password">
                             <Form.Label>Repeat Password</Form.Label>

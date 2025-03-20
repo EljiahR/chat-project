@@ -1,5 +1,3 @@
-import "../../_styles/HomeChannel.css"
-
 const HomeChannel = () => {
     return (
         <div id="home-channel">

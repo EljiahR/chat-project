@@ -1,3 +1,5 @@
+import { Stack } from "react-bootstrap";
+
 interface Props {
     channelName: string;
     chatMessages: JSX.Element[];
@@ -6,16 +8,16 @@ interface Props {
 
 const Chat: React.FC<Props> = ({channelName, chatMessages, handleChannelMenuDisplay}) => {
     return (
-            <div id="chat">
-                <div id="chat-header">
+            <Stack id="chat">
+                <div id="chat-header" className="">
                     <h1 id="title">{channelName}</h1>
                     <button onClick={() => handleChannelMenuDisplay()}>Options</button>
                 </div>
                 
-                <div id="chat-box">
+                <div id="chat-box" className="max-vh-80 vh-80">
                     {chatMessages}
                 </div>
-            </div>
+            </Stack>
     );
 }
 
