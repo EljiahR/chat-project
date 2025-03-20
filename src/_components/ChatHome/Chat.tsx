@@ -1,4 +1,4 @@
-import { Button, Card, Stack } from "react-bootstrap";
+import { Button, Stack } from "react-bootstrap";
 import MessageControls from "./MessageControls";
 import { FormEvent } from "react";
 
@@ -19,11 +19,9 @@ const Chat: React.FC<Props> = ({channelName, chatMessages, handleChannelMenuDisp
                     <Button onClick={() => handleChannelMenuDisplay()}>Options</Button>
                 </div>
                 
-                <Card id="chat-box" className="flex-grow-1 overflow-y-auto">
-                    <Card.Body className="d-flex flex-column">
-                        {chatMessages}
-                    </Card.Body>
-                </Card>
+                <div id="chat-box" className="flex-grow-1 overflow-y-auto d-flex flex-column-reverse">
+                    {chatMessages}
+                </div>
                 <MessageControls message={message} handleMessageInput={handleMessageInput} SendMessage={SendMessage} />
             </Stack>
     );
