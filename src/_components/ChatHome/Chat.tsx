@@ -20,7 +20,7 @@ const Chat: React.FC<Props> = ({channelName, chatMessages, handleChannelMenuDisp
                 </div>
                 
                 <Card id="chat-box" className="flex-grow-1 overflow-y-auto">
-                    <Card.Body className="d-flex flex-column-reverse">
+                    <Card.Body className="d-flex flex-column">
                         {chatMessages}
                     </Card.Body>
                 </Card>
