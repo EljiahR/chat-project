@@ -101,9 +101,9 @@ const ChatHome: React.FC<Props> = () => {
         })
     }
 
-    const handleMessageInput = (e: ChangeEvent<HTMLInputElement>) => {
-        if (e.target.value.length < 251) {
-            setMessage(e.target.value);
+    const handleMessageInput = (value: string) => {
+        if (value.length < 251) {
+            setMessage(value);
         }
     }
 
@@ -145,11 +145,11 @@ const ChatHome: React.FC<Props> = () => {
 
     return (
         <Stack direction="horizontal" id="chat-main" className="max-vh-100 vh-100">
-            <Stack id="sidebar" className="w-25">
+            <Stack id="sidebar" className="w-25 p-2">
                 <ChannelList setSelectedChannel={setSelectedChannel} addNewChannel={addNewChannel} />
                 <NavBar selectedChannel={selectedChannel}  />
             </Stack>
-            <Stack id="chat-container" className="max-vh-100 vh-100">
+            <Stack id="chat-container" className="max-vh-100 vh-100 w-75">
                 {selectedChannel == null ? 
                 <HomeChannel /> :
                 <>

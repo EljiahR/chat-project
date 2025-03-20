@@ -4,6 +4,7 @@ import { Channel, Friend, Person } from "../../_lib/responseTypes";
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
 import { addFriend, addUserToChannel, selectAllFriends } from "../../_lib/redux/userSlice";
+import { Button, Stack } from "react-bootstrap";
 
 interface PeopleSubMenuProps {
     handleNewFriend: (id: string) => void
@@ -77,12 +78,20 @@ const NavBar = ({selectedChannel}: Props) => {
     
     return (
         <>
-        <div id="nav-bar">
-            <button id="people-btn" onClick={() => handleSubMenu(SubMenuOptions.People)}>People</button>
-            <button id="friends-btn" onClick={() => handleSubMenu(SubMenuOptions.Friends)}>Friends</button>
-            <button id="profile-btn" disabled>Profile</button>
-            <button id="signout-btn" onClick={(e) => handleLogout(e)}>Sign Out</button>
-        </div>
+        <Stack gap={1} id="nav-bar">
+            <Button id="people-btn" onClick={() => handleSubMenu(SubMenuOptions.People)}>
+                People
+            </Button>
+            <Button id="friends-btn" onClick={() => handleSubMenu(SubMenuOptions.Friends)}>
+                Friends
+            </Button>
+            <Button id="profile-btn" disabled>
+                Profile
+            </Button>
+            <Button id="signout-btn" onClick={(e) => handleLogout(e)}>
+                Sign Out
+            </Button>
+        </Stack>
         {subMenu == SubMenuOptions.People ? 
             <PeopleSubMenu handleNewFriend={handleNewFriend} /> :
         subMenu == SubMenuOptions.Friends ?

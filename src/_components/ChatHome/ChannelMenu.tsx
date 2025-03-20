@@ -6,7 +6,7 @@ interface Props {
 
 const ChannelMenu = ({channel}: Props) => {
     return (
-        <div id="channel-menu">
+        <div id="channel-menu" hidden>
             <h3>Owner</h3>
             <div id="channel-owner">
                 <p>{channel.owner.userName}</p>

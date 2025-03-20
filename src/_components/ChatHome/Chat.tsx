@@ -1,4 +1,4 @@
-import { Stack } from "react-bootstrap";
+import { Button, Card, Stack } from "react-bootstrap";
 
 interface Props {
     channelName: string;
@@ -8,15 +8,17 @@ interface Props {
 
 const Chat: React.FC<Props> = ({channelName, chatMessages, handleChannelMenuDisplay}) => {
     return (
-            <Stack id="chat">
+            <Stack id="chat" className="max-vh-75 d-flex flex-column">
                 <div id="chat-header" className="">
                     <h1 id="title">{channelName}</h1>
-                    <button onClick={() => handleChannelMenuDisplay()}>Options</button>
+                    <Button onClick={() => handleChannelMenuDisplay()}>Options</Button>
                 </div>
                 
-                <div id="chat-box" className="max-vh-80 vh-80">
-                    {chatMessages}
-                </div>
+                <Card id="chat-box" className="flex-grow-1 overflow-y-auto">
+                    <Card.Body>
+                        {chatMessages}
+                    </Card.Body>
+                </Card>
             </Stack>
     );
 }
