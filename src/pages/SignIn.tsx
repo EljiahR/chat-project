@@ -1,6 +1,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import instance from "../_lib/axiosBase";
+import { buttonStyle, buttonStyleGreen, formStyle, inputLabelStyle, textInputStyle } from "../_lib/tailwindShortcuts";
 
 const SignIn: React.FC = () => {
     const [loginCredentials, setLoginCredentials] = useState({
@@ -68,28 +69,41 @@ const SignIn: React.FC = () => {
     };
     
     return (
-        <div id="signin-page"className="max-h-100 py-2 d-flex justify-content-center align-items-center">
-            <h3>Elijah's Chat Project</h3>
-            <div className="w-100 max-w-md py-2 px-3 d-flex flex-column gap-3">
-                <form onSubmit={(e) => handleLoginSubmit(e)} id="signin-form">
-                    <h4 className="align-self-center">Sign In</h4>
-                    <label>Username</label>
-                    <input type="text" placeholder="Enter your username..." onChange={(e) => handleLoginChange("userName", e.target.value)} />
-                    <label>Password</label>
-                    <input type="password" placeholder="Password" onChange={(e) => handleLoginChange("password", e.target.value)} />
-                    <button type="submit">Sign In</button>
+        <div id="signin-page"className="size-full flex items-center justify-center flex-col bg-gray-900 text-white">
+            <h2>Elijah's Chat Project</h2>
+            <div className="flex flex-col gap-5">
+                <form onSubmit={(e) => handleLoginSubmit(e)} id="signin-form" className={formStyle}>
+                    <h3 className="align-self-center">Returning User</h3>
+                    <div className={inputLabelStyle}>
+                        <label htmlFor="signin-username">Username</label>
+                        <input type="text" id="signin-username" className={textInputStyle} placeholder="Enter your username..." onChange={(e) => handleLoginChange("userName", e.target.value)} />
+                    </div>
+                    <div className={inputLabelStyle}>
+                        <label htmlFor="signin-password">Password</label>
+                        <input type="password" id="signin-password" className={textInputStyle} placeholder="Password" onChange={(e) => handleLoginChange("password", e.target.value)} />
+                    </div>
+                    
+                    <button className={buttonStyle} type="submit">Sign In</button>
                 </form>
                 
                 
-                <form id="register-form" onSubmit={(e) => handleRegisterSubmit(e)}>
-                    <h4 className="align-self-center">Register</h4>
-                    <label>Username</label>
-                    <input type="text" placeholder="Enter your username..." name="userName" value={registerCredentials["userName"]} onChange={(e) => handleRegisterChange("userName", e.target.value)} />
-                    <label>Password</label>
-                    <input type="password" placeholder="Password" name="password" value={registerCredentials["password"]} onChange={(e) => handleRegisterChange("password", e.target.value)} />
-                    <label>Repeat Password</label>
-                    <input type="password" placeholder="Repeat password" name="repeat-password" value={repeatPassword} onChange={(e) => setRepeatPassword(e.target.value)} />
-                    <button type="submit">Register</button>
+                <form id="register-form" onSubmit={(e) => handleRegisterSubmit(e)} className={formStyle}>
+                    <h3 className="align-self-center">New User</h3>
+                    <div className={inputLabelStyle}>
+                        <label htmlFor="register-username">Username</label>
+                        <input id="register-username" className={textInputStyle} type="text" placeholder="Enter your username..." name="userName" value={registerCredentials["userName"]} onChange={(e) => handleRegisterChange("userName", e.target.value)} />
+                    </div>
+                    <div className={inputLabelStyle}>
+                        <label htmlFor="register-password">Password</label>
+                        <input id="register-password" className={textInputStyle} type="password" placeholder="Password" name="password" value={registerCredentials["password"]} onChange={(e) => handleRegisterChange("password", e.target.value)} />
+                    </div>
+                    
+                    <div className={inputLabelStyle}>
+                        <label htmlFor="repeat-password">Repeat Password</label>
+                        <input id="repeat-password" className={textInputStyle} type="password" placeholder="Repeat password" name="repeat-password" value={repeatPassword} onChange={(e) => setRepeatPassword(e.target.value)} />
+                    </div>
+                    
+                    <button type="submit" className={buttonStyleGreen}>Register</button>
                 </form>
                 <div id="register-errors">
                     {!passwordsMatch ? 
