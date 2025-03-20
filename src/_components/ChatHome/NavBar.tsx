@@ -4,8 +4,8 @@ import { Channel, Friend, Person } from "../../_lib/responseTypes";
 import { useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
 import { addFriend, addUserToChannel, selectAllFriends } from "../../_lib/redux/userSlice";
-import { Button, Stack } from "react-bootstrap";
 import Draggable from "react-draggable";
+import { buttonStyleLight, buttonStyleLightDisabled, buttonStyleRed } from "../../_lib/tailwindShortcuts";
 
 interface PeopleSubMenuProps {
     handleNewFriend: (id: string) => void
@@ -79,20 +79,20 @@ const NavBar = ({selectedChannel}: Props) => {
     
     return (
         <>
-        <Stack gap={1} id="nav-bar">
-            <Button id="people-btn" onClick={() => handleSubMenu(SubMenuOptions.People)}>
+        <div className="flex flex-col gap-2" id="nav-bar">
+            <button className={buttonStyleLight} id="people-btn" onClick={() => handleSubMenu(SubMenuOptions.People)}>
                 People
-            </Button>
-            <Button id="friends-btn" onClick={() => handleSubMenu(SubMenuOptions.Friends)}>
+            </button>
+            <button className={buttonStyleLight}  id="friends-btn" onClick={() => handleSubMenu(SubMenuOptions.Friends)}>
                 Friends
-            </Button>
-            <Button id="profile-btn" disabled>
+            </button>
+            <button className={buttonStyleLightDisabled}  id="profile-btn" disabled={true}>
                 Profile
-            </Button>
-            <Button id="signout-btn" onClick={(e) => handleLogout(e)}>
+            </button>
+            <button className={buttonStyleRed} id="signout-btn" onClick={(e) => handleLogout(e)}>
                 Sign Out
-            </Button>
-        </Stack>
+            </button>
+        </div>
         {subMenu == SubMenuOptions.People ? 
             <PeopleSubMenu handleNewFriend={handleNewFriend} /> :
         subMenu == SubMenuOptions.Friends ?
@@ -132,7 +132,7 @@ const PeopleSubMenu = ({handleNewFriend}: PeopleSubMenuProps) => {
                             return (
                                 <div key={"people"+person.userId} className="person-result">
                                     <p>{person.userName}</p>
-                                    <Button onClick={() => handleNewFriend(person.userId)} disabled={person.isFriend}>Add</Button>
+                                    <button onClick={() => handleNewFriend(person.userId)} disabled={person.isFriend}>Add</button>
                                 </div>
                             )
                         }) :
@@ -152,13 +152,13 @@ const FriendSubMenu = ({friends, handleAddToChannel}: FriendSubMenuProps) => {
             <div id="friend-list" className="submenu bg-body h-25 w-25 p-2 bg-light border border-2 rounded" ref={nodeRef}>
                 {friends.map(friend => {
                     return (
-                        <Stack direction="horizontal" key={"friend"+friend.userId} className="friend-item">
+                        <div key={"friend"+friend.userId} className="friend-item">
                             
                                 <p>{friend.userName}</p>
-                                <Button onClick={() => handleAddToChannel(friend.userId)}>Invite</Button>
+                                <button onClick={() => handleAddToChannel(friend.userId)}>Invite</button>
                             
                             
-                        </Stack>
+                        </div>
                     )
                 })}
             </div>

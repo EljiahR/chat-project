@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import instance from "../_lib/axiosBase";
-import { buttonStyle, buttonStyleGreen, formStyle, inputLabelStyle, textInputStyle } from "../_lib/tailwindShortcuts";
+import { buttonStyle, buttonStyleGreen, formStyle, inputLabelStyle, pageSignInStyle, textInputStyle } from "../_lib/tailwindShortcuts";
 
 const SignIn: React.FC = () => {
     const [loginCredentials, setLoginCredentials] = useState({
@@ -69,7 +69,7 @@ const SignIn: React.FC = () => {
     };
     
     return (
-        <div id="signin-page"className="size-full flex items-center justify-center flex-col bg-gray-900 text-white">
+        <div id="signin-page"className={pageSignInStyle}>
             <h2>Elijah's Chat Project</h2>
             <div className="flex flex-col gap-5">
                 <form onSubmit={(e) => handleLoginSubmit(e)} id="signin-form" className={formStyle}>
