@@ -132,7 +132,7 @@ const PeopleSubMenu = ({handleNewFriend}: PeopleSubMenuProps) => {
                             return (
                                 <div key={"people"+person.userId} className="person-result">
                                     <p>{person.userName}</p>
-                                    <button onClick={() => handleNewFriend(person.userId)} disabled={person.isFriend}>Add</button>
+                                    <Button onClick={() => handleNewFriend(person.userId)} disabled={person.isFriend}>Add</Button>
                                 </div>
                             )
                         }) :
@@ -149,13 +149,16 @@ const FriendSubMenu = ({friends, handleAddToChannel}: FriendSubMenuProps) => {
     const nodeRef = useRef(null);
     return (
         <Draggable nodeRef={nodeRef} bounds="#chat-main">
-            <div id="friend-list" className="submenu" ref={nodeRef}>
+            <div id="friend-list" className="submenu bg-body h-25 w-25 p-2 bg-light border border-2 rounded" ref={nodeRef}>
                 {friends.map(friend => {
                     return (
-                        <div key={"friend"+friend.userId} className="friend-item">
-                            <p>{friend.userName}</p>
-                            <button onClick={() => handleAddToChannel(friend.userId)}>Invite</button>
-                        </div>
+                        <Stack direction="horizontal" key={"friend"+friend.userId} className="friend-item">
+                            
+                                <p>{friend.userName}</p>
+                                <Button onClick={() => handleAddToChannel(friend.userId)}>Invite</Button>
+                            
+                            
+                        </Stack>
                     )
                 })}
             </div>

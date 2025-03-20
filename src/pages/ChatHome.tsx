@@ -143,7 +143,7 @@ const ChatHome: React.FC<Props> = () => {
     
 
     return (
-        <Stack direction="horizontal" id="chat-main" className="max-vh-100 vh-100">
+        <Stack direction="horizontal" id="chat-main" className="max-vh-100 vh-100 blue-500">
             <Stack id="sidebar" className="w-25 p-2">
                 <ChannelList setSelectedChannel={setSelectedChannel} addNewChannel={addNewChannel} />
                 <NavBar selectedChannel={selectedChannel}  />
