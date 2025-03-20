@@ -3,7 +3,6 @@ import * as signalR from "@microsoft/signalr";
 import NavBar from "../_components/ChatHome/NavBar";
 import { Channel, Message, UserInfo } from "../_lib/responseTypes";
 import ChannelList from "../_components/ChatHome/ChannelList";
-import MessageControls from "../_components/ChatHome/MessageControls";
 import Chat from "../_components/ChatHome/Chat";
 import HomeChannel from "../_components/ChatHome/HomeChannel";
 import ChannelMenu from "../_components/ChatHome/ChannelMenu";
@@ -151,11 +150,17 @@ const ChatHome: React.FC<Props> = () => {
             </Stack>
             <Stack id="chat-container" className="max-vh-100 vh-100 w-75">
                 {selectedChannel == null ? 
-                <HomeChannel /> :
-                <>
-                    <Chat channelName={selectedChannel.name} chatMessages={chatMessages!.reverse()} handleChannelMenuDisplay={handleChannelMenuDisplay} />
-                    <MessageControls message={message} handleMessageInput={handleMessageInput} SendMessage={SendMessage}  />
-                </>}
+                <HomeChannel /> 
+                :
+                <Chat 
+                    channelName={selectedChannel.name} 
+                    chatMessages={chatMessages!.reverse()} 
+                    handleChannelMenuDisplay={handleChannelMenuDisplay}
+                    message={message} 
+                    handleMessageInput={handleMessageInput} 
+                    SendMessage={SendMessage}
+                />
+                }
             </Stack>
             {selectedChannel != null ? <ChannelMenu channel={selectedChannel} /> : null}
         </Stack>
