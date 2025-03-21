@@ -110,10 +110,12 @@ const ChatHome: React.FC<Props> = () => {
         const menu = document.querySelector("#channel-menu") as HTMLDivElement;
         if (menu == null) return;
 
-        if (!menu.hidden || forceClose) {
-            menu.hidden = true;
+        if (!menu.classList.contains("translate-x-full") || forceClose) {
+            menu.classList.add("translate-x-full");
+            menu.classList.remove("translate-x-0");
         } else {
-            menu.hidden = false;
+            menu.classList.remove("translate-x-full");
+            menu.classList.add("translate-x-0");
         }
     }
 
