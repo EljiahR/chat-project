@@ -6,7 +6,7 @@ interface Props {
 
 const ChannelMenu = ({channel}: Props) => {
     return (
-        <div id="channel-menu" className="position-absolute end-0 vh-100 bg-light" hidden>
+        <div id="channel-menu" className="fixed right-0 translate-x-full h-screen w-md bg-gray-600 transform transition-transform duration-500" >
             <h3>Owner</h3>
             <div id="channel-owner">
                 <p>{channel.owner.userName}</p>

@@ -2,7 +2,7 @@ import instance from "../../_lib/axiosBase";
 import {  Channel } from "../../_lib/responseTypes";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
 import { addChannel, selectAllChannels } from "../../_lib/redux/userSlice";
-import { Button, Stack } from "react-bootstrap";
+import { buttonStyleLight } from "../../_lib/tailwindShortcuts";
 
 interface Props {
     setSelectedChannel: React.Dispatch<React.SetStateAction<Channel | null>>,
@@ -35,19 +35,19 @@ const ChannelList = ({setSelectedChannel, addNewChannel}: Props) => {
     }
     
     return (
-        <Stack gap={1} id="channel-list">
+        <div id="channel-list" className="flex flex-col gap-2">
             {userInfo != null ? 
                 channels.map(channel => {
                     return (
-                        <Button key={channel.id} title={channel.name} className="channel-selector" onClick={() => handleSelectedChannel(channel)}>
+                        <button key={channel.id} title={channel.name} className={`${buttonStyleLight} channel-selector`} onClick={() => handleSelectedChannel(channel)}>
                             {channel.name}
-                        </Button>
+                        </button>
                     )
                 }) :
                 <></>
             }
-            <Button className="new-channel" onClick={handleNewChannel}>+</Button>
-        </Stack>
+            <button className={`${buttonStyleLight} new-channel`} onClick={handleNewChannel}>+</button>
+        </div>
     )
 }
 

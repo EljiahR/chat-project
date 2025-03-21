@@ -7,7 +7,7 @@ import Chat from "../_components/ChatHome/Chat";
 import HomeChannel from "../_components/ChatHome/HomeChannel";
 import ChannelMenu from "../_components/ChatHome/ChannelMenu";
 import backendUrl from "../_lib/backendUrl";
-import { Stack } from "react-bootstrap";
+import { pageChatHomeStyle } from "../_lib/tailwindShortcuts";
 
 interface ChatHistory {
     [channelId: string]: Message[];
@@ -110,10 +110,12 @@ const ChatHome: React.FC<Props> = () => {
         const menu = document.querySelector("#channel-menu") as HTMLDivElement;
         if (menu == null) return;
 
-        if (!menu.hidden || forceClose) {
-            menu.hidden = true;
+        if (!menu.classList.contains("translate-x-full") || forceClose) {
+            menu.classList.add("translate-x-full");
+            menu.classList.remove("translate-x-0");
         } else {
-            menu.hidden = false;
+            menu.classList.remove("translate-x-full");
+            menu.classList.add("translate-x-0");
         }
     }
 
@@ -143,12 +145,12 @@ const ChatHome: React.FC<Props> = () => {
     
 
     return (
-        <Stack direction="horizontal" id="chat-main" className="max-vh-100 vh-100 blue-500">
-            <Stack id="sidebar" className="w-25 p-2">
+        <div id="chat-main" className={pageChatHomeStyle}>
+            <div id="sidebar" className="col-span-1 flex flex-col justify-between">
                 <ChannelList setSelectedChannel={setSelectedChannel} addNewChannel={addNewChannel} />
                 <NavBar selectedChannel={selectedChannel}  />
-            </Stack>
-            <Stack id="chat-container" className="max-vh-100 vh-100 w-75">
+            </div>
+            <div id="chat-container" className="col-span-3 h-full">
                 {selectedChannel == null ? 
                 <HomeChannel /> 
                 :
@@ -161,9 +163,9 @@ const ChatHome: React.FC<Props> = () => {
                     SendMessage={SendMessage}
                 />
                 }
-            </Stack>
+            </div>
             {selectedChannel != null ? <ChannelMenu channel={selectedChannel} /> : null}
-        </Stack>
+        </div>
         
     )
 };
