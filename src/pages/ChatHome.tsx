@@ -164,7 +164,7 @@ const ChatHome: React.FC<Props> = () => {
                 />
                 }
             </div>
-            {selectedChannel != null ? <ChannelMenu channel={selectedChannel} /> : null}
+            {selectedChannel != null ? <ChannelMenu channel={selectedChannel} handleChannelMenuDisplay={handleChannelMenuDisplay} /> : null}
         </div>
         
     )

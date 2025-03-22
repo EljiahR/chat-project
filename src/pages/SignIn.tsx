@@ -2,7 +2,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import instance from "../_lib/axiosBase";
 import LoadingSpinner from "../_lib/svgs/LoadingSpinner.svg?react";
-import { buttonStyle, buttonStyleGreen, formStyle, inputLabelStyle, loadingSpinnerStyle, pageSignInStyle, textInputStyle } from "../_lib/tailwindShortcuts";
+import { buttonStyleBlue, buttonStyleBlueDisabled, buttonStyleGreen, buttonStyleGreenDisabled, formStyle, inputLabelStyle, loadingSpinnerStyle, pageSignInStyle, textInputStyle } from "../_lib/tailwindShortcuts";
 
 const SignIn: React.FC = () => {
     const [isSigningIn, setIsSigningIn] = useState(false);
@@ -93,7 +93,7 @@ const SignIn: React.FC = () => {
                         <input type="password" id="signin-password" className={textInputStyle} placeholder="Password" onChange={(e) => handleLoginChange("password", e.target.value)} />
                     </div>
                     
-                    <button className={buttonStyle} type="submit">{isSigningIn ? <><LoadingSpinner className={loadingSpinnerStyle} /> Loading...</> : "Sign In"}</button>
+                    <button className={isSigningIn ? buttonStyleBlueDisabled : buttonStyleBlue} type="submit" disabled={isSigningIn}>{isSigningIn ? <><LoadingSpinner className={loadingSpinnerStyle} /> Loading...</> : "Sign In"}</button>
                 </form>
                 
                 
@@ -113,7 +113,7 @@ const SignIn: React.FC = () => {
                         <input id="repeat-password" className={textInputStyle} type="password" placeholder="Repeat password" name="repeat-password" value={repeatPassword} onChange={(e) => setRepeatPassword(e.target.value)} />
                     </div>
                     
-                    <button type="submit" className={buttonStyleGreen}>{isRegistering ? <><LoadingSpinner className={loadingSpinnerStyle} /> Loading...</> : "Register"}</button>
+                    <button type="submit" className={isRegistering ? buttonStyleGreenDisabled : buttonStyleGreen} disabled={isRegistering}>{isRegistering ? <><LoadingSpinner className={loadingSpinnerStyle} /> Loading...</> : "Register"}</button>
                 </form>
                 <div id="register-errors">
                     {!passwordsMatch ? 
