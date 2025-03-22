@@ -1,9 +1,13 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import instance from "../_lib/axiosBase";
-import { buttonStyle, buttonStyleGreen, formStyle, inputLabelStyle, pageSignInStyle, textInputStyle } from "../_lib/tailwindShortcuts";
+import LoadingSpinner from "../_lib/svgs/LoadingSpinner.svg?react";
+import { buttonStyle, buttonStyleGreen, formStyle, inputLabelStyle, loadingSpinnerStyle, pageSignInStyle, textInputStyle } from "../_lib/tailwindShortcuts";
 
 const SignIn: React.FC = () => {
+    const [isSigningIn, setIsSigningIn] = useState(false);
+    const [isRegistering, setIsRegistering] = useState(false);
+    
     const [loginCredentials, setLoginCredentials] = useState({
         userName: "",
         password: ""
@@ -43,11 +47,14 @@ const SignIn: React.FC = () => {
     const handleLoginSubmit = async (e: FormEvent) => {
         e.preventDefault();
         try {
+            setIsSigningIn(true);
             const response = await instance.post("/user/signin", loginCredentials, {withCredentials: true});
             console.log("Login successful. ", response.data);
             navigate("/");
         } catch (error) {
             console.error("Trouble attempting login. " + error);
+        } finally {
+            setIsSigningIn(false);
         }
     };
 
@@ -55,6 +62,7 @@ const SignIn: React.FC = () => {
         e.preventDefault();
         if (!passwordsMatch) return;
         try {
+            setIsRegistering(true);
             const response = await instance.post("/user/register", registerCredentials, {withCredentials: true});
             console.log("Register successful ", response.data);
             setRegisterCredentials({
@@ -65,6 +73,8 @@ const SignIn: React.FC = () => {
             setRepeatPassword("");
         } catch (error) {
             console.error("Trouble registering. " + error);
+        } finally {
+            setIsRegistering(false);
         }
     };
     
@@ -83,7 +93,7 @@ const SignIn: React.FC = () => {
                         <input type="password" id="signin-password" className={textInputStyle} placeholder="Password" onChange={(e) => handleLoginChange("password", e.target.value)} />
                     </div>
                     
-                    <button className={buttonStyle} type="submit">Sign In</button>
+                    <button className={buttonStyle} type="submit">{isSigningIn ? <><LoadingSpinner className={loadingSpinnerStyle} /> Loading...</> : "Sign In"}</button>
                 </form>
                 
                 
@@ -103,7 +113,7 @@ const SignIn: React.FC = () => {
                         <input id="repeat-password" className={textInputStyle} type="password" placeholder="Repeat password" name="repeat-password" value={repeatPassword} onChange={(e) => setRepeatPassword(e.target.value)} />
                     </div>
                     
-                    <button type="submit" className={buttonStyleGreen}>Register</button>
+                    <button type="submit" className={buttonStyleGreen}>{isRegistering ? <><LoadingSpinner className={loadingSpinnerStyle} /> Loading...</> : "Register"}</button>
                 </form>
                 <div id="register-errors">
                     {!passwordsMatch ? 
