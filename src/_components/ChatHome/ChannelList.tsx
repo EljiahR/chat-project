@@ -2,14 +2,15 @@ import instance from "../../_lib/axiosBase";
 import {  Channel } from "../../_lib/responseTypes";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
 import { addChannel, selectAllChannels } from "../../_lib/redux/userSlice";
-import { buttonStyleLight } from "../../_lib/tailwindShortcuts";
+import { buttonStyleLight, subMenuStyle } from "../../_lib/tailwindShortcuts";
 
 interface Props {
     setSelectedChannel: React.Dispatch<React.SetStateAction<Channel | null>>,
     addNewChannel: (id: string) => void;
+    showChannels: boolean;
 }
 
-const ChannelList = ({setSelectedChannel, addNewChannel}: Props) => {
+const ChannelList = ({setSelectedChannel, addNewChannel, showChannels}: Props) => {
     const userInfo = useAppSelector((state) => state.user);
     const channels = useAppSelector(selectAllChannels);
     const dispatch = useAppDispatch();
@@ -35,7 +36,7 @@ const ChannelList = ({setSelectedChannel, addNewChannel}: Props) => {
     }
     
     return (
-        <div id="channel-list" className="flex flex-col gap-2">
+        <div id="channel-list" className={(showChannels ? subMenuStyle + " " : "") + "flex flex-col gap-2"}>
             {userInfo != null ? 
                 channels.map(channel => {
                     return (

@@ -23,10 +23,11 @@ enum SubMenuOptions {
 }
 
 interface Props {
-    selectedChannel: Channel | null
+    selectedChannel: Channel | null;
+    showUserInfo: boolean;
 }
 
-const UserControls = ({selectedChannel}: Props) => {
+const UserControls = ({selectedChannel, showUserInfo}: Props) => {
     const friends = useAppSelector(selectAllFriends);
     const dispatch = useAppDispatch();
     const [subMenu, setSubMenu] = useState<SubMenuOptions>(SubMenuOptions.None);
