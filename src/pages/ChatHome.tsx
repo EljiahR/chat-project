@@ -1,13 +1,14 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import * as signalR from "@microsoft/signalr";
-import NavBar from "../_components/ChatHome/NavBar";
+import UserControls from "../_components/ChatHome/UserControls";
 import { Channel, Message, UserInfo } from "../_lib/responseTypes";
 import ChannelList from "../_components/ChatHome/ChannelList";
 import Chat from "../_components/ChatHome/Chat";
 import HomeChannel from "../_components/ChatHome/HomeChannel";
 import ChannelMenu from "../_components/ChatHome/ChannelMenu";
 import backendUrl from "../_lib/backendUrl";
-import { pageChatHomeStyle } from "../_lib/tailwindShortcuts";
+import { buttonStyleLight, pageChatHomeStyle } from "../_lib/tailwindShortcuts";
+import { useAppSelector } from "../_lib/redux/hooks";
 
 interface ChatHistory {
     [channelId: string]: Message[];
@@ -22,6 +23,9 @@ const ChatHome: React.FC<Props> = () => {
     const [message, setMessage] = useState<string>("");
     const [messages, setMessages] = useState<Map<string, Message[]>>(new Map());
     const [selectedChannel, setSelectedChannel] = useState<Channel | null>(null);
+    const [showChannels, stShowChannels] = useState(false);
+    const [showUserInfo, setShowUserInfo] = useState(false);
+    const userName = useAppSelector((state) => state.user.userName);
 
     // Attempt to connect to hub on mount
     useEffect(() => {
@@ -146,11 +150,15 @@ const ChatHome: React.FC<Props> = () => {
 
     return (
         <div id="chat-main" className={pageChatHomeStyle}>
-            <div id="sidebar" className="col-span-1 flex flex-col justify-between">
-                <ChannelList setSelectedChannel={setSelectedChannel} addNewChannel={addNewChannel} />
-                <NavBar selectedChannel={selectedChannel}  />
+            <div id="navbar-controls" className="row-span-1 sm:hidden flex justify-between">
+                <button className={buttonStyleLight}>Channels</button>
+                <button className={buttonStyleLight}>{userName}</button>
             </div>
-            <div id="chat-container" className="col-span-3 h-full">
+            <div id="navbar" className="sm:col-span-1 hidden sm:flex sm:flex-col justify-between">
+                <ChannelList setSelectedChannel={setSelectedChannel} addNewChannel={addNewChannel} />
+                <UserControls selectedChannel={selectedChannel}  />
+            </div>
+            <div id="chat-container" className="row-span-11 sm:col-span-3 h-full">
                 {selectedChannel == null ? 
                 <HomeChannel /> 
                 :

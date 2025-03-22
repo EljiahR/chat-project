@@ -26,7 +26,7 @@ interface Props {
     selectedChannel: Channel | null
 }
 
-const NavBar = ({selectedChannel}: Props) => {
+const UserControls = ({selectedChannel}: Props) => {
     const friends = useAppSelector(selectAllFriends);
     const dispatch = useAppDispatch();
     const [subMenu, setSubMenu] = useState<SubMenuOptions>(SubMenuOptions.None);
@@ -166,4 +166,4 @@ const FriendSubMenu = ({friends, handleAddToChannel}: FriendSubMenuProps) => {
     )
 }
 
-export default NavBar;
+export default UserControls;

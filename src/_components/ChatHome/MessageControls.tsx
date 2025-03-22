@@ -1,4 +1,5 @@
 import React, { FormEvent } from "react";
+import { buttonStyleLight } from "../../_lib/tailwindShortcuts";
 
 interface Props {
     message: string;
@@ -8,14 +9,15 @@ interface Props {
 
 const MessageControls: React.FC<Props> = ({message, handleMessageInput, SendMessage}) => {
     return (
-        <form id="user-controls" onSubmit={(e) => SendMessage(e)}>                
+        <form id="user-controls" onSubmit={(e) => SendMessage(e)} className="flex">                
             <input 
                 type="text" 
                 placeholder="Type your message..."
                 value={message}
                 onChange={(e) => handleMessageInput(e.target.value)}
+                className="grow-1"
             />
-            <button type="submit">Send Message</button>            
+            <button className={buttonStyleLight} type="submit">Send</button>            
         </form>
     );
 }
