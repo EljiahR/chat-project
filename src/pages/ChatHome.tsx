@@ -10,6 +10,12 @@ import backendUrl from "../_lib/backendUrl";
 import { buttonStyleLight, pageChatHomeStyle } from "../_lib/tailwindShortcuts";
 import { useAppSelector } from "../_lib/redux/hooks";
 
+export enum SubMenu {
+    None,
+    ChannelList,
+    UserInfo
+}
+
 interface ChatHistory {
     [channelId: string]: Message[];
 }
@@ -23,8 +29,7 @@ const ChatHome: React.FC<Props> = () => {
     const [message, setMessage] = useState<string>("");
     const [messages, setMessages] = useState<Map<string, Message[]>>(new Map());
     const [selectedChannel, setSelectedChannel] = useState<Channel | null>(null);
-    const [showChannels, setShowChannels] = useState(false);
-    const [showUserInfo, setShowUserInfo] = useState(false);
+    const [selectedSubMenu, setSelectedSubMenu] = useState<SubMenu>(SubMenu.None);
     const userName = useAppSelector((state) => state.user.userName);
 
     // Attempt to connect to hub on mount
@@ -150,15 +155,15 @@ const ChatHome: React.FC<Props> = () => {
 
     return (
         <div id="chat-main" className={pageChatHomeStyle}>
-            <div id="navbar-controls" className="row-span-1 sm:hidden flex justify-between">
-                <button onClick={() => setShowChannels(prev => !prev)} className={buttonStyleLight}>Channels</button>
-                <button onClick={() => setShowUserInfo(prev => !prev)} className={buttonStyleLight}>{userName}</button>
+            <div id="navbar-controls" className="row-span-1 row-start-1 sm:row-auto col-start-1 sm:hidden flex justify-between">
+                <button onClick={() => setSelectedSubMenu(prev => prev == SubMenu.ChannelList ? SubMenu.None : SubMenu.ChannelList)} className={buttonStyleLight}>Channels</button>
+                <button onClick={() => setSelectedSubMenu(prev => prev == SubMenu.UserInfo ? SubMenu.None : SubMenu.UserInfo)} className={buttonStyleLight}>{userName}</button>
             </div>
-            <div id="navbar" className="invisible sm:col-span-1 sm:flex sm:flex-col justify-between">
-                <ChannelList setSelectedChannel={setSelectedChannel} addNewChannel={addNewChannel} showChannels={showChannels} />
-                <UserControls selectedChannel={selectedChannel} showUserInfo={showUserInfo}  />
+            <div id="navbar" className="invisible sm:visible row-start-1 sm:row-auto col-start-1 sm:col-span-1 sm:flex sm:flex-col justify-between">
+                <ChannelList setSelectedChannel={setSelectedChannel} addNewChannel={addNewChannel} selectedSubMenu={selectedSubMenu} setSelectedSubMenu={setSelectedSubMenu} />
+                <UserControls selectedChannel={selectedChannel} selectedSubMenu={selectedSubMenu}  />
             </div>
-            <div id="chat-container" className="row-span-11 sm:col-span-3 h-full">
+            <div id="chat-container" className="row-span-11 sm:row-span-1 sm:col-span-3 h-full">
                 {selectedChannel == null ? 
                 <HomeChannel /> 
                 :

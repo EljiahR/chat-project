@@ -1,19 +1,22 @@
 import { useNavigate } from "react-router-dom";
 import instance from "../../_lib/axiosBase";
 import { Channel, Friend, Person } from "../../_lib/responseTypes";
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
 import { addFriend, addUserToChannel, selectAllFriends } from "../../_lib/redux/userSlice";
 import Draggable from "react-draggable";
-import { buttonStyleLight, buttonStyleLightDisabled, buttonStyleRed } from "../../_lib/tailwindShortcuts";
+import { buttonStyleBlueSmall, buttonStyleGreenSmall, buttonStyleLight, buttonStyleLightDisabled, buttonStyleRed, buttonStyleRedSmall, draggableSubMenuStyle, mobileSubMenuStyle } from "../../_lib/tailwindShortcuts";
+import { SubMenu } from "../../pages/ChatHome";
 
 interface PeopleSubMenuProps {
-    handleNewFriend: (id: string) => void
+    handleNewFriend: (id: string) => void,
+    handleSubMenu: (option: SubMenuOptions) => void
 }
 
 interface FriendSubMenuProps {
     friends: Friend[],
-    handleAddToChannel: (userId: string) => void
+    handleAddToChannel: (userId: string) => void,
+    handleSubMenu: (option: SubMenuOptions) => void
 }
 
 enum SubMenuOptions {
@@ -24,10 +27,10 @@ enum SubMenuOptions {
 
 interface Props {
     selectedChannel: Channel | null;
-    showUserInfo: boolean;
+    selectedSubMenu: SubMenu;
 }
 
-const UserControls = ({selectedChannel, showUserInfo}: Props) => {
+const UserControls = ({selectedChannel, selectedSubMenu}: Props) => {
     const friends = useAppSelector(selectAllFriends);
     const dispatch = useAppDispatch();
     const [subMenu, setSubMenu] = useState<SubMenuOptions>(SubMenuOptions.None);
@@ -80,7 +83,7 @@ const UserControls = ({selectedChannel, showUserInfo}: Props) => {
     
     return (
         <>
-        <div className="flex flex-col gap-2" id="nav-bar">
+        <div className={(selectedSubMenu == SubMenu.UserInfo ? mobileSubMenuStyle + " " : "") + "flex flex-col gap-2"} id="nav-bar">
             <button className={buttonStyleLight} id="people-btn" onClick={() => handleSubMenu(SubMenuOptions.People)}>
                 People
             </button>
@@ -95,9 +98,9 @@ const UserControls = ({selectedChannel, showUserInfo}: Props) => {
             </button>
         </div>
         {subMenu == SubMenuOptions.People ? 
-            <PeopleSubMenu handleNewFriend={handleNewFriend} /> :
+            <PeopleSubMenu handleNewFriend={handleNewFriend} handleSubMenu={handleSubMenu} /> :
         subMenu == SubMenuOptions.Friends ?
-            <FriendSubMenu friends={friends} handleAddToChannel={handleAddToChannel} /> :
+            <FriendSubMenu friends={friends} handleAddToChannel={handleAddToChannel} handleSubMenu={handleSubMenu} /> :
             <></>
         }
         </>
@@ -105,7 +108,7 @@ const UserControls = ({selectedChannel, showUserInfo}: Props) => {
     )
 }
 
-const PeopleSubMenu = ({handleNewFriend}: PeopleSubMenuProps) => {
+const PeopleSubMenu = ({handleNewFriend, handleSubMenu}: PeopleSubMenuProps) => {
     const [searchQuery, setSearchQuery] = useState("");
     const [searchResults, setSearchResults] = useState<Person[]>([]);
     const nodeRef = useRef(null);
@@ -125,15 +128,18 @@ const PeopleSubMenu = ({handleNewFriend}: PeopleSubMenuProps) => {
     
     return (
         <Draggable nodeRef={nodeRef} bounds="#chat-main">
-            <div id="people-search"className="submenu" ref={nodeRef}>
-                <input type="text" id="people-search-bar" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={(e) => handleSearch(e)} placeholder="Search by name..." />
-                <div id="search-results">
+            <div id="people-search" className={draggableSubMenuStyle} ref={nodeRef}>
+                <div className="flex justify-between gap-2">
+                    <input type="text" id="people-search-bar" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={(e) => handleSearch(e)} placeholder="Search by name..." />
+                    <button className={buttonStyleRedSmall} onClick={() => handleSubMenu(SubMenuOptions.None)}>X</button>
+                </div>
+                <div id="search-results" className="flex flex-col gap-2 mt-auto">
                     {searchResults.length > 0 ?
                         searchResults.map(person => {
                             return (
-                                <div key={"people"+person.userId} className="person-result">
+                                <div key={"people"+person.userId} className="flex justify-between">
                                     <p>{person.userName}</p>
-                                    <button onClick={() => handleNewFriend(person.userId)} disabled={person.isFriend}>Add</button>
+                                    <button className={buttonStyleGreenSmall} onClick={() => handleNewFriend(person.userId)} disabled={person.isFriend}>Add</button>
                                 </div>
                             )
                         }) :
@@ -146,23 +152,30 @@ const PeopleSubMenu = ({handleNewFriend}: PeopleSubMenuProps) => {
     )
 }
 
-const FriendSubMenu = ({friends, handleAddToChannel}: FriendSubMenuProps) => {
+const FriendSubMenu = ({friends, handleAddToChannel, handleSubMenu}: FriendSubMenuProps) => {
     const nodeRef = useRef(null);
     return (
         <Draggable nodeRef={nodeRef} bounds="#chat-main">
-            <div id="friend-list" className="submenu bg-body h-25 w-25 p-2 bg-light border border-2 rounded" ref={nodeRef}>
-                {friends.map(friend => {
-                    return (
-                        <div key={"friend"+friend.userId} className="friend-item">
-                            
-                                <p>{friend.userName}</p>
-                                <button onClick={() => handleAddToChannel(friend.userId)}>Invite</button>
-                            
-                            
-                        </div>
-                    )
-                })}
-            </div>
+            <div id="friend-list" className={draggableSubMenuStyle}>
+                <div className="flex justify-between">
+                    <h3>Friends</h3>
+                    <button className={buttonStyleRedSmall} onClick={() => handleSubMenu(SubMenuOptions.None)}>X</button>
+                </div>
+                <div id="friends"  ref={nodeRef}>
+                    {friends.length > 0 ?
+                        friends.map(friend => {
+                            return (
+                                <div key={"friend"+friend.userId} className="flex justify-between">
+                                    <p>{friend.userName}</p>
+                                    <button className={buttonStyleBlueSmall} onClick={() => handleAddToChannel(friend.userId)}>Invite</button>
+                                </div>
+                            )
+                        })
+                        :
+                        <div>No friends :(</div>
+                    }
+                </div>
+            </div> 
         </Draggable>
     )
 }

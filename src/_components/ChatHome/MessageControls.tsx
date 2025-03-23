@@ -9,7 +9,7 @@ interface Props {
 
 const MessageControls: React.FC<Props> = ({message, handleMessageInput, SendMessage}) => {
     return (
-        <form id="user-controls" onSubmit={(e) => SendMessage(e)} className="flex">                
+        <form id="message-controls" onSubmit={(e) => SendMessage(e)} className="flex gap-2">                
             <input 
                 type="text" 
                 placeholder="Type your message..."
