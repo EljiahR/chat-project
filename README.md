@@ -1,7 +1,7 @@
 # **📌 Real-Time Chat Application**  
 **Built with C#, ASP.NET Core, React, SignalR, PostgreSQL, Vite, and TypeScript**  
 
-🚀 **Live Demo:** [Insert Deployed Link Here]  
+🚀 **Live Demo:** [Link Here](https://chat-project-reck.netlify.app/)
 
 ## **🔹 Overview**  
 This is a **real-time chat application** with **instant messaging, user authentication, and channel-based conversations**. It uses **SignalR WebSockets** for seamless communication and a **responsive UI** optimized for both desktop and mobile.  
