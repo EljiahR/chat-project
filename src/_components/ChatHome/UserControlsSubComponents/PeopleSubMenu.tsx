@@ -23,6 +23,8 @@ const PeopleSubMenu = ({handleNewFriend, handleSubMenu}: Props) => {
     const [searchResults, setSearchResults] = useState<Person[]>([]);
     const nodeRef = useRef(null);
 
+    const isMobile = () => window.innerWidth < 640;
+
     const handleSearch = async (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key == "Enter") {
             try {
@@ -37,6 +39,9 @@ const PeopleSubMenu = ({handleNewFriend, handleSubMenu}: Props) => {
     }
     
     return (
+        isMobile() ?
+        <CoreComponent handleNewFriend={handleNewFriend} nodeRef={nodeRef} searchQuery={searchQuery} handleSubMenu={handleSubMenu} handleSearch={handleSearch} setSearchQuery={setSearchQuery} searchResults={searchResults} />
+        :
         <Draggable nodeRef={nodeRef} bounds="#chat-main">
             <CoreComponent handleNewFriend={handleNewFriend} nodeRef={nodeRef} searchQuery={searchQuery} handleSubMenu={handleSubMenu} handleSearch={handleSearch} setSearchQuery={setSearchQuery} searchResults={searchResults} />
         </Draggable>
@@ -61,7 +66,6 @@ const CoreComponent = ({handleNewFriend, handleSubMenu, nodeRef, searchQuery, se
                         )
                     }) :
                     <div className="person-result">No users found</div>
-
                 }
             </div>
         </div>
