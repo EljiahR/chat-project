@@ -14,7 +14,7 @@ interface Props {
 const Chat: React.FC<Props> = ({channelName, chatMessages, handleChannelMenuDisplay, message, handleMessageInput, SendMessage}) => {
     return (
             <div id="chat" className="h-full flex flex-col">
-                <div id="chat-header" className="">
+                <div id="chat-header" className="hidden sm:inline">
                     <h1 id="title">{channelName}</h1>
                     <button className={buttonStyleBlue} onClick={() => handleChannelMenuDisplay()}>Options</button>
                 </div>
