@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Draggable from "react-draggable";
 import { buttonStyleBlueSmall, buttonStyleRedSmall, draggableSubMenuStyle } from "../../../_lib/tailwindShortcuts";
 import { SubMenuOptions } from "../UserControls";
@@ -10,28 +10,36 @@ interface Props {
     handleSubMenu: (option: SubMenuOptions) => void
 }
 
-interface CoreProps extends Props {
-    nodeRef: React.MutableRefObject<null>
-}
-
 const FriendSubMenu = ({friends, handleAddToChannel, handleSubMenu}: Props) => {
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
     const nodeRef = useRef(null);
+    
+    useEffect(() => {
+        const handleResize = () => {
+          setIsMobile(window.innerWidth <= 768);
+        };
+    
+        window.addEventListener('resize', handleResize);
+    
+        return () => window.removeEventListener('resize', handleResize);
+      }, []);
 
-    const isMobile = () => window.innerWidth < 640;
 
     return (
-        isMobile() ?
-        <CoreComponent friends={friends} handleAddToChannel={handleAddToChannel} handleSubMenu={handleSubMenu} nodeRef={nodeRef} />
+        isMobile ?
+        <CoreComponent friends={friends} handleAddToChannel={handleAddToChannel} handleSubMenu={handleSubMenu} />
         :
         <Draggable nodeRef={nodeRef} bounds="#chat-main">
-            <CoreComponent friends={friends} handleAddToChannel={handleAddToChannel} handleSubMenu={handleSubMenu} nodeRef={nodeRef} />
+            <div ref={nodeRef}>
+                <CoreComponent friends={friends} handleAddToChannel={handleAddToChannel} handleSubMenu={handleSubMenu} />
+            </div>
         </Draggable>
     )
 }
 
-const CoreComponent = ({friends, handleAddToChannel, handleSubMenu, nodeRef}: CoreProps) => {
+const CoreComponent = ({friends, handleAddToChannel, handleSubMenu}: Props) => {
     return (
-        <div id="friend-list" className={draggableSubMenuStyle} ref={nodeRef}>
+        <div id="friend-list" className={draggableSubMenuStyle}>
             <div className="flex justify-between">
                 <h3>Friends</h3>
                 <button className={buttonStyleRedSmall} onClick={() => handleSubMenu(SubMenuOptions.None)}>X</button>

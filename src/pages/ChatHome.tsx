@@ -161,7 +161,7 @@ const ChatHome: React.FC<Props> = () => {
             </div>
             <div id="navbar" className="invisible sm:visible row-start-1 sm:row-auto col-start-1 sm:col-span-1 sm:flex sm:flex-col justify-between">
                 <ChannelList setSelectedChannel={setSelectedChannel} addNewChannel={addNewChannel} selectedSubMenu={selectedSubMenu} setSelectedSubMenu={setSelectedSubMenu} />
-                <UserControls selectedChannel={selectedChannel} selectedSubMenu={selectedSubMenu}  />
+                <UserControls selectedChannel={selectedChannel} selectedSubMenu={selectedSubMenu} setSelectedSubMenu={setSelectedSubMenu}  />
             </div>
             <div id="chat-container" className="row-span-11 sm:row-span-1 sm:col-span-3 h-full">
                 {selectedChannel == null ? 

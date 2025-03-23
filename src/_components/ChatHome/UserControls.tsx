@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import instance from "../../_lib/axiosBase";
 import { Channel, Friend, Person } from "../../_lib/responseTypes";
-import React, { useState } from "react";
+import React, { SetStateAction, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
 import { addFriend, addUserToChannel, selectAllFriends } from "../../_lib/redux/userSlice";
 import { buttonStyleLight, buttonStyleLightDisabled, buttonStyleRed, mobileSubMenuStyle } from "../../_lib/tailwindShortcuts";
@@ -19,9 +19,10 @@ export enum SubMenuOptions {
 interface Props {
     selectedChannel: Channel | null;
     selectedSubMenu: SubMenu;
+    setSelectedSubMenu: React.Dispatch<SetStateAction<SubMenu>>
 }
 
-const UserControls = ({selectedChannel, selectedSubMenu}: Props) => {
+const UserControls = ({selectedChannel, selectedSubMenu, setSelectedSubMenu}: Props) => {
     const friends = useAppSelector(selectAllFriends);
     const dispatch = useAppDispatch();
     const [subMenu, setSubMenu] = useState<SubMenuOptions>(SubMenuOptions.None);
@@ -31,6 +32,7 @@ const UserControls = ({selectedChannel, selectedSubMenu}: Props) => {
             setSubMenu(SubMenuOptions.None);
         } else {
             setSubMenu(option);
+            setSelectedSubMenu(SubMenu.None)
         }
     }
 
