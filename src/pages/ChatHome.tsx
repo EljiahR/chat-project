@@ -95,6 +95,7 @@ const ChatHome: React.FC<Props> = () => {
                 console.log("Sending to: ", selectedChannel);
                 await connection.invoke("SendMessage", message, selectedChannel.id);
                 setMessage("");
+                document.getElementById("message-controls-text")!.focus();
             } catch (e) {
                 console.log(e);
             }

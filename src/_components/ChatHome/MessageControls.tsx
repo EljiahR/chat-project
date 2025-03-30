@@ -11,6 +11,7 @@ const MessageControls: React.FC<Props> = ({message, handleMessageInput, SendMess
     return (
         <form id="message-controls" onSubmit={(e) => SendMessage(e)} className="flex gap-2">                
             <input 
+                id="message-controls-text"
                 type="text" 
                 placeholder="Type your message..."
                 value={message}
