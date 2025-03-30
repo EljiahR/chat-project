@@ -1,5 +1,5 @@
 // Pages
-export const pageBaseStyle = "h-svh w-screen bg-gray-900 text-white p-5";
+export const pageBaseStyle = "h-svh w-screen bg-gray-900 text-white p-5 absolute sm:static top-0 left-0";
 export const pageSignInStyle = pageBaseStyle + " flex items-center justify-center flex-col";
 export const pageChatHomeStyle = pageBaseStyle + " grid grid-rows-12 grid-cols-1 sm:grid-rows-1 sm:grid-cols-4 gap-5";
 
