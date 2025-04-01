@@ -100,11 +100,14 @@ const UserControls = ({selectedChannel, selectedSubMenu, setSelectedSubMenu}: Pr
             </button>
         </div>
         {subMenu == SubMenuOptions.People ? 
-            <PeopleSubMenu handleNewFriend={handleNewFriend} handleSubMenu={handleSubMenu} /> :
+            <PeopleSubMenu handleNewFriend={handleNewFriend} handleSubMenu={handleSubMenu} /> 
+        :
         subMenu == SubMenuOptions.Friends ?
-            <FriendSubMenu friends={friends} friendRequests={friendRequests} handleAcceptFriendRequest={handleAcceptFriendRequest} handleAddToChannel={handleAddToChannel} handleSubMenu={handleSubMenu} /> :
+            <FriendSubMenu friends={friends} friendRequests={friendRequests} handleAcceptFriendRequest={handleAcceptFriendRequest} handleAddToChannel={handleAddToChannel} handleSubMenu={handleSubMenu} /> 
+        :
         subMenu == SubMenuOptions.ChannelInites ?    
-            <ChannelInvitesSubMenu /> :
+            <ChannelInvitesSubMenu /> 
+        :
             <></>
         }
         </>
