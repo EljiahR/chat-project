@@ -53,4 +53,5 @@ export const userSlice = createSlice({
 export const { setUser, clearUser, addFriend, addChannel, addUserToChannel } = userSlice.actions;
 export const {selectAll: selectAllFriends} = friendsAdapter.getSelectors((state: {user: UserInfoSlice}) => state.user.friends);
 export const {selectAll: selectAllChannels} = channelsAdapter.getSelectors((state:{user: UserInfoSlice}) => state.user.channels);
+export const {selectAll: selectAllFriendRequests} = friendRequestsAdapter.getSelectors((state:{user: UserInfoSlice}) => state.user.friendRequests);
 export default userSlice.reducer;

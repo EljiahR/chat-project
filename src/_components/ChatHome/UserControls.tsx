@@ -3,7 +3,7 @@ import instance from "../../_lib/axiosBase";
 import { Channel, Person } from "../../_lib/responseTypes";
 import React, { SetStateAction, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
-import { addFriend, addUserToChannel, selectAllFriends } from "../../_lib/redux/userSlice";
+import { addFriend, addUserToChannel, selectAllFriendRequests, selectAllFriends } from "../../_lib/redux/userSlice";
 import { buttonStyleLight, buttonStyleLightDisabled, buttonStyleRed, mobileSubMenuStyle } from "../../_lib/tailwindShortcuts";
 import PeopleSubMenu from "./UserControlsSubComponents/PeopleSubMenu";
 import FriendSubMenu from "./UserControlsSubComponents/FriendSubMenu";
@@ -17,6 +17,7 @@ interface Props {
 
 const UserControls = ({selectedChannel, selectedSubMenu, setSelectedSubMenu}: Props) => {
     const friends = useAppSelector(selectAllFriends);
+    const friendRequests = useAppSelector(selectAllFriendRequests);
     const dispatch = useAppDispatch();
     const [subMenu, setSubMenu] = useState<SubMenuOptions>(SubMenuOptions.None);
 
@@ -86,7 +87,7 @@ const UserControls = ({selectedChannel, selectedSubMenu, setSelectedSubMenu}: Pr
         {subMenu == SubMenuOptions.People ? 
             <PeopleSubMenu handleNewFriend={handleNewFriend} handleSubMenu={handleSubMenu} /> :
         subMenu == SubMenuOptions.Friends ?
-            <FriendSubMenu friends={friends} handleAddToChannel={handleAddToChannel} handleSubMenu={handleSubMenu} /> :
+            <FriendSubMenu friends={friends} friendRequests={friendRequests} handleAddToChannel={handleAddToChannel} handleSubMenu={handleSubMenu} /> :
             <></>
         }
         </>
