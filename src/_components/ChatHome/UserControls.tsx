@@ -8,6 +8,7 @@ import { buttonStyleLight, buttonStyleLightDisabled, buttonStyleRed, mobileSubMe
 import PeopleSubMenu from "./UserControlsSubComponents/PeopleSubMenu";
 import FriendSubMenu from "./UserControlsSubComponents/FriendSubMenu";
 import { SubMenu, SubMenuOptions } from "../../_lib/pageTypes";
+import ChannelInvitesSubMenu from "./UserControlsSubComponents/ChannelInvitesSubMenu";
 
 interface Props {
     selectedChannel: Channel | null;
@@ -88,6 +89,9 @@ const UserControls = ({selectedChannel, selectedSubMenu, setSelectedSubMenu}: Pr
             <button className={buttonStyleLight}  id="friends-btn" onClick={() => handleSubMenu(SubMenuOptions.Friends)}>
                 Friends
             </button>
+            <button className={buttonStyleLight}  id="invites-btn" onClick={() => handleSubMenu(SubMenuOptions.ChannelInites)}>
+                Invites
+            </button>
             <button className={buttonStyleLightDisabled}  id="profile-btn" disabled={true}>
                 Profile
             </button>
@@ -99,6 +103,8 @@ const UserControls = ({selectedChannel, selectedSubMenu, setSelectedSubMenu}: Pr
             <PeopleSubMenu handleNewFriend={handleNewFriend} handleSubMenu={handleSubMenu} /> :
         subMenu == SubMenuOptions.Friends ?
             <FriendSubMenu friends={friends} friendRequests={friendRequests} handleAcceptFriendRequest={handleAcceptFriendRequest} handleAddToChannel={handleAddToChannel} handleSubMenu={handleSubMenu} /> :
+        subMenu == SubMenuOptions.ChannelInites ?    
+            <ChannelInvitesSubMenu /> :
             <></>
         }
         </>
