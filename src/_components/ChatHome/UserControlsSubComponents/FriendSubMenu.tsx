@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import Draggable from "react-draggable";
-import { buttonStyleBlueSmall, buttonStyleRedSmall, draggableSubMenuStyle } from "../../../_lib/tailwindShortcuts";
+import { buttonStyleBlueSmall, buttonStyleGreenSmall, buttonStyleRedSmall, draggableSubMenuStyle } from "../../../_lib/tailwindShortcuts";
 import { FriendRequest, Person } from "../../../_lib/responseTypes";
 import { SubMenuOptions } from "../../../_lib/pageTypes";
 
@@ -47,10 +47,12 @@ const CoreComponent = ({friends, friendRequests, handleAddToChannel, handleSubMe
             </div>
             {friendRequests.length > 0 ? 
                 <div id="friend-requests">
+                    <div>Pending Request</div>
                     {friendRequests.map(friendRequest => {
                         return (
-                            <div key={"friend"+friendRequest.id} className="flex justify-between">
-                                
+                            <div key={"friend-request"+friendRequest.id} className="flex justify-between">
+                                <p>{friendRequest.initiator.userName}</p>
+                                <button className={buttonStyleGreenSmall}>Accept</button>
                             </div>
                         )
                     })}
