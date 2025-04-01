@@ -3,8 +3,8 @@ import {  Channel } from "../../_lib/responseTypes";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
 import { addChannel, selectAllChannels } from "../../_lib/redux/userSlice";
 import { buttonStyleLight, mobileSubMenuStyle } from "../../_lib/tailwindShortcuts";
-import { SubMenu } from "../../pages/ChatHome";
 import React from "react";
+import { SubMenu } from "../../_lib/pageTypes";
 
 interface Props {
     setSelectedChannel: React.Dispatch<React.SetStateAction<Channel | null>>;

@@ -1,17 +1,19 @@
 import { createEntityAdapter, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Channel, Friend, Person, UserInfo } from "../responseTypes";
+import { Channel, ChannelInvite, FriendRequest, Person, UserInfo } from "../responseTypes";
 import { UserInfoSlice } from "./reduxTypes";
 
 const channelsAdapter = createEntityAdapter<Channel>();
-const friendsAdapter = createEntityAdapter({
-    selectId: (friend: Friend) => friend.userId,
-});
+const friendsAdapter = createEntityAdapter<Person>();
+const channelInvitesAdapter = createEntityAdapter<ChannelInvite>();
+const friendRequestsAdapter = createEntityAdapter<FriendRequest>();
 
 const initialState: UserInfoSlice = {
     id: "",
     userName: "",
     channels: channelsAdapter.getInitialState(),
-    friends: friendsAdapter.getInitialState()
+    friends: friendsAdapter.getInitialState(),
+    channelInvites: channelInvitesAdapter.getInitialState(),
+    friendRequests: friendRequestsAdapter.getInitialState()
 }
 
 export const userSlice = createSlice({
@@ -30,7 +32,7 @@ export const userSlice = createSlice({
             channelsAdapter.removeAll(state.channels);
             friendsAdapter.removeAll(state.friends);
         },
-        addFriend: (state, action: PayloadAction<Friend>) => {
+        addFriend: (state, action: PayloadAction<Person>) => {
             friendsAdapter.addOne(state.friends, action.payload);
         },
         addChannel: (state, action: PayloadAction<Channel>) => {
@@ -39,7 +41,7 @@ export const userSlice = createSlice({
         addUserToChannel: (state, action: PayloadAction<{channelId: string, user: Person}>) => {
             const { channelId, user } = action.payload;
             const channel = state.channels.entities[channelId];
-            if (channel && !channel.members.concat(channel.admins).concat(channel.owner).some(u => u.userId == user.userId)) {
+            if (channel && !channel.members.concat(channel.admins).concat(channel.owner).some(u => u.id == user.id)) {
                 channel.members.push(user);
             }
         }

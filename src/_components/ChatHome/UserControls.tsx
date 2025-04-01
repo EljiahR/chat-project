@@ -1,20 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import instance from "../../_lib/axiosBase";
-import { Channel, Friend, Person } from "../../_lib/responseTypes";
+import { Channel, Person } from "../../_lib/responseTypes";
 import React, { SetStateAction, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
 import { addFriend, addUserToChannel, selectAllFriends } from "../../_lib/redux/userSlice";
 import { buttonStyleLight, buttonStyleLightDisabled, buttonStyleRed, mobileSubMenuStyle } from "../../_lib/tailwindShortcuts";
-import { SubMenu } from "../../pages/ChatHome";
 import PeopleSubMenu from "./UserControlsSubComponents/PeopleSubMenu";
 import FriendSubMenu from "./UserControlsSubComponents/FriendSubMenu";
-
-
-export enum SubMenuOptions {
-    People,
-    Friends,
-    None
-}
+import { SubMenu, SubMenuOptions } from "../../_lib/pageTypes";
 
 interface Props {
     selectedChannel: Channel | null;
@@ -38,7 +31,7 @@ const UserControls = ({selectedChannel, selectedSubMenu, setSelectedSubMenu}: Pr
 
     const handleNewFriend = async (id: string) => {
         try {
-            const response = await instance.post<Friend>("/User/AddFriend", {id: id}, {withCredentials: true});
+            const response = await instance.post<Person>("/User/AddFriend", {id: id}, {withCredentials: true});
             console.log("New friend added :)", response.data);
             dispatch(addFriend(response.data));
 

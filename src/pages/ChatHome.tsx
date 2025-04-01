@@ -9,12 +9,7 @@ import ChannelMenu from "../_components/ChatHome/ChannelMenu";
 import backendUrl from "../_lib/backendUrl";
 import { buttonStyleLight, pageChatHomeStyle } from "../_lib/tailwindShortcuts";
 import { useAppSelector } from "../_lib/redux/hooks";
-
-export enum SubMenu {
-    None,
-    ChannelList,
-    UserInfo
-}
+import { SubMenu } from "../_lib/pageTypes";
 
 interface ChatHistory {
     [channelId: string]: Message[];

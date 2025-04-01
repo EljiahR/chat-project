@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import Draggable from "react-draggable";
 import { buttonStyleBlueSmall, buttonStyleRedSmall, draggableSubMenuStyle } from "../../../_lib/tailwindShortcuts";
-import { SubMenuOptions } from "../UserControls";
-import { Friend } from "../../../_lib/responseTypes";
+import { Person } from "../../../_lib/responseTypes";
+import { SubMenuOptions } from "../../../_lib/pageTypes";
 
 interface Props {
-    friends: Friend[],
+    friends: Person[],
     handleAddToChannel: (userId: string) => void,
     handleSubMenu: (option: SubMenuOptions) => void
 }
@@ -48,9 +48,9 @@ const CoreComponent = ({friends, handleAddToChannel, handleSubMenu}: Props) => {
                 {friends.length > 0 ?
                     friends.map(friend => {
                         return (
-                            <div key={"friend"+friend.userId} className="flex justify-between">
+                            <div key={"friend"+friend.id} className="flex justify-between">
                                 <p>{friend.userName}</p>
-                                <button className={buttonStyleBlueSmall} onClick={() => handleAddToChannel(friend.userId)}>Invite</button>
+                                <button className={buttonStyleBlueSmall} onClick={() => handleAddToChannel(friend.id)}>Invite</button>
                             </div>
                         )
                     })

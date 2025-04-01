@@ -17,14 +17,8 @@ export interface Channel {
 
 export interface Person {
     userName: string,
-    userId: string,
+    id: string,
     isFriend: boolean
-}
-
-export interface Friend {
-    userName: string,
-    userId: string,
-    id: string // This is purely for entity adapter to function
 }
 
 export enum FriendshipStatus {
@@ -34,6 +28,7 @@ export enum FriendshipStatus {
 }
 
 export interface FriendRequest {
+    id: string,
     initiatorId: string,
     receiverId: string,
     initiator: Person,
@@ -54,6 +49,7 @@ export enum UserStatus {
 }
 
 export interface ChannelInvite {
+    id: string,
     userId: string,
     user: Person,
     channelId: string,
@@ -67,7 +63,7 @@ export interface UserInfo
     id: string,
     userName: string,
     channels: Channel[],
-    friends: Friend[],
+    friends: Person[],
     friendRequests: FriendRequest[],
     channelInvites: []
 }

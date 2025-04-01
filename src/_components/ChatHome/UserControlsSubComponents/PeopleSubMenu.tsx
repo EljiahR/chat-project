@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { Person } from "../../../_lib/responseTypes";
 import Draggable from "react-draggable";
 import { buttonStyleGreenSmall, buttonStyleRedSmall, draggableSubMenuStyle } from "../../../_lib/tailwindShortcuts";
-import { SubMenuOptions } from "../UserControls";
 import instance from "../../../_lib/axiosBase";
+import { SubMenuOptions } from "../../../_lib/pageTypes";
 
 interface Props {
     handleNewFriend: (id: string) => void,
@@ -69,9 +69,9 @@ const CoreComponent = ({handleNewFriend, handleSubMenu, searchQuery, searchResul
                 {searchResults.length > 0 ?
                     searchResults.map(person => {
                         return (
-                            <div key={"people"+person.userId} className="flex justify-between">
+                            <div key={"people"+person.id} className="flex justify-between">
                                 <p>{person.userName}</p>
-                                <button className={buttonStyleGreenSmall} onClick={() => handleNewFriend(person.userId)} disabled={person.isFriend}>Add</button>
+                                <button className={buttonStyleGreenSmall} onClick={() => handleNewFriend(person.id)} disabled={person.isFriend}>Add</button>
                             </div>
                         )
                     }) :
