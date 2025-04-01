@@ -1,4 +1,4 @@
-interface Message {
+export interface Message {
     id: string,
     username: string,
     content: string,
@@ -6,7 +6,7 @@ interface Message {
     channelId: string
 }
 
-interface Channel {
+export interface Channel {
     id: string,
     name: string,
     owner: Person,
@@ -15,19 +15,19 @@ interface Channel {
     channelMessages: Message[]
 }
 
-interface Person {
+export interface Person {
     userName: string,
     userId: string,
     isFriend: boolean
 }
 
-interface Friend {
+export interface Friend {
     userName: string,
     userId: string,
     id: string // This is purely for entity adapter to function
 }
 
-interface UserInfo
+export interface UserInfo
 {
     id: string,
     userName: string,
@@ -35,4 +35,8 @@ interface UserInfo
     friends: Friend[]
 }
 
-export type {Message, UserInfo, Channel, Person, Friend};
+export interface SignIn
+{
+    message: string,
+    info: UserInfo
+}
