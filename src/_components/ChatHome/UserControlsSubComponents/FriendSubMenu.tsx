@@ -7,11 +7,12 @@ import { SubMenuOptions } from "../../../_lib/pageTypes";
 interface Props {
     friends: Person[],
     friendRequests: FriendRequest[],
+    handleAcceptFriendRequest: (initiatorId: string) => void,
     handleAddToChannel: (userId: string) => void,
     handleSubMenu: (option: SubMenuOptions) => void
 }
 
-const FriendSubMenu = ({friends, friendRequests, handleAddToChannel, handleSubMenu}: Props) => {
+const FriendSubMenu = ({friends, friendRequests, handleAcceptFriendRequest, handleAddToChannel, handleSubMenu}: Props) => {
     const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
     const nodeRef = useRef(null);
     
@@ -28,17 +29,17 @@ const FriendSubMenu = ({friends, friendRequests, handleAddToChannel, handleSubMe
 
     return (
         isMobile ?
-        <CoreComponent friends={friends} friendRequests={friendRequests} handleAddToChannel={handleAddToChannel} handleSubMenu={handleSubMenu} />
+        <CoreComponent friends={friends} friendRequests={friendRequests} handleAcceptFriendRequest={handleAcceptFriendRequest} handleAddToChannel={handleAddToChannel} handleSubMenu={handleSubMenu} />
         :
         <Draggable nodeRef={nodeRef} bounds="#chat-main">
             <div ref={nodeRef}>
-                <CoreComponent friends={friends} friendRequests={friendRequests} handleAddToChannel={handleAddToChannel} handleSubMenu={handleSubMenu} />
+                <CoreComponent friends={friends} friendRequests={friendRequests} handleAcceptFriendRequest={handleAcceptFriendRequest} handleAddToChannel={handleAddToChannel} handleSubMenu={handleSubMenu} />
             </div>
         </Draggable>
     )
 }
 
-const CoreComponent = ({friends, friendRequests, handleAddToChannel, handleSubMenu}: Props) => {
+const CoreComponent = ({friends, friendRequests, handleAcceptFriendRequest, handleAddToChannel, handleSubMenu}: Props) => {
     return (
         <div id="friend-list" className={draggableSubMenuStyle}>
             <div className="flex justify-between">
@@ -52,7 +53,7 @@ const CoreComponent = ({friends, friendRequests, handleAddToChannel, handleSubMe
                         return (
                             <div key={"friend-request"+friendRequest.id} className="flex justify-between">
                                 <p>{friendRequest.initiator.userName}</p>
-                                <button className={buttonStyleGreenSmall}>Accept</button>
+                                <button className={buttonStyleGreenSmall} onClick={() => handleAcceptFriendRequest(friendRequest.initiatorId)}>Accept</button>
                             </div>
                         )
                     })}

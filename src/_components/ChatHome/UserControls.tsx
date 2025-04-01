@@ -49,10 +49,21 @@ const UserControls = ({selectedChannel, selectedSubMenu, setSelectedSubMenu}: Pr
                 dispatch(addUserToChannel({channelId: selectedChannel.id, user: response.data.user}));
                 console.log(response.data.message);
             }
-        } catch(error) {
+        } catch (error) {
             console.error("Error adding user to channel", error);
         }
     };
+
+    const handleAcceptFriendRequest = async (initiatorId: string) => {
+        try {
+            const response = await instance.post("/User/ConfirmFriendRequest", {id: initiatorId}, {withCredentials: true});
+            if (response.status == 200) {
+                // TODO
+            }
+        } catch (error) {
+            console.error("Error accepting friend request", error);
+        }
+    }
     
     const navigate = useNavigate();
 
@@ -87,7 +98,7 @@ const UserControls = ({selectedChannel, selectedSubMenu, setSelectedSubMenu}: Pr
         {subMenu == SubMenuOptions.People ? 
             <PeopleSubMenu handleNewFriend={handleNewFriend} handleSubMenu={handleSubMenu} /> :
         subMenu == SubMenuOptions.Friends ?
-            <FriendSubMenu friends={friends} friendRequests={friendRequests} handleAddToChannel={handleAddToChannel} handleSubMenu={handleSubMenu} /> :
+            <FriendSubMenu friends={friends} friendRequests={friendRequests} handleAcceptFriendRequest={handleAcceptFriendRequest} handleAddToChannel={handleAddToChannel} handleSubMenu={handleSubMenu} /> :
             <></>
         }
         </>
