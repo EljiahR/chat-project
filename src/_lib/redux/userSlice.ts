@@ -25,6 +25,8 @@ export const userSlice = createSlice({
             state.userName = action.payload.userName;
             channelsAdapter.setAll(state.channels, action.payload.channels);
             friendsAdapter.setAll(state.friends, action.payload.friends);
+            channelInvitesAdapter.setAll(state.channelInvites, action.payload.channelInvites);
+            friendRequestsAdapter.setAll(state.friendRequests, action.payload.friendRequests);
         },
         clearUser: (state) => {
             state.id = "";
