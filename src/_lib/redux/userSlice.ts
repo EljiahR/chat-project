@@ -46,6 +46,12 @@ export const userSlice = createSlice({
             if (channel && !channel.members.concat(channel.admins).concat(channel.owner).some(u => u.id == user.id)) {
                 channel.members.push(user);
             }
+        },
+        removeFriendRequest: (state, action: PayloadAction<{requestId: string}>) => {
+            friendRequestsAdapter.removeOne(state.friendRequests, action.payload.requestId);
+        },
+        removeChannelInvite: (state, action: PayloadAction<{inviteId: string}>) => {
+            channelInvitesAdapter.removeOne(state.channelInvites, action.payload.inviteId);
         }
     }
 })
