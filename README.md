@@ -53,10 +53,6 @@ This is a **real-time chat application** with **instant messaging, user authenti
    npm run dev  
    ```  
 
-## **🌎 Deployment**  
-- **Frontend:** Hosted on **Netlify** → [Insert Netlify Link]  
-- **Backend:** Hosted on **Render** → [Insert Render Link]  
-
 ## **🛠️ Future Improvements**  
 - [ ] **Friend Requests & Accept/Reject System**  
 - [ ] **Typing indicators & read receipts**  
