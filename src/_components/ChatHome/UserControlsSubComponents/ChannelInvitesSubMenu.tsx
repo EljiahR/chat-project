@@ -6,7 +6,7 @@ import { buttonStyleGreenSmall, buttonStyleRedSmall, draggableSubMenuStyle } fro
 
 interface Props {
     channelInvites: ChannelInvite[],
-    handleAcceptChannelInvite: (channelId: string) => void,
+    handleAcceptChannelInvite: (inviteId: string, channelId: string) => void,
     handleSubMenu: (option: SubMenuOptions) => void
 }
 
@@ -49,7 +49,7 @@ const CoreComponent = ({channelInvites, handleAcceptChannelInvite, handleSubMenu
                         return (
                             <div key={"channel-invite-" + channelInvite.id} className="flex justify-between">
                                 <p>{channelInvite.channel.name}</p>
-                                <button className={buttonStyleGreenSmall} onClick={() => handleAcceptChannelInvite(channelInvite.channelId)}>Accept</button>
+                                <button className={buttonStyleGreenSmall} onClick={() => handleAcceptChannelInvite(channelInvite.id, channelInvite.channelId)}>Accept</button>
                             </div>
                         )
                     })}

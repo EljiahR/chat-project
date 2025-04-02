@@ -3,7 +3,7 @@ import instance from "../../_lib/axiosBase";
 import { Channel, Person } from "../../_lib/responseTypes";
 import React, { SetStateAction, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
-import { addFriend, addUserToChannel, selectAllChannelInvites, selectAllFriendRequests, selectAllFriends } from "../../_lib/redux/userSlice";
+import { addFriend, addUserToChannel, removeChannelInvite, removeFriendRequest, selectAllChannelInvites, selectAllFriendRequests, selectAllFriends } from "../../_lib/redux/userSlice";
 import { buttonStyleLight, buttonStyleLightDisabled, buttonStyleRed, mobileSubMenuStyle } from "../../_lib/tailwindShortcuts";
 import PeopleSubMenu from "./UserControlsSubComponents/PeopleSubMenu";
 import FriendSubMenu from "./UserControlsSubComponents/FriendSubMenu";
@@ -56,22 +56,22 @@ const UserControls = ({selectedChannel, selectedSubMenu, setSelectedSubMenu}: Pr
         }
     };
 
-    const handleAcceptFriendRequest = async (initiatorId: string) => {
+    const handleAcceptFriendRequest = async (requestId: string, initiatorId: string) => {
         try {
             const response = await instance.post("/User/ConfirmFriendRequest", {id: initiatorId}, {withCredentials: true});
             if (response.status == 200) {
-                // TODO
+                dispatch(removeFriendRequest({requestId}));
             }
         } catch (error) {
             console.error("Error accepting friend request", error);
         }
     }
 
-    const handleAcceptChannelInvite = async (channelId: string) => {
+    const handleAcceptChannelInvite = async (inviteId: string, channelId: string) => {
         try {
             const response = await instance.post("/Channel/ConfirmChannelInvite", {channelId}, {withCredentials: true});
             if (response.status == 200) {
-                // TODO
+                dispatch(removeChannelInvite({inviteId}));
             }
         } catch (error) {
             console.error("Error accepting channel invite", error);

@@ -7,7 +7,7 @@ import { SubMenuOptions } from "../../../_lib/pageTypes";
 interface Props {
     friends: Person[],
     friendRequests: FriendRequest[],
-    handleAcceptFriendRequest: (initiatorId: string) => void,
+    handleAcceptFriendRequest: (requestId: string, initiatorId: string) => void,
     handleAddToChannel: (userId: string) => void,
     handleSubMenu: (option: SubMenuOptions) => void
 }
@@ -53,7 +53,7 @@ const CoreComponent = ({friends, friendRequests, handleAcceptFriendRequest, hand
                         return (
                             <div key={"friend-request"+friendRequest.id} className="flex justify-between">
                                 <p>{friendRequest.initiator.userName}</p>
-                                <button className={buttonStyleGreenSmall} onClick={() => handleAcceptFriendRequest(friendRequest.initiatorId)}>Accept</button>
+                                <button className={buttonStyleGreenSmall} onClick={() => handleAcceptFriendRequest(friendRequest.id, friendRequest.initiatorId)}>Accept</button>
                             </div>
                         )
                     })}
