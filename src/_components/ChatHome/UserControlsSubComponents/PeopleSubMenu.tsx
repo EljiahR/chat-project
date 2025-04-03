@@ -2,11 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { Person } from "../../../_lib/responseTypes";
 import Draggable from "react-draggable";
 import { buttonStyleGreenSmall, buttonStyleRedSmall, draggableSubMenuStyle } from "../../../_lib/tailwindShortcuts";
-import { SubMenuOptions } from "../UserControls";
 import instance from "../../../_lib/axiosBase";
+import { SubMenuOptions } from "../../../_lib/pageTypes";
 
 interface Props {
-    handleNewFriend: (id: string) => void,
+    handleNewFriendRequest: (id: string) => void,
     handleSubMenu: (option: SubMenuOptions) => void
 }
 
@@ -17,7 +17,7 @@ interface CoreProps extends Props {
     setSearchQuery: React.Dispatch<React.SetStateAction<string>>
 }
 
-const PeopleSubMenu = ({handleNewFriend, handleSubMenu}: Props) => {
+const PeopleSubMenu = ({handleNewFriendRequest, handleSubMenu}: Props) => {
     const [searchQuery, setSearchQuery] = useState("");
     const [searchResults, setSearchResults] = useState<Person[]>([]);
     const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
@@ -48,17 +48,17 @@ const PeopleSubMenu = ({handleNewFriend, handleSubMenu}: Props) => {
     
     return (
         isMobile ?
-        <CoreComponent handleNewFriend={handleNewFriend} searchQuery={searchQuery} handleSubMenu={handleSubMenu} handleSearch={handleSearch} setSearchQuery={setSearchQuery} searchResults={searchResults} />
+        <CoreComponent handleNewFriendRequest={handleNewFriendRequest} searchQuery={searchQuery} handleSubMenu={handleSubMenu} handleSearch={handleSearch} setSearchQuery={setSearchQuery} searchResults={searchResults} />
         :
         <Draggable nodeRef={nodeRef} bounds="#chat-main">
             <div ref={nodeRef}>
-                <CoreComponent handleNewFriend={handleNewFriend} searchQuery={searchQuery} handleSubMenu={handleSubMenu} handleSearch={handleSearch} setSearchQuery={setSearchQuery} searchResults={searchResults} />
+                <CoreComponent handleNewFriendRequest={handleNewFriendRequest} searchQuery={searchQuery} handleSubMenu={handleSubMenu} handleSearch={handleSearch} setSearchQuery={setSearchQuery} searchResults={searchResults} />
             </div>
         </Draggable>
     )
 }
 
-const CoreComponent = ({handleNewFriend, handleSubMenu, searchQuery, searchResults, handleSearch, setSearchQuery}: CoreProps) => {    
+const CoreComponent = ({handleNewFriendRequest, handleSubMenu, searchQuery, searchResults, handleSearch, setSearchQuery}: CoreProps) => {    
     return (
         <div id="people-search" className={draggableSubMenuStyle}>
             <div className="flex justify-between gap-2">
@@ -69,9 +69,9 @@ const CoreComponent = ({handleNewFriend, handleSubMenu, searchQuery, searchResul
                 {searchResults.length > 0 ?
                     searchResults.map(person => {
                         return (
-                            <div key={"people"+person.userId} className="flex justify-between">
+                            <div key={"people"+person.id} className="flex justify-between">
                                 <p>{person.userName}</p>
-                                <button className={buttonStyleGreenSmall} onClick={() => handleNewFriend(person.userId)} disabled={person.isFriend}>Add</button>
+                                <button className={buttonStyleGreenSmall} onClick={() => handleNewFriendRequest(person.id)} disabled={person.isFriend}>Add</button>
                             </div>
                         )
                     }) :

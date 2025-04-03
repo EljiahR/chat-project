@@ -17,22 +17,55 @@ export interface Channel {
 
 export interface Person {
     userName: string,
-    userId: string,
+    id: string,
     isFriend: boolean
 }
 
-export interface Friend {
-    userName: string,
+export enum FriendshipStatus {
+    Friends,
+    Pending,
+    Blocked
+}
+
+export interface FriendRequest {
+    id: string,
+    initiatorId: string,
+    receiverId: string,
+    initiator: Person,
+    receiver: Person,
+    status: FriendshipStatus
+}
+
+export enum ChannelRole {
+    Creator,
+    Admin,
+    Member
+}
+
+export enum UserStatus {
+    Pending,
+    Active,
+    Banned
+}
+
+export interface ChannelInvite {
+    id: string,
     userId: string,
-    id: string // This is purely for entity adapter to function
+    user: Person,
+    channelId: string,
+    channel: Channel,
+    role: ChannelRole,
+    status: UserStatus
 }
 
 export interface UserInfo
 {
     id: string,
     userName: string,
-    channels: Channel[]
-    friends: Friend[]
+    channels: Channel[],
+    friends: Person[],
+    friendRequests: FriendRequest[],
+    channelInvites: []
 }
 
 export interface SignIn
