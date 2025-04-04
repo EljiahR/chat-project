@@ -1,12 +1,11 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import * as signalR from "@microsoft/signalr";
 import UserControls from "../_components/ChatHome/UserControls";
-import { Channel, ChatHistory, Message, UserInfo } from "../_lib/responseTypes";
+import { Channel, Message, UserInfo } from "../_lib/responseTypes";
 import ChannelList from "../_components/ChatHome/ChannelList";
 import Chat from "../_components/ChatHome/Chat";
 import HomeChannel from "../_components/ChatHome/HomeChannel";
 import ChannelMenu from "../_components/ChatHome/ChannelMenu";
-import backendUrl from "../_lib/backendUrl";
 import { buttonStyleLight, pageChatHomeStyle } from "../_lib/tailwindShortcuts";
 import { useAppSelector } from "../_lib/redux/hooks";
 import { SubMenu } from "../_lib/pageTypes";
@@ -27,66 +26,10 @@ const ChatHome: React.FC<Props> = () => {
     useEffect(() => {
         const previousTitle = document.title;
         document.title = "Home";
-        const getHubConntection = async () => {
-            const newConnection = new signalR.HubConnectionBuilder()
-                .withUrl(backendUrl + "/ChatHub")
-                .withAutomaticReconnect()
-                .build();
-
-            setConnection(newConnection);
-        };
-        getHubConntection();
         
+
         return (() => {document.title = previousTitle;});
     }, []);
-
-    //  
-    useEffect(() => {
-        if (connection){
-            connection.start()
-                .then(() => {
-                    connection.on("ReceiveMessageHistory", (channelHistories: ChatHistory) => {
-                        try {
-                            const messageHistory: Map<string, Message[]> = new Map<string, Message[]>([]);
-                            
-                            Object.keys(channelHistories).forEach(channelId => {
-                                
-                                messageHistory.set(channelId, channelHistories[channelId] as Message[]);
-                            });
-                       
-                            setMessages(messageHistory);
-                        } catch(error) {
-                            console.error("Error receiving history", error);
-                        }
-                    });
-                    
-                    connection.on("ReceiveMessage", (messageReceived: Message) => {
-                        
-                        setMessages(previousMessages => {
-                            const updatedMessages = new Map(previousMessages);
-
-                            const channelMessages = updatedMessages.get(messageReceived.channelId) || [];
-                            updatedMessages.set(messageReceived.channelId, [...channelMessages, messageReceived]);
-
-                            return updatedMessages;
-                        });
-                    });
-
-                    // DeleteMessage return messageId
-
-                    // GetChannelInvite returns ChannelUserDto
-
-                    // ReceiveNewMember returns {channelId, user: PersonDto}
-
-                    // ReceiveFriendRequest return FriendshipDto
-                    
-                    // ReceiveNewFriend returns PersonDto
-
-                    connection.invoke("AfterConnectedAsync");
-                })
-                .catch(e => console.log("Connection Error: ", e));
-        }
-    }, [connection]);
 
     const SendMessage = async (e: FormEvent) => {
         e.preventDefault();

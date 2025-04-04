@@ -3,7 +3,7 @@ import { Middleware } from "@reduxjs/toolkit";
 import backendUrl from "../backendUrl";
 import { ChannelUser, ChatHistory, Friendship, Message, Person } from "../responseTypes";
 import { startConnection } from "../redux/userSlice";
-import { addNewMessage, initializeChatHistory } from "../redux/chatHubSlice";
+import { addNewMessage, initializeChatHistory, setIsConnected } from "../redux/chatHubSlice";
 
 
 let connection: signalR.HubConnection;
@@ -49,8 +49,13 @@ export const signalRMiddleware: Middleware = store => next => action => {
                 });
 
                 connection.invoke("AfterConnectedAsync");
+                
+                store.dispatch(setIsConnected(true));
             })
-            .catch(e => console.log("Connection Error: ", e));
+            .catch (e => {
+                console.log("Connection Error: ", e)
+                store.dispatch(setIsConnected(false));
+            });
     }
 
     if (action)

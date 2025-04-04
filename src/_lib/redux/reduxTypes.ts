@@ -10,6 +10,7 @@ export interface UserInfoSlice extends Omit<UserInfo, "friends" | "channels" | "
 }
 
 export interface ChatHubSlice {
+    isConnected: boolean,
     message: string,
     messages: Record<string, Message[]>,
     selectedChannel: Channel | null,

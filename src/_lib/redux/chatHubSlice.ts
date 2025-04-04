@@ -4,6 +4,7 @@ import { SubMenu } from "../pageTypes";
 import { ChatHistory, Message } from "../responseTypes";
 
 const initialState: ChatHubSlice = {
+    isConnected: false,
     message: "",
     messages: {},
     selectedChannel: null,
@@ -14,6 +15,9 @@ export const chatHubSlice = createSlice({
     name: "chatHub",
     initialState,
     reducers: {
+        setIsConnected: (state, action: PayloadAction<boolean>) => {
+            state.isConnected = action.payload;
+        },
         initializeChatHistory: (state, action: PayloadAction<ChatHistory>) => {
             action.payload.array.forEach(pastMessage => {
                 state.messages[pastMessage.channelId].push(pastMessage);
@@ -25,6 +29,6 @@ export const chatHubSlice = createSlice({
         }
     }
 });
-export const { initializeChatHistory, addNewMessage } = chatHubSlice.actions;
+export const { setIsConnected, initializeChatHistory, addNewMessage } = chatHubSlice.actions;
 
 export default chatHubSlice.reducer;
