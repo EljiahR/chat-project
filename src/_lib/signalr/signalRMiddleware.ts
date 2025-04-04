@@ -3,6 +3,7 @@ import { Middleware } from "@reduxjs/toolkit";
 import backendUrl from "../backendUrl";
 import { ChannelUser, ChatHistory, Friendship, Message, Person } from "../responseTypes";
 import { startConnection } from "../redux/userSlice";
+import { addNewMessage, initializeChatHistory } from "../redux/chatHubSlice";
 
 
 let connection: signalR.HubConnection;
@@ -17,11 +18,11 @@ export const signalRMiddleware: Middleware = store => next => action => {
         connection.start()
             .then(() => {
                 connection.on("ReceiveMessageHistory", (channelHistories: ChatHistory) => {
-                    
+                    store.dispatch(initializeChatHistory(channelHistories));
                 });
                 
                 connection.on("ReceiveMessage", (messageReceived: Message) => {
-                    
+                    store.dispatch(addNewMessage(messageReceived));
                 });
 
                 // DeleteMessage return messageId
