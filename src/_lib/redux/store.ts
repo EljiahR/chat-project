@@ -1,10 +1,15 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "./userSlice";
+import chatHubReducer from "./chatHubSlice";
+import { signalRMiddleware } from "../signalr/signalRMiddleware";
 
 export const store = configureStore({
     reducer: {
-        user: userReducer
-    }
+        user: userReducer,
+        chatHub: chatHubReducer
+    },
+    middleware: (getDefaultMiddleware) => 
+        getDefaultMiddleware().concat(signalRMiddleware),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
