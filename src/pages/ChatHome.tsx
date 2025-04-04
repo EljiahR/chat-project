@@ -62,7 +62,6 @@ const ChatHome: React.FC<Props> = () => {
                         } catch(error) {
                             console.error("Error receiving history", error);
                         }
-                        
                     });
                     
                     connection.on("ReceiveMessage", (messageReceived: Message) => {
@@ -76,6 +75,16 @@ const ChatHome: React.FC<Props> = () => {
                             return updatedMessages;
                         });
                     });
+
+                    // DeleteMessage return messageId
+
+                    // GetChannelInvite returns ChannelUserDto
+
+                    // ReceiveNewMember returns {channelId, user: PersonDto}
+
+                    // ReceiveFriendRequest return FriendshipDto
+                    
+                    // ReceiveNewFriend returns PersonDto
 
                     connection.invoke("AfterConnectedAsync");
                 })
@@ -102,7 +111,15 @@ const ChatHome: React.FC<Props> = () => {
             updatedMessages.set(id, []);
             return updatedMessages;
         })
-    }
+    };
+
+    // SendChannelInvite requires channelId, newUserId
+
+    // AcceptChannelInvite requires channelId
+
+    // SendFriendRequest requires userId
+
+    // AcceptFriendRequest requires the initiators id
 
     const handleMessageInput = (value: string) => {
         if (value.length < 251) {
