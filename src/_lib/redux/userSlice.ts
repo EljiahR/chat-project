@@ -1,11 +1,11 @@
-import { createEntityAdapter, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Channel, ChannelInvite, FriendRequest, Person, UserInfo } from "../responseTypes";
+import { createAction, createEntityAdapter, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Channel, ChannelUser, Friendship, Person, UserInfo } from "../responseTypes";
 import { UserInfoSlice } from "./reduxTypes";
 
 const channelsAdapter = createEntityAdapter<Channel>();
 const friendsAdapter = createEntityAdapter<Person>();
-const channelInvitesAdapter = createEntityAdapter<ChannelInvite>();
-const friendRequestsAdapter = createEntityAdapter<FriendRequest>();
+const channelInvitesAdapter = createEntityAdapter<ChannelUser>();
+const friendRequestsAdapter = createEntityAdapter<Friendship>();
 
 const initialState: UserInfoSlice = {
     id: "",
@@ -62,7 +62,7 @@ export const userSlice = createSlice({
             channelsAdapter.addOne(state.channels, action.payload.newChannel);
         }
     }
-})
+});
 
 export const { setUser, clearUser, addFriend, addChannel, addUserToChannel, acceptFriendRequest, acceptChannelInvite } = userSlice.actions;
 export const {selectAll: selectAllFriends} = friendsAdapter.getSelectors((state: {user: UserInfoSlice}) => state.user.friends);
@@ -70,3 +70,6 @@ export const {selectAll: selectAllChannels} = channelsAdapter.getSelectors((stat
 export const {selectAll: selectAllFriendRequests} = friendRequestsAdapter.getSelectors((state:{user: UserInfoSlice}) => state.user.friendRequests);
 export const {selectAll: selectAllChannelInvites} = channelInvitesAdapter.getSelectors((state:{user: UserInfoSlice}) => state.user.channelInvites); 
 export default userSlice.reducer;
+
+// SignalR chathub actions
+export const startConnection = createAction("chat/connect");

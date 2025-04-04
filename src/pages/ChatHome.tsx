@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import * as signalR from "@microsoft/signalr";
 import UserControls from "../_components/ChatHome/UserControls";
-import { Channel, Message, UserInfo } from "../_lib/responseTypes";
+import { Channel, ChatHistory, Message, UserInfo } from "../_lib/responseTypes";
 import ChannelList from "../_components/ChatHome/ChannelList";
 import Chat from "../_components/ChatHome/Chat";
 import HomeChannel from "../_components/ChatHome/HomeChannel";
@@ -10,10 +10,6 @@ import backendUrl from "../_lib/backendUrl";
 import { buttonStyleLight, pageChatHomeStyle } from "../_lib/tailwindShortcuts";
 import { useAppSelector } from "../_lib/redux/hooks";
 import { SubMenu } from "../_lib/pageTypes";
-
-interface ChatHistory {
-    [channelId: string]: Message[];
-}
 
 interface Props {
     userInfoReceived: UserInfo
@@ -40,7 +36,7 @@ const ChatHome: React.FC<Props> = () => {
             setConnection(newConnection);
         };
         getHubConntection();
-
+        
         return (() => {document.title = previousTitle;});
     }, []);
 

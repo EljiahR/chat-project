@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import instance from "../../_lib/axiosBase";
-import { Channel, ChannelRole, FriendRequest, Person } from "../../_lib/responseTypes";
+import { Channel, ChannelRole, Friendship, Person } from "../../_lib/responseTypes";
 import React, { SetStateAction, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
 import { acceptChannelInvite, acceptFriendRequest, selectAllChannelInvites, selectAllFriendRequests, selectAllFriends } from "../../_lib/redux/userSlice";
@@ -53,7 +53,7 @@ const UserControls = ({selectedChannel, selectedSubMenu, setSelectedSubMenu}: Pr
         }
     };
 
-    const handleAcceptFriendRequest = async (request: FriendRequest) => {
+    const handleAcceptFriendRequest = async (request: Friendship) => {
         try {
             const response = await instance.post("/User/ConfirmFriendRequest", {id: request.initiatorId}, {withCredentials: true});
             if (response.status == 200) {
