@@ -51,12 +51,6 @@ const ChatHome: React.FC<Props> = () => {
 
     // AcceptFriendRequest requires the initiators id
 
-    const handleMessageInput = (value: string) => {
-        if (value.length < 251) {
-            dispatch(setMessageInput(value));
-        }
-    }
-
     const handleChannelMenuDisplay = (forceClose = false) => {
         const menu = document.querySelector("#channel-menu") as HTMLDivElement;
         if (menu == null) return;
@@ -110,11 +104,8 @@ const ChatHome: React.FC<Props> = () => {
                 <HomeChannel /> 
                 :
                 <Chat 
-                    channelName={selectedChannel.name} 
                     chatMessages={[...chatMessages!].reverse()} 
                     handleChannelMenuDisplay={handleChannelMenuDisplay}
-                    message={message} 
-                    handleMessageInput={handleMessageInput} 
                     SendMessage={SendMessage}
                 />
                 }

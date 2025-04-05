@@ -1,4 +1,4 @@
-import { createAction, createEntityAdapter, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createEntityAdapter, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Channel, ChannelUser, Friendship, Person, UserInfo } from "../responseTypes";
 import { UserInfoSlice } from "./reduxTypes";
 

@@ -1,17 +1,18 @@
+import { setMessageInput } from "../../_lib/redux/chatHubSlice";
+import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
 import { buttonStyleBlue } from "../../_lib/tailwindShortcuts";
 import MessageControls from "./MessageControls";
 import { FormEvent } from "react";
 
 interface Props {
-    channelName: string;
     chatMessages: JSX.Element[];
     handleChannelMenuDisplay: () => void;
-    message: string;
-    handleMessageInput: (value: string) => void;
     SendMessage: (e: FormEvent) => void;
 }
 
-const Chat: React.FC<Props> = ({channelName, chatMessages, handleChannelMenuDisplay, message, handleMessageInput, SendMessage}) => {
+const Chat: React.FC<Props> = ({chatMessages, handleChannelMenuDisplay, SendMessage}) => {
+    const channelName = useAppSelector((state) => state.chatHub.selectedChannel?.name);
+
     return (
             <div id="chat" className="h-full flex flex-col">
                 <div id="chat-header" className="hidden sm:inline">
@@ -22,7 +23,7 @@ const Chat: React.FC<Props> = ({channelName, chatMessages, handleChannelMenuDisp
                 <div id="chat-box" className="grow overflow-y-auto h-50 flex flex-col-reverse">
                     {chatMessages}
                 </div>
-                <MessageControls message={message} handleMessageInput={handleMessageInput} SendMessage={SendMessage} />
+                <MessageControls SendMessage={SendMessage} />
             </div>
     );
 }

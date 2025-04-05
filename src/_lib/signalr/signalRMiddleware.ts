@@ -2,7 +2,7 @@ import * as signalR from "@microsoft/signalr";
 import { Middleware } from "@reduxjs/toolkit";
 import backendUrl from "../backendUrl";
 import { ChannelUser, ChatHistory, Friendship, Message, Person } from "../responseTypes";
-import { addNewMessage, clearInput, initializeChatHistory, sendMessageToConnection, setIsConnected, startConnection } from "../redux/chatHubSlice";
+import { addNewMessage, clearMessageInput, initializeChatHistory, sendMessageToConnection, setIsConnected, startConnection } from "../redux/chatHubSlice";
 
 
 let connection: signalR.HubConnection;
@@ -60,7 +60,7 @@ export const signalRMiddleware: Middleware = store => next => action => {
 
     if (sendMessageToConnection.match(action)) {
         connection?.invoke("SendMessage", action.payload.message, action.payload.channelId);
-        store.dispatch(clearInput());
+        store.dispatch(clearMessageInput());
     }
 
     return next(action);
