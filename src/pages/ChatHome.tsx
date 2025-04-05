@@ -9,6 +9,7 @@ import { buttonStyleLight, pageChatHomeStyle } from "../_lib/tailwindShortcuts";
 import { useAppDispatch, useAppSelector } from "../_lib/redux/hooks";
 import { SubMenu } from "../_lib/pageTypes";
 import { sendMessageToConnection, setSelectedSubMenu, startConnection } from "../_lib/redux/chatHubSlice";
+import { messageSortByDateReverse } from "../_lib/sortFunctions";
 
 interface Props {
     userInfoReceived: UserInfo
@@ -69,7 +70,7 @@ const ChatHome: React.FC<Props> = () => {
             return [];
         }
         else {
-            const channelMessages = messages[selectedChannel.id];
+            const channelMessages = messages[selectedChannel.id] ? messages[selectedChannel.id].slice().sort(messageSortByDateReverse) : [];
             if (channelMessages) {
                 return channelMessages.map((channelMessage, index) => {
                     return <div className="chat-message" key={index}>{`${channelMessage.username}: ${channelMessage.content}`}</div>
