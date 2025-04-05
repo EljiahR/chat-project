@@ -1,11 +1,11 @@
 import { createEntityAdapter, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Channel, ChannelInvite, FriendRequest, Person, UserInfo } from "../responseTypes";
+import { Channel, ChannelUser, Friendship, Person, UserInfo } from "../responseTypes";
 import { UserInfoSlice } from "./reduxTypes";
 
 const channelsAdapter = createEntityAdapter<Channel>();
 const friendsAdapter = createEntityAdapter<Person>();
-const channelInvitesAdapter = createEntityAdapter<ChannelInvite>();
-const friendRequestsAdapter = createEntityAdapter<FriendRequest>();
+const channelInvitesAdapter = createEntityAdapter<ChannelUser>();
+const friendRequestsAdapter = createEntityAdapter<Friendship>();
 
 const initialState: UserInfoSlice = {
     id: "",
@@ -33,6 +33,8 @@ export const userSlice = createSlice({
             state.userName = "";
             channelsAdapter.removeAll(state.channels);
             friendsAdapter.removeAll(state.friends);
+            channelInvitesAdapter.removeAll(state.channelInvites);
+            friendRequestsAdapter.removeAll(state.friendRequests);
         },
         addFriend: (state, action: PayloadAction<Person>) => {
             friendsAdapter.addOne(state.friends, action.payload);
@@ -62,7 +64,7 @@ export const userSlice = createSlice({
             channelsAdapter.addOne(state.channels, action.payload.newChannel);
         }
     }
-})
+});
 
 export const { setUser, clearUser, addFriend, addChannel, addUserToChannel, acceptFriendRequest, acceptChannelInvite } = userSlice.actions;
 export const {selectAll: selectAllFriends} = friendsAdapter.getSelectors((state: {user: UserInfoSlice}) => state.user.friends);

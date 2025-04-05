@@ -27,7 +27,7 @@ export enum FriendshipStatus {
     Blocked
 }
 
-export interface FriendRequest {
+export interface Friendship {
     id: string,
     initiatorId: string,
     receiverId: string,
@@ -48,7 +48,7 @@ export enum UserStatus {
     Banned
 }
 
-export interface ChannelInvite {
+export interface ChannelUser {
     id: string,
     userId: string,
     user: Person,
@@ -64,12 +64,16 @@ export interface UserInfo
     userName: string,
     channels: Channel[],
     friends: Person[],
-    friendRequests: FriendRequest[],
-    channelInvites: []
+    friendRequests: Friendship[],
+    channelInvites: ChannelUser[]
 }
 
 export interface SignIn
 {
     message: string,
     info: UserInfo
+}
+
+export interface ChatHistory {
+    [channelId: string]: Message[];
 }
