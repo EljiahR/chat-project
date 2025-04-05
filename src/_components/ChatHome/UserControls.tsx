@@ -3,13 +3,13 @@ import instance from "../../_lib/axiosBase";
 import { Channel, ChannelRole, Friendship, Person } from "../../_lib/responseTypes";
 import React from "react";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
-import { acceptChannelInvite, acceptFriendRequest } from "../../_lib/redux/userSlice";
+import { acceptChannelInvite, acceptFriendRequest, clearUser } from "../../_lib/redux/userSlice";
 import { buttonStyleLight, buttonStyleLightDisabled, buttonStyleRed, mobileSubMenuStyle } from "../../_lib/tailwindShortcuts";
 import PeopleSubMenu from "./UserControlsSubComponents/PeopleSubMenu";
 import FriendSubMenu from "./UserControlsSubComponents/FriendSubMenu";
 import { SubMenu, SubMenuOptions } from "../../_lib/pageTypes";
 import ChannelInvitesSubMenu from "./UserControlsSubComponents/ChannelInvitesSubMenu";
-import { setSelectedSubMenuOption } from "../../_lib/redux/chatHubSlice";
+import { clearChatHub, setSelectedSubMenuOption } from "../../_lib/redux/chatHubSlice";
 
 const UserControls = () => {
     const dispatch = useAppDispatch();
@@ -68,6 +68,8 @@ const UserControls = () => {
         e.preventDefault();
         try {
             await instance.post("/user/signout", {}, {withCredentials: true});
+            dispatch(clearUser());
+            dispatch(clearChatHub());
             console.log("Logged out successfully!");
         } catch (error) {
             console.error(error);

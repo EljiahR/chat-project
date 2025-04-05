@@ -21,6 +21,7 @@ export const signalRMiddleware: Middleware = store => next => action => {
                 });
                 
                 connection.on("ReceiveMessage", (messageReceived: Message) => {
+                    console.log("ReceiveMessage ran.");
                     store.dispatch(addNewMessage(messageReceived));
                 });
 

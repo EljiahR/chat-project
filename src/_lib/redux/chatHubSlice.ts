@@ -16,13 +16,21 @@ export const chatHubSlice = createSlice({
     name: "chatHub",
     initialState,
     reducers: {
+        clearChatHub: (state) => {
+            state.isConnected = false;
+            state.message = "";
+            state.messages = {};
+            state.selectedChannel = null;
+            state.selectedSubMenu = SubMenu.None;
+            state.selectedSubMenuOptions = SubMenuOptions.None;
+        },
         setIsConnected: (state, action: PayloadAction<boolean>) => {
             state.isConnected = action.payload;
         },
         initializeChatHistory: (state, action: PayloadAction<ChatHistory>) => {
-            action.payload.array.forEach(pastMessage => {
-                state.messages[pastMessage.channelId].push(pastMessage);
-            });
+            for (const [channelId, messageHistory] of Object.entries(action.payload)) {
+                state.messages[channelId] = messageHistory;
+            };
         },
         addNewMessage: (state, action: PayloadAction<Message>) => {
             const newMessage = action.payload;
@@ -53,7 +61,7 @@ export const chatHubSlice = createSlice({
         }
     }
 });
-export const { setIsConnected, initializeChatHistory, addNewMessage, setMessageInput, clearMessageInput, addNewlyCreatedChannel, setSelectedChannel, setSelectedSubMenu, setSelectedSubMenuOption } = chatHubSlice.actions;
+export const { clearChatHub, setIsConnected, initializeChatHistory, addNewMessage, setMessageInput, clearMessageInput, addNewlyCreatedChannel, setSelectedChannel, setSelectedSubMenu, setSelectedSubMenuOption } = chatHubSlice.actions;
 
 export default chatHubSlice.reducer;
 

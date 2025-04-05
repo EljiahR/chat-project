@@ -33,6 +33,8 @@ export const userSlice = createSlice({
             state.userName = "";
             channelsAdapter.removeAll(state.channels);
             friendsAdapter.removeAll(state.friends);
+            channelInvitesAdapter.removeAll(state.channelInvites);
+            friendRequestsAdapter.removeAll(state.friendRequests);
         },
         addFriend: (state, action: PayloadAction<Person>) => {
             friendsAdapter.addOne(state.friends, action.payload);
