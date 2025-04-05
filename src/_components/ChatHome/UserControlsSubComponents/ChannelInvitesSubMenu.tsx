@@ -1,16 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import Draggable from "react-draggable";
-import { ChannelInvite } from "../../../_lib/responseTypes";
 import { SubMenuOptions } from "../../../_lib/pageTypes";
 import { buttonStyleGreenSmall, buttonStyleRedSmall, draggableSubMenuStyle } from "../../../_lib/tailwindShortcuts";
+import { useAppDispatch, useAppSelector } from "../../../_lib/redux/hooks";
+import { setSelectedSubMenuOption } from "../../../_lib/redux/chatHubSlice";
+import { selectAllChannelInvites } from "../../../_lib/redux/userSlice";
 
 interface Props {
-    channelInvites: ChannelInvite[],
     handleAcceptChannelInvite: (inviteId: string, channelId: string) => void,
-    handleSubMenu: (option: SubMenuOptions) => void
 }
 
-const ChannelInvitesSubMenu = ({channelInvites, handleAcceptChannelInvite, handleSubMenu}: Props) => {
+const ChannelInvitesSubMenu = ({handleAcceptChannelInvite}: Props) => {
     const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
     const nodeRef = useRef(null);
         
@@ -26,22 +26,25 @@ const ChannelInvitesSubMenu = ({channelInvites, handleAcceptChannelInvite, handl
     
     return (
         isMobile ?
-            <CoreComponent channelInvites={channelInvites} handleAcceptChannelInvite={handleAcceptChannelInvite} handleSubMenu={handleSubMenu}  />
+            <CoreComponent handleAcceptChannelInvite={handleAcceptChannelInvite} />
             :
             <Draggable nodeRef={nodeRef} bounds="#chat-main">
                 <div ref={nodeRef}>
-                    <CoreComponent channelInvites={channelInvites} handleAcceptChannelInvite={handleAcceptChannelInvite} handleSubMenu={handleSubMenu} />
+                    <CoreComponent handleAcceptChannelInvite={handleAcceptChannelInvite} />
                 </div>
             </Draggable>
     )
 }
 
-const CoreComponent = ({channelInvites, handleAcceptChannelInvite, handleSubMenu}: Props) => {
+const CoreComponent = ({handleAcceptChannelInvite}: Props) => {
+    const dispatch = useAppDispatch();
+    const channelInvites = useAppSelector(selectAllChannelInvites);
+
     return (
         <div className={draggableSubMenuStyle}>
             <div className="flex justify-between">
                 <h3>Channel Invites</h3>
-                <button className={buttonStyleRedSmall} onClick={() => handleSubMenu(SubMenuOptions.None)}>X</button>
+                <button className={buttonStyleRedSmall} onClick={() => dispatch(setSelectedSubMenuOption(SubMenuOptions.None))}>X</button>
             </div>
             {channelInvites.length > 0 ?
                 <div id="channel-invites">

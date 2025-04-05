@@ -1,36 +1,21 @@
 import { useNavigate } from "react-router-dom";
 import instance from "../../_lib/axiosBase";
 import { Channel, ChannelRole, Friendship, Person } from "../../_lib/responseTypes";
-import React, { SetStateAction, useState } from "react";
+import React from "react";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
-import { acceptChannelInvite, acceptFriendRequest, selectAllChannelInvites, selectAllFriendRequests, selectAllFriends } from "../../_lib/redux/userSlice";
+import { acceptChannelInvite, acceptFriendRequest } from "../../_lib/redux/userSlice";
 import { buttonStyleLight, buttonStyleLightDisabled, buttonStyleRed, mobileSubMenuStyle } from "../../_lib/tailwindShortcuts";
 import PeopleSubMenu from "./UserControlsSubComponents/PeopleSubMenu";
 import FriendSubMenu from "./UserControlsSubComponents/FriendSubMenu";
 import { SubMenu, SubMenuOptions } from "../../_lib/pageTypes";
 import ChannelInvitesSubMenu from "./UserControlsSubComponents/ChannelInvitesSubMenu";
+import { setSelectedSubMenuOption } from "../../_lib/redux/chatHubSlice";
 
-interface Props {
-    selectedChannel: Channel | null;
-    selectedSubMenu: SubMenu;
-    setSelectedSubMenu: React.Dispatch<SetStateAction<SubMenu>>
-}
-
-const UserControls = ({selectedChannel, selectedSubMenu, setSelectedSubMenu}: Props) => {
-    const friends = useAppSelector(selectAllFriends);
-    const friendRequests = useAppSelector(selectAllFriendRequests);
-    const channelInvites = useAppSelector(selectAllChannelInvites);
+const UserControls = () => {
     const dispatch = useAppDispatch();
-    const [subMenu, setSubMenu] = useState<SubMenuOptions>(SubMenuOptions.None);
-
-    const handleSubMenu = (option: SubMenuOptions) => {
-        if (subMenu == option) {
-            setSubMenu(SubMenuOptions.None);
-        } else {
-            setSubMenu(option);
-            setSelectedSubMenu(SubMenu.None)
-        }
-    }
+    const selectedChannel = useAppSelector((state) => state.chatHub.selectedChannel);
+    const subMenu = useAppSelector((state) => state.chatHub.selectedSubMenu);
+    const subMenuOption = useAppSelector((state) => state.chatHub.selectedSubMenuOptions);
 
     const handleNewFriendRequest = async (id: string) => {
         try {
@@ -93,14 +78,14 @@ const UserControls = ({selectedChannel, selectedSubMenu, setSelectedSubMenu}: Pr
     
     return (
         <>
-        <div className={(selectedSubMenu == SubMenu.UserInfo ? mobileSubMenuStyle + " " : "") + "flex flex-col gap-2"} id="nav-bar">
-            <button className={buttonStyleLight} id="people-btn" onClick={() => handleSubMenu(SubMenuOptions.People)}>
+        <div className={(subMenu == SubMenu.UserInfo ? mobileSubMenuStyle + " " : "") + "flex flex-col gap-2"} id="nav-bar">
+            <button className={buttonStyleLight} id="people-btn" onClick={() => dispatch(setSelectedSubMenuOption(SubMenuOptions.People))}>
                 People
             </button>
-            <button className={buttonStyleLight}  id="friends-btn" onClick={() => handleSubMenu(SubMenuOptions.Friends)}>
+            <button className={buttonStyleLight}  id="friends-btn" onClick={() => dispatch(setSelectedSubMenuOption(SubMenuOptions.Friends))}>
                 Friends
             </button>
-            <button className={buttonStyleLight}  id="invites-btn" onClick={() => handleSubMenu(SubMenuOptions.ChannelInites)}>
+            <button className={buttonStyleLight}  id="invites-btn" onClick={() => dispatch(setSelectedSubMenuOption(SubMenuOptions.ChannelInvites))}>
                 Invites
             </button>
             <button className={buttonStyleLightDisabled}  id="profile-btn" disabled={true}>
@@ -110,14 +95,14 @@ const UserControls = ({selectedChannel, selectedSubMenu, setSelectedSubMenu}: Pr
                 Sign Out
             </button>
         </div>
-        {subMenu == SubMenuOptions.People ? 
-            <PeopleSubMenu handleNewFriendRequest={handleNewFriendRequest} handleSubMenu={handleSubMenu} /> 
+        {subMenuOption == SubMenuOptions.People ? 
+            <PeopleSubMenu handleNewFriendRequest={handleNewFriendRequest} /> 
         :
-        subMenu == SubMenuOptions.Friends ?
-            <FriendSubMenu friends={friends} friendRequests={friendRequests} handleAcceptFriendRequest={handleAcceptFriendRequest} handleInviteToChannel={handleInviteToChannel} handleSubMenu={handleSubMenu} /> 
+        subMenuOption == SubMenuOptions.Friends ?
+            <FriendSubMenu handleAcceptFriendRequest={handleAcceptFriendRequest} handleInviteToChannel={handleInviteToChannel} /> 
         :
-        subMenu == SubMenuOptions.ChannelInites ?    
-            <ChannelInvitesSubMenu channelInvites={channelInvites} handleAcceptChannelInvite={handleAcceptChannelInvite} handleSubMenu={handleSubMenu} /> 
+        subMenuOption == SubMenuOptions.ChannelInvites ?    
+            <ChannelInvitesSubMenu handleAcceptChannelInvite={handleAcceptChannelInvite} /> 
         :
             <></>
         }

@@ -8,7 +8,7 @@ import ChannelMenu from "../_components/ChatHome/ChannelMenu";
 import { buttonStyleLight, pageChatHomeStyle } from "../_lib/tailwindShortcuts";
 import { useAppDispatch, useAppSelector } from "../_lib/redux/hooks";
 import { SubMenu } from "../_lib/pageTypes";
-import { addNewlyCreatedChannel, sendMessageToConnection, setMessageInput, setSelectedSubMenu, startConnection } from "../_lib/redux/chatHubSlice";
+import { sendMessageToConnection, setMessageInput, setSelectedSubMenu, startConnection } from "../_lib/redux/chatHubSlice";
 
 interface Props {
     userInfoReceived: UserInfo
@@ -41,10 +41,6 @@ const ChatHome: React.FC<Props> = () => {
                 console.log(e);
             }
         }
-    };
-
-    const addNewChannel = (id: string) => {
-        dispatch(addNewlyCreatedChannel(id));
     };
 
     // SendChannelInvite requires channelId, newUserId

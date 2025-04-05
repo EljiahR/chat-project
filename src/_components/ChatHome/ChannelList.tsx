@@ -3,26 +3,15 @@ import {  Channel } from "../../_lib/responseTypes";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
 import { addChannel, selectAllChannels } from "../../_lib/redux/userSlice";
 import { buttonStyleLight, mobileSubMenuStyle } from "../../_lib/tailwindShortcuts";
-import React from "react";
 import { SubMenu } from "../../_lib/pageTypes";
+import { addNewlyCreatedChannel, setSelectedChannel } from "../../_lib/redux/chatHubSlice";
 
-interface Props {
-    setSelectedChannel: React.Dispatch<React.SetStateAction<Channel | null>>;
-    addNewChannel: (id: string) => void;
-    selectedSubMenu: SubMenu;
-    setSelectedSubMenu: React.Dispatch<React.SetStateAction<SubMenu>>;
-}
-
-const ChannelList = ({setSelectedChannel, addNewChannel, selectedSubMenu, setSelectedSubMenu}: Props) => {
+const ChannelList = () => {
     const userInfo = useAppSelector((state) => state.user);
     const channels = useAppSelector(selectAllChannels);
+    const selectedSubMenu = useAppSelector((state) => state.chatHub.selectedSubMenu)
     const dispatch = useAppDispatch();
     
-    const handleSelectedChannel = (channel: Channel) => {
-        setSelectedChannel(channel);
-        setSelectedSubMenu(SubMenu.None);
-    }
-
     const handleNewChannel = async () => {
         const newChannelName = prompt("Enter new channel name: ");
         if (newChannelName == null || newChannelName.trim() == "") return;
@@ -34,8 +23,7 @@ const ChannelList = ({setSelectedChannel, addNewChannel, selectedSubMenu, setSel
             const createdChannel: Channel = response.data;
 
             dispatch(addChannel(createdChannel));
-            addNewChannel(createdChannel.id);
-            setSelectedSubMenu(SubMenu.None);
+            dispatch(addNewlyCreatedChannel(createdChannel.id));
         } catch (error) {
             console.error("Failed to create channel: " + error);
         }
@@ -46,7 +34,7 @@ const ChannelList = ({setSelectedChannel, addNewChannel, selectedSubMenu, setSel
             {userInfo != null ? 
                 channels.map(channel => {
                     return (
-                        <button key={channel.id} title={channel.name} className={`${buttonStyleLight} channel-selector`} onClick={() => handleSelectedChannel(channel)}>
+                        <button key={channel.id} title={channel.name} className={`${buttonStyleLight} channel-selector`} onClick={() => dispatch(setSelectedChannel(channel))}>
                             {channel.name}
                         </button>
                     )

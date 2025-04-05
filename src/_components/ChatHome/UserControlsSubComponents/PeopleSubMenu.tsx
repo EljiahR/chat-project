@@ -4,10 +4,11 @@ import Draggable from "react-draggable";
 import { buttonStyleGreenSmall, buttonStyleRedSmall, draggableSubMenuStyle } from "../../../_lib/tailwindShortcuts";
 import instance from "../../../_lib/axiosBase";
 import { SubMenuOptions } from "../../../_lib/pageTypes";
+import { useAppDispatch } from "../../../_lib/redux/hooks";
+import { setSelectedSubMenuOption } from "../../../_lib/redux/chatHubSlice";
 
 interface Props {
     handleNewFriendRequest: (id: string) => void,
-    handleSubMenu: (option: SubMenuOptions) => void
 }
 
 interface CoreProps extends Props {
@@ -17,7 +18,7 @@ interface CoreProps extends Props {
     setSearchQuery: React.Dispatch<React.SetStateAction<string>>
 }
 
-const PeopleSubMenu = ({handleNewFriendRequest, handleSubMenu}: Props) => {
+const PeopleSubMenu = ({handleNewFriendRequest}: Props) => {
     const [searchQuery, setSearchQuery] = useState("");
     const [searchResults, setSearchResults] = useState<Person[]>([]);
     const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
@@ -48,22 +49,24 @@ const PeopleSubMenu = ({handleNewFriendRequest, handleSubMenu}: Props) => {
     
     return (
         isMobile ?
-        <CoreComponent handleNewFriendRequest={handleNewFriendRequest} searchQuery={searchQuery} handleSubMenu={handleSubMenu} handleSearch={handleSearch} setSearchQuery={setSearchQuery} searchResults={searchResults} />
+        <CoreComponent handleNewFriendRequest={handleNewFriendRequest} searchQuery={searchQuery} handleSearch={handleSearch} setSearchQuery={setSearchQuery} searchResults={searchResults} />
         :
         <Draggable nodeRef={nodeRef} bounds="#chat-main">
             <div ref={nodeRef}>
-                <CoreComponent handleNewFriendRequest={handleNewFriendRequest} searchQuery={searchQuery} handleSubMenu={handleSubMenu} handleSearch={handleSearch} setSearchQuery={setSearchQuery} searchResults={searchResults} />
+                <CoreComponent handleNewFriendRequest={handleNewFriendRequest} searchQuery={searchQuery} handleSearch={handleSearch} setSearchQuery={setSearchQuery} searchResults={searchResults} />
             </div>
         </Draggable>
     )
 }
 
-const CoreComponent = ({handleNewFriendRequest, handleSubMenu, searchQuery, searchResults, handleSearch, setSearchQuery}: CoreProps) => {    
+const CoreComponent = ({handleNewFriendRequest, searchQuery, searchResults, handleSearch, setSearchQuery}: CoreProps) => {    
+    const dispatch = useAppDispatch();
+    
     return (
         <div id="people-search" className={draggableSubMenuStyle}>
             <div className="flex justify-between gap-2">
                 <input type="text" id="people-search-bar" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={(e) => handleSearch(e)} placeholder="Search by name..." />
-                <button className={buttonStyleRedSmall} onClick={() => handleSubMenu(SubMenuOptions.None)}>X</button>
+                <button className={buttonStyleRedSmall} onClick={() => dispatch(setSelectedSubMenuOption(SubMenuOptions.None))}>X</button>
             </div>
             <div id="search-results" className="flex flex-col gap-2 mt-auto">
                 {searchResults.length > 0 ?

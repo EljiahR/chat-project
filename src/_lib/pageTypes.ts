@@ -7,6 +7,6 @@ export enum SubMenu {
 export enum SubMenuOptions {
     People,
     Friends,
-    ChannelInites,
+    ChannelInvites,
     None
 }

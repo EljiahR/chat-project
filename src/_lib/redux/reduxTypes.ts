@@ -1,6 +1,6 @@
 import { EntityState } from "@reduxjs/toolkit";
 import { Channel, ChannelUser, Friendship, Message, Person, UserInfo } from "../responseTypes";
-import { SubMenu } from "../pageTypes";
+import { SubMenu, SubMenuOptions } from "../pageTypes";
 
 export interface UserInfoSlice extends Omit<UserInfo, "friends" | "channels" | "friendRequests" | "channelInvites">{
     friends: EntityState<Person, string>,
@@ -15,4 +15,5 @@ export interface ChatHubSlice {
     messages: Record<string, Message[]>,
     selectedChannel: Channel | null,
     selectedSubMenu: SubMenu,
+    selectedSubMenuOptions: SubMenuOptions
 }
