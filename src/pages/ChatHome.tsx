@@ -44,14 +44,6 @@ const ChatHome: React.FC<Props> = () => {
         }
     };
 
-    // SendChannelInvite requires channelId, newUserId
-
-    // AcceptChannelInvite requires channelId
-
-    // SendFriendRequest requires userId
-
-    // AcceptFriendRequest requires the initiators id
-
     const handleChannelMenuDisplay = (forceClose = false) => {
         const menu = document.querySelector("#channel-menu") as HTMLDivElement;
         if (menu == null) return;
