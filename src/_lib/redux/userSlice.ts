@@ -70,6 +70,3 @@ export const {selectAll: selectAllChannels} = channelsAdapter.getSelectors((stat
 export const {selectAll: selectAllFriendRequests} = friendRequestsAdapter.getSelectors((state:{user: UserInfoSlice}) => state.user.friendRequests);
 export const {selectAll: selectAllChannelInvites} = channelInvitesAdapter.getSelectors((state:{user: UserInfoSlice}) => state.user.channelInvites); 
 export default userSlice.reducer;
-
-// SignalR chathub actions
-export const startConnection = createAction("chat/connect");

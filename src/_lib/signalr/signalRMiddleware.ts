@@ -2,8 +2,7 @@ import * as signalR from "@microsoft/signalr";
 import { Middleware } from "@reduxjs/toolkit";
 import backendUrl from "../backendUrl";
 import { ChannelUser, ChatHistory, Friendship, Message, Person } from "../responseTypes";
-import { startConnection } from "../redux/userSlice";
-import { addNewMessage, initializeChatHistory, setIsConnected } from "../redux/chatHubSlice";
+import { addNewMessage, clearInput, initializeChatHistory, sendMessageToConnection, setIsConnected, startConnection } from "../redux/chatHubSlice";
 
 
 let connection: signalR.HubConnection;
@@ -48,7 +47,8 @@ export const signalRMiddleware: Middleware = store => next => action => {
 
                 });
 
-                connection.invoke("AfterConnectedAsync");
+                connection.invoke("AfterConnectedAsync")
+                    .catch(err => console.log("AfterConnected failed:", err));
                 
                 store.dispatch(setIsConnected(true));
             })
@@ -58,7 +58,10 @@ export const signalRMiddleware: Middleware = store => next => action => {
             });
     }
 
-    if (action)
+    if (sendMessageToConnection.match(action)) {
+        connection?.invoke("SendMessage", action.payload.message, action.payload.channelId);
+        store.dispatch(clearInput());
+    }
 
     return next(action);
 };
