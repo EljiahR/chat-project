@@ -2,7 +2,7 @@ import * as signalR from "@microsoft/signalr";
 import { Middleware } from "@reduxjs/toolkit";
 import backendUrl from "../backendUrl";
 import { ChannelUser, ChatHistory, Friendship, Message, Person } from "../responseTypes";
-import { addNewMessage, clearMessageInput, initializeChatHistory, sendMessageToConnection, setIsConnected, startConnection } from "../redux/chatHubSlice";
+import { addNewMessage, clearMessageInput, deleteMessageFromHub, initializeChatHistory, sendMessageToConnection, setIsConnected, startConnection } from "../redux/chatHubSlice";
 
 
 let connection: signalR.HubConnection;
@@ -25,9 +25,9 @@ export const signalRMiddleware: Middleware = store => next => action => {
                     store.dispatch(addNewMessage(messageReceived));
                 });
 
-                // DeleteMessage return messageId
-                connection.on("DeleteMessage", (messageId: string) => {
-
+                // DeleteMessage return {channelId, messageId}
+                connection.on("DeleteMessage", ({channelId, messageId}: DeleteMessageProps) => {
+                    store.dispatch(deleteMessageFromHub({channelId, messageId}));
                 });
 
                 // GetChannelInvite returns ChannelUserDto
@@ -36,7 +36,7 @@ export const signalRMiddleware: Middleware = store => next => action => {
                 });
             
                 // ReceiveNewMember returns {channelId, user: PersonDto}
-                connection.on("ReceiveNewMember", ({channelId, user}: ReceiveNewMemberProp) => {
+                connection.on("ReceiveNewMember", ({channelId, user}: ReceiveNewMemberProps) => {
                     console.log(channelId, user)
                 });
                 // ReceiveFriendRequest return FriendshipDto
@@ -67,7 +67,12 @@ export const signalRMiddleware: Middleware = store => next => action => {
     return next(action);
 };
 
-interface ReceiveNewMemberProp {
+interface ReceiveNewMemberProps {
     channelId: string;
     user: Person;
+}
+
+interface DeleteMessageProps {
+    channelId: string;
+    messageId: string;
 }

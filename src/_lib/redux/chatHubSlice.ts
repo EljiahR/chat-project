@@ -36,6 +36,9 @@ export const chatHubSlice = createSlice({
             const newMessage = action.payload;
             state.messages[newMessage.channelId].push(newMessage);
         },
+        deleteMessageFromHub: (state, action: PayloadAction<{channelId: string, messageId: string}>) => {
+            state.messages[action.payload.channelId].filter(m => m.id != action.payload.messageId);
+        },
         setMessageInput: (state, action: PayloadAction<string>) => {
             state.message = action.payload;
         },
@@ -61,7 +64,7 @@ export const chatHubSlice = createSlice({
         }
     }
 });
-export const { clearChatHub, setIsConnected, initializeChatHistory, addNewMessage, setMessageInput, clearMessageInput, addNewlyCreatedChannel, setSelectedChannel, setSelectedSubMenu, setSelectedSubMenuOption } = chatHubSlice.actions;
+export const { clearChatHub, setIsConnected, initializeChatHistory, addNewMessage, deleteMessageFromHub, setMessageInput, clearMessageInput, addNewlyCreatedChannel, setSelectedChannel, setSelectedSubMenu, setSelectedSubMenuOption } = chatHubSlice.actions;
 
 export default chatHubSlice.reducer;
 
