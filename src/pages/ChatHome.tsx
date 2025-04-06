@@ -8,7 +8,7 @@ import ChannelMenu from "../_components/ChatHome/ChannelMenu";
 import { buttonStyleLight, pageChatHomeStyle } from "../_lib/tailwindShortcuts";
 import { useAppDispatch, useAppSelector } from "../_lib/redux/hooks";
 import { SubMenu } from "../_lib/pageTypes";
-import { sendMessageToConnection, setSelectedSubMenu, startConnection } from "../_lib/redux/chatHubSlice";
+import { sendMessageToConnection, setSelectedSubMenu, startConnection } from "../_lib/redux/chatUiSlice";
 import { messageSortByDateReverse } from "../_lib/sortFunctions";
 
 interface Props {

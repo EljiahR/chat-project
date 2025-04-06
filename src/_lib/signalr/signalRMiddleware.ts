@@ -2,8 +2,8 @@ import * as signalR from "@microsoft/signalr";
 import { Middleware } from "@reduxjs/toolkit";
 import backendUrl from "../backendUrl";
 import { ChannelUser, ChatHistory, Friendship, Message, Person } from "../responseTypes";
-import { addNewMessage, clearMessageInput, deleteMessageFromHub, initializeChatHistory, sendMessageToConnection, setIsConnected, startConnection } from "../redux/chatHubSlice";
-import { addChannelInvite, addFriend, addFriendRequest, addUserToChannel } from "../redux/userSlice";
+import { addNewMessage, clearMessageInput, deleteMessageFromHub, initializeChatHistory, sendMessageToConnection, setIsConnected, startConnection } from "../redux/chatUiSlice";
+import { addChannelInvite, addFriend, addFriendRequest, addUserToChannel } from "../redux/userInfoSlice";
 
 
 let connection: signalR.HubConnection;
@@ -42,7 +42,7 @@ export const signalRMiddleware: Middleware = store => next => action => {
                 });
                 // ReceiveFriendRequest return FriendshipDto
                 connection.on("ReceiveFriendRequest", (friendship: Friendship) => {
-                    store.dispatch(addFriendRequest());
+                    store.dispatch(addFriendRequest(friendship));
                 });
                 // ReceiveNewFriend returns PersonDto
                 connection.on("ReceiveNewFriend", (newFriend: Person) => {
@@ -64,6 +64,10 @@ export const signalRMiddleware: Middleware = store => next => action => {
         connection?.invoke("SendMessage", action.payload.message, action.payload.channelId);
         store.dispatch(clearMessageInput());
     }
+
+     // Accept friend
+
+     // Accept channel invite
 
     return next(action);
 };

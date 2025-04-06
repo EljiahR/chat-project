@@ -4,8 +4,8 @@ import instance from "../_lib/axiosBase";
 import LoadingSpinner from "../_lib/svgs/LoadingSpinner.svg?react";
 import { buttonStyleBlue, buttonStyleBlueDisabled, buttonStyleGreen, buttonStyleGreenDisabled, formStyle, inputLabelStyle, loadingSpinnerStyle, pageSignInStyle, textInputStyle } from "../_lib/tailwindShortcuts";
 import { useAppDispatch } from "../_lib/redux/hooks";
-import { clearChatHub } from "../_lib/redux/chatHubSlice";
-import { clearUser } from "../_lib/redux/userSlice";
+import { clearChatHub } from "../_lib/redux/chatUiSlice";
+import { clearUser } from "../_lib/redux/userInfoSlice";
 
 const SignIn: React.FC = () => {
     const [isSigningIn, setIsSigningIn] = useState(false);

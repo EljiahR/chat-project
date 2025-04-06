@@ -1,9 +1,9 @@
 import { createAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ChatHubSlice } from "./reduxTypes";
+import { ChatUiSlice } from "./reduxTypes";
 import { SubMenu, SubMenuOptions } from "../pageTypes";
 import { Channel, ChatHistory, Message } from "../responseTypes";
 
-const initialState: ChatHubSlice = {
+const initialState: ChatUiSlice = {
     isConnected: false,
     message: "",
     messages: {},
@@ -12,7 +12,7 @@ const initialState: ChatHubSlice = {
     selectedSubMenuOptions: SubMenuOptions.None
 }
 
-export const chatHubSlice = createSlice({
+export const chatUiSlice = createSlice({
     name: "chatHub",
     initialState,
     reducers: {
@@ -64,9 +64,9 @@ export const chatHubSlice = createSlice({
         }
     }
 });
-export const { clearChatHub, setIsConnected, initializeChatHistory, addNewMessage, deleteMessageFromHub, setMessageInput, clearMessageInput, addNewlyCreatedChannel, setSelectedChannel, setSelectedSubMenu, setSelectedSubMenuOption } = chatHubSlice.actions;
+export const { clearChatHub, setIsConnected, initializeChatHistory, addNewMessage, deleteMessageFromHub, setMessageInput, clearMessageInput, addNewlyCreatedChannel, setSelectedChannel, setSelectedSubMenu, setSelectedSubMenuOption } = chatUiSlice.actions;
 
-export default chatHubSlice.reducer;
+export default chatUiSlice.reducer;
 
 export const startConnection = createAction("chat/connect");
 export const sendMessageToConnection = createAction<{message: string, channelId: string}>("chat/sendMessage");

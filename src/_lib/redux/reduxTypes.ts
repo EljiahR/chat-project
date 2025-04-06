@@ -9,7 +9,7 @@ export interface UserInfoSlice extends Omit<UserInfo, "friends" | "channels" | "
     channelInvites: EntityState<ChannelUser, string>
 }
 
-export interface ChatHubSlice {
+export interface ChatUiSlice {
     isConnected: boolean,
     message: string,
     messages: Record<string, Message[]>,

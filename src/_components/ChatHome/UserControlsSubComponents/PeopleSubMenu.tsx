@@ -5,7 +5,7 @@ import { buttonStyleGreenSmall, buttonStyleRedSmall, draggableSubMenuStyle } fro
 import instance from "../../../_lib/axiosBase";
 import { SubMenuOptions } from "../../../_lib/pageTypes";
 import { useAppDispatch } from "../../../_lib/redux/hooks";
-import { setSelectedSubMenuOption } from "../../../_lib/redux/chatHubSlice";
+import { setSelectedSubMenuOption } from "../../../_lib/redux/chatUiSlice";
 
 interface Props {
     handleNewFriendRequest: (id: string) => void,

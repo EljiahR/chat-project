@@ -2,7 +2,7 @@ import { ComponentType, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import instance from "../_lib/axiosBase";
 import { useAppDispatch, useAppSelector } from "../_lib/redux/hooks";
-import { setUser } from "../_lib/redux/userSlice";
+import { setUser } from "../_lib/redux/userInfoSlice";
 
 interface Props {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
