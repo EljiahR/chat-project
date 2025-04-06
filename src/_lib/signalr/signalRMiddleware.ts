@@ -1,9 +1,9 @@
 import * as signalR from "@microsoft/signalr";
 import { Middleware } from "@reduxjs/toolkit";
 import backendUrl from "../backendUrl";
-import { ChannelUser, ChatHistory, Friendship, Message, Person } from "../responseTypes";
-import { addNewMessage, clearMessageInput, deleteMessageFromHub, initializeChatHistory, sendMessageToConnection, setIsConnected, startConnection } from "../redux/chatUiSlice";
-import { addChannelInvite, addFriend, addFriendRequest, addUserToChannel } from "../redux/userInfoSlice";
+import { ChannelUser, Friendship, Message, Person } from "../responseTypes";
+import { clearMessageInput, sendMessageToConnection, setIsConnected, startConnection } from "../redux/chatUiSlice";
+import { addChannelInvite, addFriend, addFriendRequest, addMessageToChannel, addUserToChannel, removeMessageFromChannel } from "../redux/userInfoSlice";
 
 
 let connection: signalR.HubConnection;
@@ -17,18 +17,13 @@ export const signalRMiddleware: Middleware = store => next => action => {
 
         connection.start()
             .then(() => {
-                connection.on("ReceiveMessageHistory", (channelHistories: ChatHistory) => {
-                    store.dispatch(initializeChatHistory(channelHistories));
-                });
-                
                 connection.on("ReceiveMessage", (messageReceived: Message) => {
-                    console.log("ReceiveMessage ran.");
-                    store.dispatch(addNewMessage(messageReceived));
+                    store.dispatch(addMessageToChannel(messageReceived));
                 });
 
                 // DeleteMessage return {channelId, messageId}
                 connection.on("DeleteMessage", ({channelId, messageId}: DeleteMessageProps) => {
-                    store.dispatch(deleteMessageFromHub({channelId, messageId}));
+                    store.dispatch(removeMessageFromChannel({channelId, messageId}));
                 });
 
                 // GetChannelInvite returns ChannelUserDto

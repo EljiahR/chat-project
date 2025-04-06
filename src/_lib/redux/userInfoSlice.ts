@@ -49,10 +49,10 @@ export const userInfoSlice = createSlice({
                 channel.members.push(user);
             }
         },
-        addMessageToChannel: (state, action: PayloadAction<{channelId: string, newMessage: Message}>) => {
+        addMessageToChannel: (state, action: PayloadAction<Message>) => {
             const channel = state.channels.entities[action.payload.channelId];
             if (channel) {
-                channel.channelMessages = [...channel.channelMessages, action.payload.newMessage];
+                channel.channelMessages = [...channel.channelMessages, action.payload];
             }
         },
         removeMessageFromChannel: (state, action: PayloadAction<{channelId: string, messageId: string}>) => {

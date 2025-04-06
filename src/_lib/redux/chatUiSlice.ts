@@ -45,7 +45,7 @@ export const chatUiSlice = createSlice({
         }
     }
 });
-export const { clearChatHub, setIsConnected, setSelectedChannel, setSelectedSubMenu, setSelectedSubMenuOption } = chatUiSlice.actions;
+export const { clearChatHub, setIsConnected, setMessageInput, clearMessageInput, setSelectedChannel, setSelectedSubMenu, setSelectedSubMenuOption } = chatUiSlice.actions;
 
 export default chatUiSlice.reducer;
 
