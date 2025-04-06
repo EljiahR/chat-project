@@ -11,8 +11,7 @@ export interface UserInfoSlice extends Omit<UserInfo, "friends" | "channels" | "
 
 export interface ChatUiSlice {
     isConnected: boolean,
-    message: string,
-    messages: Record<string, Message[]>,
+    draftMessage: string,
     selectedChannel: Channel | null,
     selectedSubMenu: SubMenu,
     selectedSubMenuOptions: SubMenuOptions
