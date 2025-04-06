@@ -16,7 +16,7 @@ enum AuthenticationStates {
 }
 
 const ProtectedRoute = ({ component: Component }: Props) => {
-    const userInfo = useAppSelector((state) => state.user);
+    const userInfo = useAppSelector((state) => state.userInfo);
     const dispatch = useAppDispatch();
     const [authenticationState, setAuthenticationState] = useState(AuthenticationStates.Loading);
 

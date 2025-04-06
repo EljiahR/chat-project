@@ -1,5 +1,5 @@
 import { EntityState } from "@reduxjs/toolkit";
-import { Channel, ChannelUser, Friendship, Message, Person, UserInfo } from "../responseTypes";
+import { Channel, ChannelUser, Friendship, Person, UserInfo } from "../responseTypes";
 import { SubMenu, SubMenuOptions } from "../pageTypes";
 
 export interface UserInfoSlice extends Omit<UserInfo, "friends" | "channels" | "friendRequests" | "channelInvites">{
@@ -12,7 +12,7 @@ export interface UserInfoSlice extends Omit<UserInfo, "friends" | "channels" | "
 export interface ChatUiSlice {
     isConnected: boolean,
     draftMessage: string,
-    selectedChannel: Channel | null,
+    selectedChannelId: string,
     selectedSubMenu: SubMenu,
     selectedSubMenuOptions: SubMenuOptions
 }

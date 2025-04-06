@@ -13,9 +13,9 @@ import { clearChatHub, setSelectedSubMenuOption } from "../../_lib/redux/chatUiS
 
 const UserControls = () => {
     const dispatch = useAppDispatch();
-    const selectedChannel = useAppSelector((state) => state.chatHub.selectedChannel);
-    const subMenu = useAppSelector((state) => state.chatHub.selectedSubMenu);
-    const subMenuOption = useAppSelector((state) => state.chatHub.selectedSubMenuOptions);
+    const selectedChannelId = useAppSelector((state) => state.chatUi.selectedChannelId);
+    const subMenu = useAppSelector((state) => state.chatUi.selectedSubMenu);
+    const subMenuOption = useAppSelector((state) => state.chatUi.selectedSubMenuOptions);
 
     const handleNewFriendRequest = async (id: string) => {
         try {
@@ -27,9 +27,9 @@ const UserControls = () => {
     }
 
     const handleInviteToChannel = async (userId: string) => {
-        if (!selectedChannel) return;
+        if (selectedChannelId == "") return;
         try {
-            const response = await instance.post<{message: string}>(`/Channel/InviteUserToChannel`, {userId, channelId: selectedChannel.id, role: ChannelRole.Member},{withCredentials: true}) ;
+            const response = await instance.post<{message: string}>(`/Channel/InviteUserToChannel`, {userId, channelId: selectedChannelId, role: ChannelRole.Member},{withCredentials: true}) ;
             if (response.status == 200) {
                 console.log(response.data.message);
             }

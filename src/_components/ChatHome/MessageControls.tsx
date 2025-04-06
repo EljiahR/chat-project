@@ -10,7 +10,7 @@ interface Props {
 const MessageControls: React.FC<Props> = ({ SendMessage }) => {
     const inputRef = useRef<HTMLInputElement>(null);
     const dispatch = useAppDispatch();
-    const message = useAppSelector((state) => state.chatHub.message);
+    const message = useAppSelector((state) => state.chatUi.draftMessage);
 
     const handleMessageInput = (value: string) => {
         if (value.length < 251) {

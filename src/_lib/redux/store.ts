@@ -5,8 +5,8 @@ import { signalRMiddleware } from "../signalr/signalRMiddleware";
 
 export const store = configureStore({
     reducer: {
-        user: userInfoReducer,
-        chatHub: chatUiReducer
+        userInfo: userInfoReducer,
+        chatUi: chatUiReducer
     },
     middleware: (getDefaultMiddleware) => 
         getDefaultMiddleware().concat(signalRMiddleware),

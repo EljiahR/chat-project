@@ -6,7 +6,7 @@ import { Channel } from "../responseTypes";
 const initialState: ChatUiSlice = {
     isConnected: false,
     draftMessage: "",
-    selectedChannel: null,
+    selectedChannelId: "",
     selectedSubMenu: SubMenu.None,
     selectedSubMenuOptions: SubMenuOptions.None
 }
@@ -18,7 +18,7 @@ export const chatUiSlice = createSlice({
         clearChatHub: (state) => {
             state.isConnected = false;
             state.draftMessage = "";
-            state.selectedChannel = null;
+            state.selectedChannelId = "";
             state.selectedSubMenu = SubMenu.None;
             state.selectedSubMenuOptions = SubMenuOptions.None;
         },
@@ -32,7 +32,7 @@ export const chatUiSlice = createSlice({
             state.draftMessage = "";
         },
         setSelectedChannel: (state, action: PayloadAction<Channel>) => {
-            state.selectedChannel = action.payload;
+            state.selectedChannelId = action.payload.id;
             state.selectedSubMenu = SubMenu.None;
             state.selectedSubMenuOptions = SubMenuOptions.None;
         },
