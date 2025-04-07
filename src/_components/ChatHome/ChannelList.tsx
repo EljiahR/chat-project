@@ -1,15 +1,15 @@
 import instance from "../../_lib/axiosBase";
 import {  Channel } from "../../_lib/responseTypes";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
-import { addChannel, selectAllChannels } from "../../_lib/redux/userSlice";
+import { addChannel, selectAllChannels } from "../../_lib/redux/userInfoSlice";
 import { buttonStyleLight, mobileSubMenuStyle } from "../../_lib/tailwindShortcuts";
 import { SubMenu } from "../../_lib/pageTypes";
-import { addNewlyCreatedChannel, setSelectedChannel } from "../../_lib/redux/chatHubSlice";
+import { setSelectedChannel } from "../../_lib/redux/chatUiSlice";
 
 const ChannelList = () => {
-    const userInfo = useAppSelector((state) => state.user);
+    const userInfo = useAppSelector((state) => state.userInfo);
     const channels = useAppSelector(selectAllChannels);
-    const selectedSubMenu = useAppSelector((state) => state.chatHub.selectedSubMenu)
+    const selectedSubMenu = useAppSelector((state) => state.chatUi.selectedSubMenu)
     const dispatch = useAppDispatch();
     
     const handleNewChannel = async () => {
@@ -23,7 +23,6 @@ const ChannelList = () => {
             const createdChannel: Channel = response.data;
 
             dispatch(addChannel(createdChannel));
-            dispatch(addNewlyCreatedChannel(createdChannel.id));
         } catch (error) {
             console.error("Failed to create channel: " + error);
         }

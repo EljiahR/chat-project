@@ -1,7 +1,7 @@
 import React, { FormEvent, useRef } from "react";
 import { buttonStyleLight } from "../../_lib/tailwindShortcuts";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
-import { setMessageInput } from "../../_lib/redux/chatHubSlice";
+import { setMessageInput } from "../../_lib/redux/chatUiSlice";
 
 interface Props {
     SendMessage: (e: FormEvent) => void;
@@ -10,7 +10,7 @@ interface Props {
 const MessageControls: React.FC<Props> = ({ SendMessage }) => {
     const inputRef = useRef<HTMLInputElement>(null);
     const dispatch = useAppDispatch();
-    const message = useAppSelector((state) => state.chatHub.message);
+    const message = useAppSelector((state) => state.chatUi.draftMessage);
 
     const handleMessageInput = (value: string) => {
         if (value.length < 251) {

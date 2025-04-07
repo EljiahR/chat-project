@@ -3,8 +3,8 @@ import Draggable from "react-draggable";
 import { SubMenuOptions } from "../../../_lib/pageTypes";
 import { buttonStyleGreenSmall, buttonStyleRedSmall, draggableSubMenuStyle } from "../../../_lib/tailwindShortcuts";
 import { useAppDispatch, useAppSelector } from "../../../_lib/redux/hooks";
-import { setSelectedSubMenuOption } from "../../../_lib/redux/chatHubSlice";
-import { selectAllChannelInvites } from "../../../_lib/redux/userSlice";
+import { setSelectedSubMenuOption } from "../../../_lib/redux/chatUiSlice";
+import { selectAllChannelInvites } from "../../../_lib/redux/userInfoSlice";
 
 interface Props {
     handleAcceptChannelInvite: (inviteId: string, channelId: string) => void,

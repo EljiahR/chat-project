@@ -1,5 +1,5 @@
 import { createEntityAdapter, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Channel, ChannelUser, Friendship, Person, UserInfo } from "../responseTypes";
+import { Channel, ChannelUser, Friendship, Message, Person, UserInfo } from "../responseTypes";
 import { UserInfoSlice } from "./reduxTypes";
 
 const channelsAdapter = createEntityAdapter<Channel>();
@@ -16,8 +16,8 @@ const initialState: UserInfoSlice = {
     friendRequests: friendRequestsAdapter.getInitialState()
 }
 
-export const userSlice = createSlice({
-    name: "user",
+export const userInfoSlice = createSlice({
+    name: "userInfo",
     initialState,
     reducers: {
         setUser: (state, action: PayloadAction<UserInfo>) => {
@@ -49,12 +49,30 @@ export const userSlice = createSlice({
                 channel.members.push(user);
             }
         },
+        addMessageToChannel: (state, action: PayloadAction<Message>) => {
+            const channel = state.channels.entities[action.payload.channelId];
+            if (channel) {
+                channel.channelMessages = [...channel.channelMessages, action.payload];
+            }
+        },
+        removeMessageFromChannel: (state, action: PayloadAction<{channelId: string, messageId: string}>) => {
+            const channel = state.channels.entities[action.payload.channelId];
+            if (channel) {
+                channel.channelMessages = channel.channelMessages.filter(m => m.id != action.payload.messageId);
+            }
+        },
+        addFriendRequest: (state, action: PayloadAction<Friendship>) => {
+            friendRequestsAdapter.addOne(state.friendRequests, action.payload);
+        },
         removeFriendRequest: (state, action: PayloadAction<{requestId: string}>) => {
             friendRequestsAdapter.removeOne(state.friendRequests, action.payload.requestId);
         },
         acceptFriendRequest: (state, action: PayloadAction<{requestId: string, newFriend: Person}>) => {
             friendRequestsAdapter.removeOne(state.friendRequests, action.payload.requestId);
             friendsAdapter.addOne(state.friends, action.payload.newFriend);
+        },
+        addChannelInvite: (state, action: PayloadAction<ChannelUser>) => {
+            channelInvitesAdapter.addOne(state.channelInvites, action.payload);
         },
         removeChannelInvite: (state, action: PayloadAction<{inviteId: string}>) => {
             channelInvitesAdapter.removeOne(state.channelInvites, action.payload.inviteId);
@@ -66,9 +84,9 @@ export const userSlice = createSlice({
     }
 });
 
-export const { setUser, clearUser, addFriend, addChannel, addUserToChannel, acceptFriendRequest, acceptChannelInvite } = userSlice.actions;
-export const {selectAll: selectAllFriends} = friendsAdapter.getSelectors((state: {user: UserInfoSlice}) => state.user.friends);
-export const {selectAll: selectAllChannels} = channelsAdapter.getSelectors((state:{user: UserInfoSlice}) => state.user.channels);
-export const {selectAll: selectAllFriendRequests} = friendRequestsAdapter.getSelectors((state:{user: UserInfoSlice}) => state.user.friendRequests);
-export const {selectAll: selectAllChannelInvites} = channelInvitesAdapter.getSelectors((state:{user: UserInfoSlice}) => state.user.channelInvites); 
-export default userSlice.reducer;
+export const { setUser, clearUser, addFriend, addChannel, addUserToChannel, addMessageToChannel, removeMessageFromChannel, addFriendRequest, removeFriendRequest, acceptFriendRequest, addChannelInvite, removeChannelInvite, acceptChannelInvite } = userInfoSlice.actions;
+export const {selectAll: selectAllFriends} = friendsAdapter.getSelectors((state: {userInfo: UserInfoSlice}) => state.userInfo.friends);
+export const {selectAll: selectAllChannels} = channelsAdapter.getSelectors((state:{userInfo: UserInfoSlice}) => state.userInfo.channels);
+export const {selectAll: selectAllFriendRequests} = friendRequestsAdapter.getSelectors((state:{userInfo: UserInfoSlice}) => state.userInfo.friendRequests);
+export const {selectAll: selectAllChannelInvites} = channelInvitesAdapter.getSelectors((state:{userInfo: UserInfoSlice}) => state.userInfo.channelInvites); 
+export default userInfoSlice.reducer;

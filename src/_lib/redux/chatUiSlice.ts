@@ -1,54 +1,38 @@
 import { createAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ChatHubSlice } from "./reduxTypes";
+import { ChatUiSlice } from "./reduxTypes";
 import { SubMenu, SubMenuOptions } from "../pageTypes";
-import { Channel, ChatHistory, Message } from "../responseTypes";
+import { Channel } from "../responseTypes";
 
-const initialState: ChatHubSlice = {
+const initialState: ChatUiSlice = {
     isConnected: false,
-    message: "",
-    messages: {},
-    selectedChannel: null,
+    draftMessage: "",
+    selectedChannelId: "",
     selectedSubMenu: SubMenu.None,
     selectedSubMenuOptions: SubMenuOptions.None
 }
 
-export const chatHubSlice = createSlice({
-    name: "chatHub",
+export const chatUiSlice = createSlice({
+    name: "chatUiHub",
     initialState,
     reducers: {
         clearChatHub: (state) => {
             state.isConnected = false;
-            state.message = "";
-            state.messages = {};
-            state.selectedChannel = null;
+            state.draftMessage = "";
+            state.selectedChannelId = "";
             state.selectedSubMenu = SubMenu.None;
             state.selectedSubMenuOptions = SubMenuOptions.None;
         },
         setIsConnected: (state, action: PayloadAction<boolean>) => {
             state.isConnected = action.payload;
         },
-        initializeChatHistory: (state, action: PayloadAction<ChatHistory>) => {
-            for (const [channelId, messageHistory] of Object.entries(action.payload)) {
-                state.messages[channelId] = messageHistory;
-            };
-        },
-        addNewMessage: (state, action: PayloadAction<Message>) => {
-            const newMessage = action.payload;
-            state.messages[newMessage.channelId].push(newMessage);
-        },
         setMessageInput: (state, action: PayloadAction<string>) => {
-            state.message = action.payload;
+            state.draftMessage = action.payload;
         },
         clearMessageInput: (state) => {
-            state.message = "";
-        },
-        addNewlyCreatedChannel: (state, action: PayloadAction<string>) => {
-            state.messages[action.payload] = [];
-            state.selectedSubMenu = SubMenu.None;
-            state.selectedSubMenuOptions = SubMenuOptions.None;
+            state.draftMessage = "";
         },
         setSelectedChannel: (state, action: PayloadAction<Channel>) => {
-            state.selectedChannel = action.payload;
+            state.selectedChannelId = action.payload.id;
             state.selectedSubMenu = SubMenu.None;
             state.selectedSubMenuOptions = SubMenuOptions.None;
         },
@@ -61,9 +45,9 @@ export const chatHubSlice = createSlice({
         }
     }
 });
-export const { clearChatHub, setIsConnected, initializeChatHistory, addNewMessage, setMessageInput, clearMessageInput, addNewlyCreatedChannel, setSelectedChannel, setSelectedSubMenu, setSelectedSubMenuOption } = chatHubSlice.actions;
+export const { clearChatHub, setIsConnected, setMessageInput, clearMessageInput, setSelectedChannel, setSelectedSubMenu, setSelectedSubMenuOption } = chatUiSlice.actions;
 
-export default chatHubSlice.reducer;
+export default chatUiSlice.reducer;
 
 export const startConnection = createAction("chat/connect");
 export const sendMessageToConnection = createAction<{message: string, channelId: string}>("chat/sendMessage");

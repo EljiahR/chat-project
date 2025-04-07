@@ -3,19 +3,19 @@ import instance from "../../_lib/axiosBase";
 import { Channel, ChannelRole, Friendship, Person } from "../../_lib/responseTypes";
 import React from "react";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
-import { acceptChannelInvite, acceptFriendRequest, clearUser } from "../../_lib/redux/userSlice";
+import { acceptChannelInvite, acceptFriendRequest, clearUser } from "../../_lib/redux/userInfoSlice";
 import { buttonStyleLight, buttonStyleLightDisabled, buttonStyleRed, mobileSubMenuStyle } from "../../_lib/tailwindShortcuts";
 import PeopleSubMenu from "./UserControlsSubComponents/PeopleSubMenu";
 import FriendSubMenu from "./UserControlsSubComponents/FriendSubMenu";
 import { SubMenu, SubMenuOptions } from "../../_lib/pageTypes";
 import ChannelInvitesSubMenu from "./UserControlsSubComponents/ChannelInvitesSubMenu";
-import { clearChatHub, setSelectedSubMenuOption } from "../../_lib/redux/chatHubSlice";
+import { clearChatHub, setSelectedSubMenuOption } from "../../_lib/redux/chatUiSlice";
 
 const UserControls = () => {
     const dispatch = useAppDispatch();
-    const selectedChannel = useAppSelector((state) => state.chatHub.selectedChannel);
-    const subMenu = useAppSelector((state) => state.chatHub.selectedSubMenu);
-    const subMenuOption = useAppSelector((state) => state.chatHub.selectedSubMenuOptions);
+    const selectedChannelId = useAppSelector((state) => state.chatUi.selectedChannelId);
+    const subMenu = useAppSelector((state) => state.chatUi.selectedSubMenu);
+    const subMenuOption = useAppSelector((state) => state.chatUi.selectedSubMenuOptions);
 
     const handleNewFriendRequest = async (id: string) => {
         try {
@@ -27,9 +27,9 @@ const UserControls = () => {
     }
 
     const handleInviteToChannel = async (userId: string) => {
-        if (!selectedChannel) return;
+        if (selectedChannelId == "") return;
         try {
-            const response = await instance.post<{message: string}>(`/Channel/InviteUserToChannel`, {userId, channelId: selectedChannel.id, role: ChannelRole.Member},{withCredentials: true}) ;
+            const response = await instance.post<{message: string}>(`/Channel/InviteUserToChannel`, {userId, channelId: selectedChannelId, role: ChannelRole.Member},{withCredentials: true}) ;
             if (response.status == 200) {
                 console.log(response.data.message);
             }

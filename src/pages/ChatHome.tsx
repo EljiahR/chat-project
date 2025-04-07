@@ -8,7 +8,7 @@ import ChannelMenu from "../_components/ChatHome/ChannelMenu";
 import { buttonStyleLight, pageChatHomeStyle } from "../_lib/tailwindShortcuts";
 import { useAppDispatch, useAppSelector } from "../_lib/redux/hooks";
 import { SubMenu } from "../_lib/pageTypes";
-import { sendMessageToConnection, setSelectedSubMenu, startConnection } from "../_lib/redux/chatHubSlice";
+import { sendMessageToConnection, setSelectedSubMenu, startConnection } from "../_lib/redux/chatUiSlice";
 import { messageSortByDateReverse } from "../_lib/sortFunctions";
 
 interface Props {
@@ -17,11 +17,12 @@ interface Props {
 
 const ChatHome: React.FC<Props> = () => {
     const dispatch = useAppDispatch();
-    const isConnected = useAppSelector((state) => state.chatHub.isConnected);
-    const message = useAppSelector((state) => state.chatHub.message);
-    const messages = useAppSelector((state) => state.chatHub.messages);
-    const selectedChannel = useAppSelector((state) => state.chatHub.selectedChannel);
-    const userName = useAppSelector((state) => state.user.userName);
+    const isConnected = useAppSelector((state) => state.chatUi.isConnected);
+    const draftMessage = useAppSelector((state) => state.chatUi.draftMessage);
+    const selectedChannelId = useAppSelector((state) => state.chatUi.selectedChannelId);
+    const selectedChannel = useAppSelector((state) => state.userInfo.channels.entities[selectedChannelId]);
+    const messages = useAppSelector((state) => state.chatUi.selectedChannelId != "" ? state.userInfo.channels.entities[selectedChannelId].channelMessages : []);
+    const userName = useAppSelector((state) => state.userInfo.userName);
 
     // Attempt to connect to hub on mount
     useEffect(() => {
@@ -34,10 +35,10 @@ const ChatHome: React.FC<Props> = () => {
 
     const SendMessage = async (e: FormEvent) => {
         e.preventDefault();
-        if (isConnected && message != "" && selectedChannel) {
+        if (isConnected && draftMessage != "" && selectedChannelId != "") {
             try {
-                console.log("Sending to: ", selectedChannel);
-                dispatch(sendMessageToConnection({message, channelId: selectedChannel.id}))
+                console.log("Sending to: ", selectedChannelId);
+                dispatch(sendMessageToConnection({message: draftMessage, channelId: selectedChannelId}))
             } catch (e) {
                 console.log(e);
             }
@@ -58,28 +59,28 @@ const ChatHome: React.FC<Props> = () => {
     }
 
     const chatMessages = useMemo(() => {
-        if (selectedChannel == null) { 
+        if (selectedChannelId == "") { 
             return [];
         }
         else {
-            const channelMessages = messages[selectedChannel.id] ? messages[selectedChannel.id].slice().sort(messageSortByDateReverse) : [];
+            const channelMessages = messages ? messages.slice().sort(messageSortByDateReverse) : [];
             if (channelMessages) {
                 return channelMessages.map((channelMessage, index) => {
                     return <div className="chat-message" key={index}>{`${channelMessage.username}: ${channelMessage.content}`}</div>
                 })
             }
         }
-    }, [selectedChannel, messages])
+    }, [selectedChannelId, messages])
 
     useEffect(() => {
-        if (selectedChannel) {
+        if (selectedChannelId != "") {
             const previousTitle = document.title;
             document.title = selectedChannel.name;
 
             return (() => {document.title = previousTitle;});
         }
         
-    }, [selectedChannel])
+    }, [selectedChannelId])
     
 
     return (

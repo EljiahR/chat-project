@@ -3,8 +3,8 @@ import Draggable from "react-draggable";
 import { buttonStyleBlueSmall, buttonStyleGreenSmall, buttonStyleRedSmall, draggableSubMenuStyle } from "../../../_lib/tailwindShortcuts";
 import { SubMenuOptions } from "../../../_lib/pageTypes";
 import { useAppDispatch, useAppSelector } from "../../../_lib/redux/hooks";
-import { selectAllFriendRequests, selectAllFriends } from "../../../_lib/redux/userSlice";
-import { setSelectedSubMenuOption } from "../../../_lib/redux/chatHubSlice";
+import { selectAllFriendRequests, selectAllFriends } from "../../../_lib/redux/userInfoSlice";
+import { setSelectedSubMenuOption } from "../../../_lib/redux/chatUiSlice";
 import { Friendship } from "../../../_lib/responseTypes";
 
 interface Props {

@@ -10,7 +10,7 @@ interface Props {
 }
 
 const Chat: React.FC<Props> = ({chatMessages, handleChannelMenuDisplay, SendMessage}) => {
-    const channelName = useAppSelector((state) => state.chatHub.selectedChannel?.name);
+    const channelName = useAppSelector((state) => state.userInfo.channels.entities[state.chatUi.selectedChannelId].name);
 
     return (
             <div id="chat" className="h-full flex flex-col">
