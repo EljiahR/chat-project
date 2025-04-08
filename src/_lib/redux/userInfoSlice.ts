@@ -74,12 +74,13 @@ export const userInfoSlice = createSlice({
         addChannelInvite: (state, action: PayloadAction<ChannelUser>) => {
             channelInvitesAdapter.addOne(state.channelInvites, action.payload);
         },
-        removeChannelInvite: (state, action: PayloadAction<{inviteId: string}>) => {
-            channelInvitesAdapter.removeOne(state.channelInvites, action.payload.inviteId);
+        removeChannelInvite: (state, action: PayloadAction<string>) => {
+            channelInvitesAdapter.removeOne(state.channelInvites, action.payload);
         },
-        acceptChannelInvite: (state, action: PayloadAction<{inviteId: string, newChannel: Channel}>) => {
-            channelInvitesAdapter.removeOne(state.channelInvites, action.payload.inviteId);
-            channelsAdapter.addOne(state.channels, action.payload.newChannel);
+        acceptChannelInvite: (state, action: PayloadAction<Channel>) => {
+            const channelInvite = channelInvitesAdapter.getSelectors((state: UserInfoSlice) => state.channelInvites).selectAll(state).filter((cu) => cu.channelId == action.payload.id);
+            channelInvitesAdapter.removeOne(state.channelInvites, channelInvite[0].id);
+            channelsAdapter.addOne(state.channels, action.payload);
         }
     }
 });

@@ -1,9 +1,9 @@
 import * as signalR from "@microsoft/signalr";
 import { createAction, Middleware } from "@reduxjs/toolkit";
 import backendUrl from "../backendUrl";
-import { ChannelUser, Friendship, Message, Person } from "../responseTypes";
+import { Channel, ChannelUser, Friendship, Message, Person } from "../responseTypes";
 import { clearMessageInput, setIsConnected } from "../redux/chatUiSlice";
-import { addChannelInvite, addFriend, addFriendRequest, addMessageToChannel, addUserToChannel, removeMessageFromChannel } from "../redux/userInfoSlice";
+import { acceptChannelInvite, addChannelInvite, addFriend, addFriendRequest, addMessageToChannel, addUserToChannel, removeMessageFromChannel } from "../redux/userInfoSlice";
 
 
 let connection: signalR.HubConnection;
@@ -43,6 +43,9 @@ export const signalRMiddleware: Middleware = store => next => action => {
                 connection.on("ReceiveNewFriend", (newFriend: Person) => {
                     store.dispatch(addFriend(newFriend));
                 });
+                connection.on("JoinChannel", (newChannel: Channel) => {
+                    store.dispatch(acceptChannelInvite(newChannel));
+                })
 
                 connection.invoke("AfterConnectedAsync")
                     .catch(err => console.log("AfterConnected failed:", err));
