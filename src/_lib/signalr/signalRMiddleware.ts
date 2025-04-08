@@ -62,25 +62,25 @@ export const signalRMiddleware: Middleware = store => next => action => {
     }
 
     // Send friend request
-    if (sendFriendRequest.match(action)) {
+    if (sendFriendRequestHub.match(action)) {
         connection?.invoke("SendFriendRequest", action.payload);
         return next(action);
     }
 
      // Accept friend
-     if (acceptFriendRequest.match(action)) {
+     if (acceptFriendRequestHub.match(action)) {
         connection?.invoke("AcceptFriendRequest", action.payload);
         return next(action);
      }
 
     // Send channel invite
-    if (sendChannelInvite.match(action)) {
+    if (sendChannelInviteHub.match(action)) {
         connection?.invoke("SendChannelInvite", action.payload.channelId, action.payload.newUserId);
         return next(action);
     }
 
      // Accept channel invite
-     if (acceptChannelInvite.match(action)) {
+     if (acceptChannelInviteHub.match(action)) {
         connection?.invoke("AcceptChannelInvite", action.payload);
         return next(action);
      }
@@ -100,7 +100,7 @@ interface DeleteMessageProps {
 
 export const startConnection = createAction("chat/connect");
 export const sendMessageToConnection = createAction<{message: string, channelId: string}>("chat/sendMessage");
-export const sendFriendRequest = createAction<string>("chat/sendFriendRequest");
-export const acceptFriendRequest = createAction<string>("chat/acceptFriendRequest");
-export const sendChannelInvite = createAction<{channelId: string, newUserId: string}>("chat/sendChannelInvite");
-export const acceptChannelInvite = createAction<string>("chat/acceptChannelInvite");
+export const sendFriendRequestHub = createAction<string>("chat/sendFriendRequest");
+export const acceptFriendRequestHub = createAction<string>("chat/acceptFriendRequest");
+export const sendChannelInviteHub = createAction<{channelId: string, newUserId: string}>("chat/sendChannelInvite");
+export const acceptChannelInviteHub = createAction<string>("chat/acceptChannelInvite");

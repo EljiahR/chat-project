@@ -1,15 +1,16 @@
 import { useNavigate } from "react-router-dom";
 import instance from "../../_lib/axiosBase";
-import { Channel, ChannelRole, Friendship, Person } from "../../_lib/responseTypes";
+import { Friendship } from "../../_lib/responseTypes";
 import React from "react";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
-import { acceptChannelInvite, acceptFriendRequest, clearUser } from "../../_lib/redux/userInfoSlice";
+import { clearUser } from "../../_lib/redux/userInfoSlice";
 import { buttonStyleLight, buttonStyleLightDisabled, buttonStyleRed, mobileSubMenuStyle } from "../../_lib/tailwindShortcuts";
 import PeopleSubMenu from "./UserControlsSubComponents/PeopleSubMenu";
 import FriendSubMenu from "./UserControlsSubComponents/FriendSubMenu";
 import { SubMenu, SubMenuOptions } from "../../_lib/pageTypes";
 import ChannelInvitesSubMenu from "./UserControlsSubComponents/ChannelInvitesSubMenu";
 import { clearChatHub, setSelectedSubMenuOption } from "../../_lib/redux/chatUiSlice";
+import { acceptChannelInviteHub, acceptFriendRequestHub, sendChannelInviteHub, sendFriendRequestHub } from "../../_lib/signalr/signalRMiddleware";
 
 const UserControls = () => {
     const dispatch = useAppDispatch();
@@ -19,8 +20,8 @@ const UserControls = () => {
 
     const handleNewFriendRequest = async (id: string) => {
         try {
-            const response = await instance.post<Person>("/User/RequestFriend", {id: id}, {withCredentials: true});
-            console.log(response.data);
+            dispatch(sendFriendRequestHub(id));
+            console.log("Friend request sent!");
         } catch (error) {
             console.error("Error sending request", error);
         }
@@ -29,10 +30,8 @@ const UserControls = () => {
     const handleInviteToChannel = async (userId: string) => {
         if (selectedChannelId == "") return;
         try {
-            const response = await instance.post<{message: string}>(`/Channel/InviteUserToChannel`, {userId, channelId: selectedChannelId, role: ChannelRole.Member},{withCredentials: true}) ;
-            if (response.status == 200) {
-                console.log(response.data.message);
-            }
+            dispatch(sendChannelInviteHub({channelId: selectedChannelId, newUserId: userId}));
+            console.log("Channel invite sent!");
         } catch (error) {
             console.error("Error adding user to channel", error);
         }
@@ -40,11 +39,8 @@ const UserControls = () => {
 
     const handleAcceptFriendRequest = async (request: Friendship) => {
         try {
-            const response = await instance.post("/User/ConfirmFriendRequest", {id: request.initiatorId}, {withCredentials: true});
-            if (response.status == 200) {
-                dispatch(acceptFriendRequest({requestId: request.id, newFriend: request.initiator}));
-
-            }
+            dispatch(acceptFriendRequestHub(request.initiatorId));
+            console.log("Friend request accepted!");
         } catch (error) {
             console.error("Error accepting friend request", error);
         }
@@ -52,11 +48,8 @@ const UserControls = () => {
 
     const handleAcceptChannelInvite = async (inviteId: string, channelId: string) => {
         try {
-            const response = await instance.post<{message: string, channel: Channel}>("/Channel/ConfirmChannelInvite", {channelId}, {withCredentials: true});
-            if (response.status == 200) {
-                dispatch(acceptChannelInvite({inviteId, newChannel: response.data.channel}));
-                console.log(response.data.message);
-            }
+            dispatch(acceptChannelInviteHub(channelId));
+            console.log(`Channel invite ${inviteId} accepted!`);
         } catch (error) {
             console.error("Error accepting channel invite", error);
         }
