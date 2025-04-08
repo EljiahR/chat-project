@@ -1,4 +1,4 @@
-import { createAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ChatUiSlice } from "./reduxTypes";
 import { SubMenu, SubMenuOptions } from "../pageTypes";
 import { Channel } from "../responseTypes";
@@ -48,6 +48,3 @@ export const chatUiSlice = createSlice({
 export const { clearChatHub, setIsConnected, setMessageInput, clearMessageInput, setSelectedChannel, setSelectedSubMenu, setSelectedSubMenuOption } = chatUiSlice.actions;
 
 export default chatUiSlice.reducer;
-
-export const startConnection = createAction("chat/connect");
-export const sendMessageToConnection = createAction<{message: string, channelId: string}>("chat/sendMessage");

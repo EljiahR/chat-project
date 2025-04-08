@@ -1,8 +1,8 @@
 import * as signalR from "@microsoft/signalr";
-import { Middleware } from "@reduxjs/toolkit";
+import { createAction, Middleware } from "@reduxjs/toolkit";
 import backendUrl from "../backendUrl";
 import { ChannelUser, Friendship, Message, Person } from "../responseTypes";
-import { clearMessageInput, sendMessageToConnection, setIsConnected, startConnection } from "../redux/chatUiSlice";
+import { clearMessageInput, setIsConnected } from "../redux/chatUiSlice";
 import { addChannelInvite, addFriend, addFriendRequest, addMessageToChannel, addUserToChannel, removeMessageFromChannel } from "../redux/userInfoSlice";
 
 
@@ -58,11 +58,32 @@ export const signalRMiddleware: Middleware = store => next => action => {
     if (sendMessageToConnection.match(action)) {
         connection?.invoke("SendMessage", action.payload.message, action.payload.channelId);
         store.dispatch(clearMessageInput());
+        return next(action);
+    }
+
+    // Send friend request
+    if (sendFriendRequest.match(action)) {
+        connection?.invoke("SendFriendRequest", action.payload);
+        return next(action);
     }
 
      // Accept friend
+     if (acceptFriendRequest.match(action)) {
+        connection?.invoke("AcceptFriendRequest", action.payload);
+        return next(action);
+     }
+
+    // Send channel invite
+    if (sendChannelInvite.match(action)) {
+        connection?.invoke("SendChannelInvite", action.payload.channelId, action.payload.newUserId);
+        return next(action);
+    }
 
      // Accept channel invite
+     if (acceptChannelInvite.match(action)) {
+        connection?.invoke("AcceptChannelInvite", action.payload);
+        return next(action);
+     }
 
     return next(action);
 };
@@ -76,3 +97,10 @@ interface DeleteMessageProps {
     channelId: string;
     messageId: string;
 }
+
+export const startConnection = createAction("chat/connect");
+export const sendMessageToConnection = createAction<{message: string, channelId: string}>("chat/sendMessage");
+export const sendFriendRequest = createAction<string>("chat/sendFriendRequest");
+export const acceptFriendRequest = createAction<string>("chat/acceptFriendRequest");
+export const sendChannelInvite = createAction<{channelId: string, newUserId: string}>("chat/sendChannelInvite");
+export const acceptChannelInvite = createAction<string>("chat/acceptChannelInvite");
