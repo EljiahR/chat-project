@@ -64,12 +64,8 @@ export const userInfoSlice = createSlice({
         addFriendRequest: (state, action: PayloadAction<Friendship>) => {
             friendRequestsAdapter.addOne(state.friendRequests, action.payload);
         },
-        removeFriendRequest: (state, action: PayloadAction<{requestId: string}>) => {
-            friendRequestsAdapter.removeOne(state.friendRequests, action.payload.requestId);
-        },
-        acceptFriendRequest: (state, action: PayloadAction<{requestId: string, newFriend: Person}>) => {
-            friendRequestsAdapter.removeOne(state.friendRequests, action.payload.requestId);
-            friendsAdapter.addOne(state.friends, action.payload.newFriend);
+        removeFriendRequest: (state, action: PayloadAction<string>) => {
+            friendRequestsAdapter.removeOne(state.friendRequests, action.payload);
         },
         addChannelInvite: (state, action: PayloadAction<ChannelUser>) => {
             channelInvitesAdapter.addOne(state.channelInvites, action.payload);
@@ -85,7 +81,7 @@ export const userInfoSlice = createSlice({
     }
 });
 
-export const { setUser, clearUser, addFriend, addChannel, addUserToChannel, addMessageToChannel, removeMessageFromChannel, addFriendRequest, removeFriendRequest, acceptFriendRequest, addChannelInvite, removeChannelInvite, acceptChannelInvite } = userInfoSlice.actions;
+export const { setUser, clearUser, addFriend, addChannel, addUserToChannel, addMessageToChannel, removeMessageFromChannel, addFriendRequest, removeFriendRequest, addChannelInvite, removeChannelInvite, acceptChannelInvite } = userInfoSlice.actions;
 export const {selectAll: selectAllFriends} = friendsAdapter.getSelectors((state: {userInfo: UserInfoSlice}) => state.userInfo.friends);
 export const {selectAll: selectAllChannels} = channelsAdapter.getSelectors((state:{userInfo: UserInfoSlice}) => state.userInfo.channels);
 export const {selectAll: selectAllFriendRequests} = friendRequestsAdapter.getSelectors((state:{userInfo: UserInfoSlice}) => state.userInfo.friendRequests);

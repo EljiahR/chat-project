@@ -39,7 +39,7 @@ const UserControls = () => {
 
     const handleAcceptFriendRequest = async (request: Friendship) => {
         try {
-            dispatch(acceptFriendRequestHub(request.initiatorId));
+            dispatch(acceptFriendRequestHub(request));
             console.log("Friend request accepted!");
         } catch (error) {
             console.error("Error accepting friend request", error);

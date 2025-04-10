@@ -3,7 +3,7 @@ import { createAction, Middleware } from "@reduxjs/toolkit";
 import backendUrl from "../backendUrl";
 import { Channel, ChannelUser, Friendship, Message, Person } from "../responseTypes";
 import { clearMessageInput, setIsConnected } from "../redux/chatUiSlice";
-import { acceptChannelInvite, addChannelInvite, addFriend, addFriendRequest, addMessageToChannel, addUserToChannel, removeMessageFromChannel } from "../redux/userInfoSlice";
+import { acceptChannelInvite, addChannelInvite, addFriend, addFriendRequest, addMessageToChannel, addUserToChannel, removeFriendRequest, removeMessageFromChannel } from "../redux/userInfoSlice";
 
 
 let connection: signalR.HubConnection;
@@ -46,9 +46,6 @@ export const signalRMiddleware: Middleware = store => next => action => {
                 connection.on("JoinChannel", (newChannel: Channel) => {
                     store.dispatch(acceptChannelInvite(newChannel));
                 })
-
-                connection.invoke("AfterConnectedAsync")
-                    .catch(err => console.log("AfterConnected failed:", err));
                 
                 store.dispatch(setIsConnected(true));
             })
@@ -72,7 +69,8 @@ export const signalRMiddleware: Middleware = store => next => action => {
 
      // Accept friend
      if (acceptFriendRequestHub.match(action)) {
-        connection?.invoke("AcceptFriendRequest", action.payload);
+        connection?.invoke("AcceptFriendRequest", action.payload.initiatorId);
+        store.dispatch(removeFriendRequest(action.payload.id));
         return next(action);
      }
 
@@ -104,6 +102,6 @@ interface DeleteMessageProps {
 export const startConnection = createAction("chat/connect");
 export const sendMessageToConnection = createAction<{message: string, channelId: string}>("chat/sendMessage");
 export const sendFriendRequestHub = createAction<string>("chat/sendFriendRequest");
-export const acceptFriendRequestHub = createAction<string>("chat/acceptFriendRequest");
+export const acceptFriendRequestHub = createAction<Friendship>("chat/acceptFriendRequest");
 export const sendChannelInviteHub = createAction<{channelId: string, newUserId: string}>("chat/sendChannelInvite");
 export const acceptChannelInviteHub = createAction<string>("chat/acceptChannelInvite");
