@@ -1,65 +1,46 @@
 import { useNavigate } from "react-router-dom";
 import instance from "../../_lib/axiosBase";
-import { Channel, ChannelRole, FriendRequest, Person } from "../../_lib/responseTypes";
-import React, { SetStateAction, useState } from "react";
+import { Friendship } from "../../_lib/responseTypes";
+import React from "react";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
-import { acceptChannelInvite, acceptFriendRequest, selectAllChannelInvites, selectAllFriendRequests, selectAllFriends } from "../../_lib/redux/userSlice";
+import { clearUser } from "../../_lib/redux/userInfoSlice";
 import { buttonStyleLight, buttonStyleLightDisabled, buttonStyleRed, mobileSubMenuStyle } from "../../_lib/tailwindShortcuts";
 import PeopleSubMenu from "./UserControlsSubComponents/PeopleSubMenu";
 import FriendSubMenu from "./UserControlsSubComponents/FriendSubMenu";
 import { SubMenu, SubMenuOptions } from "../../_lib/pageTypes";
 import ChannelInvitesSubMenu from "./UserControlsSubComponents/ChannelInvitesSubMenu";
+import { clearChatHub, setSelectedSubMenuOption } from "../../_lib/redux/chatUiSlice";
+import { acceptChannelInviteHub, acceptFriendRequestHub, sendChannelInviteHub, sendFriendRequestHub } from "../../_lib/signalr/signalRMiddleware";
 
-interface Props {
-    selectedChannel: Channel | null;
-    selectedSubMenu: SubMenu;
-    setSelectedSubMenu: React.Dispatch<SetStateAction<SubMenu>>
-}
-
-const UserControls = ({selectedChannel, selectedSubMenu, setSelectedSubMenu}: Props) => {
-    const friends = useAppSelector(selectAllFriends);
-    const friendRequests = useAppSelector(selectAllFriendRequests);
-    const channelInvites = useAppSelector(selectAllChannelInvites);
+const UserControls = () => {
     const dispatch = useAppDispatch();
-    const [subMenu, setSubMenu] = useState<SubMenuOptions>(SubMenuOptions.None);
-
-    const handleSubMenu = (option: SubMenuOptions) => {
-        if (subMenu == option) {
-            setSubMenu(SubMenuOptions.None);
-        } else {
-            setSubMenu(option);
-            setSelectedSubMenu(SubMenu.None)
-        }
-    }
+    const selectedChannelId = useAppSelector((state) => state.chatUi.selectedChannelId);
+    const subMenu = useAppSelector((state) => state.chatUi.selectedSubMenu);
+    const subMenuOption = useAppSelector((state) => state.chatUi.selectedSubMenuOptions);
 
     const handleNewFriendRequest = async (id: string) => {
         try {
-            const response = await instance.post<Person>("/User/RequestFriend", {id: id}, {withCredentials: true});
-            console.log(response.data);
+            dispatch(sendFriendRequestHub(id));
+            console.log("Friend request sent!");
         } catch (error) {
             console.error("Error sending request", error);
         }
     }
 
     const handleInviteToChannel = async (userId: string) => {
-        if (!selectedChannel) return;
+        if (selectedChannelId == "") return;
         try {
-            const response = await instance.post<{message: string}>(`/Channel/InviteUserToChannel`, {userId, channelId: selectedChannel.id, role: ChannelRole.Member},{withCredentials: true}) ;
-            if (response.status == 200) {
-                console.log(response.data.message);
-            }
+            dispatch(sendChannelInviteHub({channelId: selectedChannelId, newUserId: userId}));
+            console.log("Channel invite sent!");
         } catch (error) {
             console.error("Error adding user to channel", error);
         }
     };
 
-    const handleAcceptFriendRequest = async (request: FriendRequest) => {
+    const handleAcceptFriendRequest = async (request: Friendship) => {
         try {
-            const response = await instance.post("/User/ConfirmFriendRequest", {id: request.initiatorId}, {withCredentials: true});
-            if (response.status == 200) {
-                dispatch(acceptFriendRequest({requestId: request.id, newFriend: request.initiator}));
-
-            }
+            dispatch(acceptFriendRequestHub(request));
+            console.log("Friend request accepted!");
         } catch (error) {
             console.error("Error accepting friend request", error);
         }
@@ -67,11 +48,8 @@ const UserControls = ({selectedChannel, selectedSubMenu, setSelectedSubMenu}: Pr
 
     const handleAcceptChannelInvite = async (inviteId: string, channelId: string) => {
         try {
-            const response = await instance.post<{message: string, channel: Channel}>("/Channel/ConfirmChannelInvite", {channelId}, {withCredentials: true});
-            if (response.status == 200) {
-                dispatch(acceptChannelInvite({inviteId, newChannel: response.data.channel}));
-                console.log(response.data.message);
-            }
+            dispatch(acceptChannelInviteHub(channelId));
+            console.log(`Channel invite ${inviteId} accepted!`);
         } catch (error) {
             console.error("Error accepting channel invite", error);
         }
@@ -83,6 +61,8 @@ const UserControls = ({selectedChannel, selectedSubMenu, setSelectedSubMenu}: Pr
         e.preventDefault();
         try {
             await instance.post("/user/signout", {}, {withCredentials: true});
+            dispatch(clearUser());
+            dispatch(clearChatHub());
             console.log("Logged out successfully!");
         } catch (error) {
             console.error(error);
@@ -93,14 +73,14 @@ const UserControls = ({selectedChannel, selectedSubMenu, setSelectedSubMenu}: Pr
     
     return (
         <>
-        <div className={(selectedSubMenu == SubMenu.UserInfo ? mobileSubMenuStyle + " " : "") + "flex flex-col gap-2"} id="nav-bar">
-            <button className={buttonStyleLight} id="people-btn" onClick={() => handleSubMenu(SubMenuOptions.People)}>
+        <div className={(subMenu == SubMenu.UserInfo ? mobileSubMenuStyle + " " : "") + "flex flex-col gap-2"} id="nav-bar">
+            <button className={buttonStyleLight} id="people-btn" onClick={() => dispatch(setSelectedSubMenuOption(SubMenuOptions.People))}>
                 People
             </button>
-            <button className={buttonStyleLight}  id="friends-btn" onClick={() => handleSubMenu(SubMenuOptions.Friends)}>
+            <button className={buttonStyleLight}  id="friends-btn" onClick={() => dispatch(setSelectedSubMenuOption(SubMenuOptions.Friends))}>
                 Friends
             </button>
-            <button className={buttonStyleLight}  id="invites-btn" onClick={() => handleSubMenu(SubMenuOptions.ChannelInites)}>
+            <button className={buttonStyleLight}  id="invites-btn" onClick={() => dispatch(setSelectedSubMenuOption(SubMenuOptions.ChannelInvites))}>
                 Invites
             </button>
             <button className={buttonStyleLightDisabled}  id="profile-btn" disabled={true}>
@@ -110,14 +90,14 @@ const UserControls = ({selectedChannel, selectedSubMenu, setSelectedSubMenu}: Pr
                 Sign Out
             </button>
         </div>
-        {subMenu == SubMenuOptions.People ? 
-            <PeopleSubMenu handleNewFriendRequest={handleNewFriendRequest} handleSubMenu={handleSubMenu} /> 
+        {subMenuOption == SubMenuOptions.People ? 
+            <PeopleSubMenu handleNewFriendRequest={handleNewFriendRequest} /> 
         :
-        subMenu == SubMenuOptions.Friends ?
-            <FriendSubMenu friends={friends} friendRequests={friendRequests} handleAcceptFriendRequest={handleAcceptFriendRequest} handleInviteToChannel={handleInviteToChannel} handleSubMenu={handleSubMenu} /> 
+        subMenuOption == SubMenuOptions.Friends ?
+            <FriendSubMenu handleAcceptFriendRequest={handleAcceptFriendRequest} handleInviteToChannel={handleInviteToChannel} /> 
         :
-        subMenu == SubMenuOptions.ChannelInites ?    
-            <ChannelInvitesSubMenu channelInvites={channelInvites} handleAcceptChannelInvite={handleAcceptChannelInvite} handleSubMenu={handleSubMenu} /> 
+        subMenuOption == SubMenuOptions.ChannelInvites ?    
+            <ChannelInvitesSubMenu handleAcceptChannelInvite={handleAcceptChannelInvite} /> 
         :
             <></>
         }

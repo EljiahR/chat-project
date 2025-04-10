@@ -3,10 +3,14 @@ import { useNavigate } from "react-router-dom";
 import instance from "../_lib/axiosBase";
 import LoadingSpinner from "../_lib/svgs/LoadingSpinner.svg?react";
 import { buttonStyleBlue, buttonStyleBlueDisabled, buttonStyleGreen, buttonStyleGreenDisabled, formStyle, inputLabelStyle, loadingSpinnerStyle, pageSignInStyle, textInputStyle } from "../_lib/tailwindShortcuts";
+import { useAppDispatch } from "../_lib/redux/hooks";
+import { clearChatHub } from "../_lib/redux/chatUiSlice";
+import { clearUser } from "../_lib/redux/userInfoSlice";
 
 const SignIn: React.FC = () => {
     const [isSigningIn, setIsSigningIn] = useState(false);
     const [isRegistering, setIsRegistering] = useState(false);
+    const dispatch = useAppDispatch();
     
     const [loginCredentials, setLoginCredentials] = useState({
         userName: "",
@@ -49,6 +53,8 @@ const SignIn: React.FC = () => {
         try {
             setIsSigningIn(true);
             const response = await instance.post("/user/signin", loginCredentials, {withCredentials: true});
+            dispatch(clearChatHub());
+            dispatch(clearUser());
             console.log("Login successful. ", response.data);
             navigate("/");
         } catch (error) {

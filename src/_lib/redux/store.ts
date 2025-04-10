@@ -1,13 +1,17 @@
 import { configureStore } from "@reduxjs/toolkit";
-import userReducer from "./userSlice";
+import userInfoReducer from "./userInfoSlice";
+import chatUiReducer from "./chatUiSlice";
+import { signalRMiddleware } from "../signalr/signalRMiddleware";
 
 export const store = configureStore({
     reducer: {
-        user: userReducer
-    }
+        userInfo: userInfoReducer,
+        chatUi: chatUiReducer
+    },
+    middleware: (getDefaultMiddleware) => 
+        getDefaultMiddleware().concat(signalRMiddleware),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch

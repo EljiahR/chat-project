@@ -1,114 +1,50 @@
-import { FormEvent, useEffect, useMemo, useState } from "react";
-import * as signalR from "@microsoft/signalr";
+import { FormEvent, useEffect, useMemo } from "react";
 import UserControls from "../_components/ChatHome/UserControls";
-import { Channel, Message, UserInfo } from "../_lib/responseTypes";
+import { UserInfo } from "../_lib/responseTypes";
 import ChannelList from "../_components/ChatHome/ChannelList";
 import Chat from "../_components/ChatHome/Chat";
 import HomeChannel from "../_components/ChatHome/HomeChannel";
 import ChannelMenu from "../_components/ChatHome/ChannelMenu";
-import backendUrl from "../_lib/backendUrl";
 import { buttonStyleLight, pageChatHomeStyle } from "../_lib/tailwindShortcuts";
-import { useAppSelector } from "../_lib/redux/hooks";
+import { useAppDispatch, useAppSelector } from "../_lib/redux/hooks";
 import { SubMenu } from "../_lib/pageTypes";
-
-interface ChatHistory {
-    [channelId: string]: Message[];
-}
+import { setSelectedSubMenu } from "../_lib/redux/chatUiSlice";
+import { messageSortByDateReverse } from "../_lib/sortFunctions";
+import { sendMessageToConnection, startConnection } from "../_lib/signalr/signalRMiddleware";
 
 interface Props {
     userInfoReceived: UserInfo
 }
 
 const ChatHome: React.FC<Props> = () => {
-    const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
-    const [message, setMessage] = useState<string>("");
-    const [messages, setMessages] = useState<Map<string, Message[]>>(new Map());
-    const [selectedChannel, setSelectedChannel] = useState<Channel | null>(null);
-    const [selectedSubMenu, setSelectedSubMenu] = useState<SubMenu>(SubMenu.None);
-    const userName = useAppSelector((state) => state.user.userName);
+    const dispatch = useAppDispatch();
+    const isConnected = useAppSelector((state) => state.chatUi.isConnected);
+    const draftMessage = useAppSelector((state) => state.chatUi.draftMessage);
+    const selectedChannelId = useAppSelector((state) => state.chatUi.selectedChannelId);
+    const selectedChannel = useAppSelector((state) => state.userInfo.channels.entities[selectedChannelId]);
+    const messages = useAppSelector((state) => state.chatUi.selectedChannelId != "" ? state.userInfo.channels.entities[selectedChannelId].channelMessages : []);
+    const userName = useAppSelector((state) => state.userInfo.userName);
 
     // Attempt to connect to hub on mount
     useEffect(() => {
         const previousTitle = document.title;
         document.title = "Home";
-        const getHubConntection = async () => {
-            const newConnection = new signalR.HubConnectionBuilder()
-                .withUrl(backendUrl + "/ChatHub")
-                .withAutomaticReconnect()
-                .build();
-
-            setConnection(newConnection);
-        };
-        getHubConntection();
+        dispatch(startConnection());
 
         return (() => {document.title = previousTitle;});
     }, []);
 
-    //  
-    useEffect(() => {
-        if (connection){
-            connection.start()
-                .then(() => {
-                    connection.on("ReceiveMessageHistory", (channelHistories: ChatHistory) => {
-                        try {
-                            const messageHistory: Map<string, Message[]> = new Map<string, Message[]>([]);
-                            
-                            Object.keys(channelHistories).forEach(channelId => {
-                                
-                                messageHistory.set(channelId, channelHistories[channelId] as Message[]);
-                            });
-                       
-                            setMessages(messageHistory);
-                        } catch(error) {
-                            console.error("Error receiving history", error);
-                        }
-                        
-                    });
-                    
-                    connection.on("ReceiveMessage", (messageReceived: Message) => {
-                        
-                        setMessages(previousMessages => {
-                            const updatedMessages = new Map(previousMessages);
-
-                            const channelMessages = updatedMessages.get(messageReceived.channelId) || [];
-                            updatedMessages.set(messageReceived.channelId, [...channelMessages, messageReceived]);
-
-                            return updatedMessages;
-                        });
-                    });
-
-                    connection.invoke("AfterConnectedAsync");
-                })
-                .catch(e => console.log("Connection Error: ", e));
-        }
-    }, [connection]);
-
     const SendMessage = async (e: FormEvent) => {
         e.preventDefault();
-        if (connection && message && selectedChannel) {
+        if (isConnected && draftMessage != "" && selectedChannelId != "") {
             try {
-                console.log("Sending to: ", selectedChannel);
-                await connection.invoke("SendMessage", message, selectedChannel.id);
-                setMessage("");
+                console.log("Sending to: ", selectedChannelId);
+                dispatch(sendMessageToConnection({message: draftMessage, channelId: selectedChannelId}))
             } catch (e) {
                 console.log(e);
             }
         }
     };
-
-    const addNewChannel = (id: string) => {
-        setMessages(previousMessages => {
-            const updatedMessages = new Map(previousMessages);
-            updatedMessages.set(id, []);
-            return updatedMessages;
-        })
-    }
-
-    const handleMessageInput = (value: string) => {
-        if (value.length < 251) {
-            setMessage(value);
-        }
-    }
 
     const handleChannelMenuDisplay = (forceClose = false) => {
         const menu = document.querySelector("#channel-menu") as HTMLDivElement;
@@ -124,50 +60,47 @@ const ChatHome: React.FC<Props> = () => {
     }
 
     const chatMessages = useMemo(() => {
-        if (selectedChannel == null) { 
+        if (selectedChannelId == "") { 
             return [];
         }
         else {
-            const channelMessages = messages.get(selectedChannel.id);
+            const channelMessages = messages ? messages.slice().sort(messageSortByDateReverse) : [];
             if (channelMessages) {
                 return channelMessages.map((channelMessage, index) => {
                     return <div className="chat-message" key={index}>{`${channelMessage.username}: ${channelMessage.content}`}</div>
                 })
             }
         }
-    }, [selectedChannel, messages])
+    }, [selectedChannelId, messages])
 
     useEffect(() => {
-        if (selectedChannel) {
+        if (selectedChannelId != "") {
             const previousTitle = document.title;
             document.title = selectedChannel.name;
 
             return (() => {document.title = previousTitle;});
         }
         
-    }, [selectedChannel])
+    }, [selectedChannelId])
     
 
     return (
         <div id="chat-main" className={pageChatHomeStyle}>
             <div id="navbar-controls" className="row-span-1 row-start-1 sm:row-auto col-start-1 sm:hidden flex justify-between">
-                <button onClick={() => setSelectedSubMenu(prev => prev == SubMenu.ChannelList ? SubMenu.None : SubMenu.ChannelList)} className={buttonStyleLight}>Channels</button>
-                <button onClick={() => setSelectedSubMenu(prev => prev == SubMenu.UserInfo ? SubMenu.None : SubMenu.UserInfo)} className={buttonStyleLight}>{userName}</button>
+                <button onClick={() => dispatch(setSelectedSubMenu(SubMenu.ChannelList))} className={buttonStyleLight}>Channels</button>
+                <button onClick={() => dispatch(setSelectedSubMenu(SubMenu.UserInfo))} className={buttonStyleLight}>{userName}</button>
             </div>
             <div id="navbar" className="invisible sm:visible row-start-1 sm:row-auto col-start-1 sm:col-span-1 sm:flex sm:flex-col justify-between">
-                <ChannelList setSelectedChannel={setSelectedChannel} addNewChannel={addNewChannel} selectedSubMenu={selectedSubMenu} setSelectedSubMenu={setSelectedSubMenu} />
-                <UserControls selectedChannel={selectedChannel} selectedSubMenu={selectedSubMenu} setSelectedSubMenu={setSelectedSubMenu}  />
+                <ChannelList  />
+                <UserControls />
             </div>
             <div id="chat-container" className="row-span-11 sm:row-span-1 sm:col-span-3 h-full">
                 {selectedChannel == null ? 
                 <HomeChannel /> 
                 :
                 <Chat 
-                    channelName={selectedChannel.name} 
-                    chatMessages={[...chatMessages!].reverse()} 
+                    chatMessages={chatMessages != null ? [...chatMessages!].reverse() : []} 
                     handleChannelMenuDisplay={handleChannelMenuDisplay}
-                    message={message} 
-                    handleMessageInput={handleMessageInput} 
                     SendMessage={SendMessage}
                 />
                 }
