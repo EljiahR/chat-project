@@ -1,12 +1,11 @@
 import { useAppSelector } from "../../_lib/redux/hooks";
 import { buttonStyleBlue } from "../../_lib/tailwindShortcuts";
 import MessageControls from "./MessageControls";
-import { FormEvent } from "react";
 
 interface Props {
     chatMessages: JSX.Element[];
     handleChannelMenuDisplay: () => void;
-    SendMessage: (e: FormEvent) => void;
+    SendMessage: () => void;
 }
 
 const Chat: React.FC<Props> = ({chatMessages, handleChannelMenuDisplay, SendMessage}) => {

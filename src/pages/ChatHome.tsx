@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import UserControls from "../_components/ChatHome/UserControls";
 import { UserInfo } from "../_lib/responseTypes";
 import ChannelList from "../_components/ChatHome/ChannelList";
