@@ -37,8 +37,7 @@ const ChatHome: React.FC<Props> = () => {
         });
     }, []);
 
-    const SendMessage = async (e: FormEvent) => {
-        e.preventDefault();
+    const SendMessage = async () => {
         if (isConnected && draftMessage != "" && selectedChannelId != "") {
             try {
                 console.log("Sending to: ", selectedChannelId);

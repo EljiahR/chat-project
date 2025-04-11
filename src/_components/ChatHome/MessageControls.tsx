@@ -1,10 +1,10 @@
-import React, { FormEvent, useRef } from "react";
+import React, { useRef } from "react";
 import { buttonStyleLight } from "../../_lib/tailwindShortcuts";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
 import { setMessageInput } from "../../_lib/redux/chatUiSlice";
 
 interface Props {
-    SendMessage: (e: FormEvent) => void;
+    SendMessage: () => void;
 }
 
 const MessageControls: React.FC<Props> = ({ SendMessage }) => {
@@ -18,27 +18,38 @@ const MessageControls: React.FC<Props> = ({ SendMessage }) => {
         }
     }
 
-    const handleSendMessage = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        SendMessage(e);
+    const handleSendMessageEnterKey = (e: React.KeyboardEvent) => {
+        if (e.key != "Enter") {
+            return;
+        }
+
+        SendMessage();
+        if (inputRef.current) {
+            inputRef.current.focus();
+        }
+    }
+
+    const handleSendMessage = () => {
+        SendMessage();
         if (inputRef.current) {
             inputRef.current.focus();
         }
     }
     
     return (
-        <form id="message-controls" onSubmit={(e) => handleSendMessage(e)} className="flex gap-2">                
+        <div id="message-controls" className="flex gap-2">                
             <input 
                 id="message-controls-text"
                 type="text" 
                 placeholder="Type your message..."
                 value={message}
                 onChange={(e) => handleMessageInput(e.target.value)}
+                onKeyDown={(e) => handleSendMessageEnterKey(e, )}
                 className="grow-1"
                 ref={inputRef}
             />
-            <button className={buttonStyleLight} type="submit">Send</button>            
-        </form>
+            <button className={buttonStyleLight} type="button" onClick={handleSendMessage}>Send</button>            
+        </div>
     );
 }
 
