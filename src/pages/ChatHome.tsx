@@ -10,7 +10,7 @@ import { useAppDispatch, useAppSelector } from "../_lib/redux/hooks";
 import { SubMenu } from "../_lib/pageTypes";
 import { setSelectedSubMenu } from "../_lib/redux/chatUiSlice";
 import { messageSortByDateReverse } from "../_lib/sortFunctions";
-import { sendMessageToConnection, startConnection } from "../_lib/signalr/signalRMiddleware";
+import { closeConnection, sendMessageToConnection, startConnection } from "../_lib/signalr/signalRMiddleware";
 
 interface Props {
     userInfoReceived: UserInfo
@@ -31,7 +31,10 @@ const ChatHome: React.FC<Props> = () => {
         document.title = "Home";
         dispatch(startConnection());
 
-        return (() => {document.title = previousTitle;});
+        return (() => {
+            document.title = previousTitle;
+            dispatch(closeConnection());
+        });
     }, []);
 
     const SendMessage = async (e: FormEvent) => {

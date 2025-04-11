@@ -9,6 +9,10 @@ import { acceptChannelInvite, addChannelInvite, addFriend, addFriendRequest, add
 let connection: signalR.HubConnection;
 
 export const signalRMiddleware: Middleware = store => next => action => {  
+    if (closeConnection.match(action)) {
+        connection?.stop();
+    }
+    
     if (startConnection.match(action)) {
         connection = new signalR.HubConnectionBuilder()
             .withUrl(backendUrl + "/ChatHub")
@@ -100,6 +104,7 @@ interface DeleteMessageProps {
 }
 
 export const startConnection = createAction("chat/connect");
+export const closeConnection = createAction("chat/disconnect");
 export const sendMessageToConnection = createAction<{message: string, channelId: string}>("chat/sendMessage");
 export const sendFriendRequestHub = createAction<string>("chat/sendFriendRequest");
 export const acceptFriendRequestHub = createAction<Friendship>("chat/acceptFriendRequest");
