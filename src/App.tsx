@@ -1,16 +1,15 @@
 // import Chat from './Chat'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import ChatHome from './pages/ChatHome'
-import ProtectedRoutes from './_components/ProtectedRoute'
-import SignIn from './pages/SignIn'
+import ChatHomePage from './pages/ChatHomePage'
+import SignInPage from './pages/SignInPage'
 
 function App() {
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<SignIn />} />
-        <Route path="/chat" element={<ProtectedRoutes component={ChatHome} />} />
+        <Route path='/' element={<SignInPage />} />
+        <Route path="/chat" element={<ChatHomePage />} />
       </Routes>
     </BrowserRouter>
   )

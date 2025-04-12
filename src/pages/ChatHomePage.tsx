@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import UserControls from "../_components/ChatHome/UserControls";
 import { UserInfo } from "../_lib/responseTypes";
 import ChannelList from "../_components/ChatHome/ChannelList";
@@ -11,12 +11,47 @@ import { SubMenu } from "../_lib/pageTypes";
 import { setSelectedSubMenu } from "../_lib/redux/chatUiSlice";
 import { messageSortByDateReverse } from "../_lib/sortFunctions";
 import { closeConnection, sendMessageToConnection, startConnection } from "../_lib/signalr/signalRMiddleware";
+import instance from "../_lib/axiosBase";
+import { setUser } from "../_lib/redux/userInfoSlice";
+import { Navigate } from "react-router-dom";
 
-interface Props {
-    userInfoReceived: UserInfo
+enum AuthenticationStates {
+    Loading,
+    Authorized,
+    Unauthorized
 }
 
-const ChatHome: React.FC<Props> = () => {
+const ChatHomePage = () => {
+    const dispatch = useAppDispatch();
+    const [authenticationState, setAuthenticationState] = useState(AuthenticationStates.Loading);
+
+    useEffect(() => {
+        const checkAuthStatus = async () => {
+            try {
+                const response = await instance.get<UserInfo>("/user/status", {withCredentials: true});
+                dispatch(setUser(response.data));
+                console.log(response.data)
+                setAuthenticationState(AuthenticationStates.Authorized);
+            } catch (error) {
+                setAuthenticationState(AuthenticationStates.Unauthorized);
+                console.error("Not authorized", error);
+            }
+        }
+
+        checkAuthStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+    
+    return (
+        authenticationState == AuthenticationStates.Loading ? 
+            <></> : 
+            authenticationState == AuthenticationStates.Authorized ? 
+                <CoreComponent /> : 
+                <Navigate to={"/"} />
+    )
+}
+
+const CoreComponent = () => {
     const dispatch = useAppDispatch();
     const isConnected = useAppSelector((state) => state.chatUi.isConnected);
     const draftMessage = useAppSelector((state) => state.chatUi.draftMessage);
@@ -35,6 +70,7 @@ const ChatHome: React.FC<Props> = () => {
             document.title = previousTitle;
             dispatch(closeConnection());
         });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const SendMessage = async () => {
@@ -76,14 +112,14 @@ const ChatHome: React.FC<Props> = () => {
     }, [selectedChannelId, messages])
 
     useEffect(() => {
-        if (selectedChannelId != "") {
+        if (selectedChannel != null) {
             const previousTitle = document.title;
             document.title = selectedChannel.name;
 
             return (() => {document.title = previousTitle;});
         }
         
-    }, [selectedChannelId])
+    }, [selectedChannel])
     
 
     return (
@@ -113,4 +149,4 @@ const ChatHome: React.FC<Props> = () => {
     )
 };
 
-export default ChatHome
+export default ChatHomePage

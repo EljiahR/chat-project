@@ -7,7 +7,7 @@ import { useAppDispatch } from "../_lib/redux/hooks";
 import { clearChatHub } from "../_lib/redux/chatUiSlice";
 import { clearUser } from "../_lib/redux/userInfoSlice";
 
-const SignIn: React.FC = () => {
+const SignInPage: React.FC = () => {
     const [isSigningIn, setIsSigningIn] = useState(false);
     const [isRegistering, setIsRegistering] = useState(false);
     const dispatch = useAppDispatch();
@@ -133,4 +133,4 @@ const SignIn: React.FC = () => {
     )
 }
 
-export default SignIn;
+export default SignInPage;
