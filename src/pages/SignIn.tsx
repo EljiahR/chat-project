@@ -56,7 +56,7 @@ const SignIn: React.FC = () => {
             dispatch(clearChatHub());
             dispatch(clearUser());
             console.log("Login successful. ", response.data);
-            navigate("/");
+            navigate("/chat");
         } catch (error) {
             console.error("Trouble attempting login. " + error);
         } finally {
