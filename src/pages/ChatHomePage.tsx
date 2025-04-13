@@ -14,6 +14,7 @@ import { closeConnection, sendMessageToConnection, startConnection } from "../_l
 import instance from "../_lib/axiosBase";
 import { setUser } from "../_lib/redux/userInfoSlice";
 import { Navigate } from "react-router-dom";
+import LoadingScreen from "../_components/Generics/LoadingScreen";
 
 enum AuthenticationStates {
     Loading,
@@ -44,7 +45,7 @@ const ChatHomePage = () => {
     
     return (
         authenticationState == AuthenticationStates.Loading ? 
-            <></> : 
+            <LoadingScreen /> : 
             authenticationState == AuthenticationStates.Authorized ? 
                 <CoreComponent /> : 
                 <Navigate to={"/"} />
