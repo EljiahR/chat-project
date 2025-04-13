@@ -1,11 +1,11 @@
 // Pages
 export const pageBaseStyle = "h-full w-screen bg-gray-900 text-white p-5 fixed top-0 left-0 right-0 bottom-0";
-export const pageSignInStyle = pageBaseStyle + " flex items-center justify-center flex-col";
+export const pageSignInStyle = pageBaseStyle + " flex items-center justify-between flex-col";
 export const pageChatHomeStyle = pageBaseStyle + " grid grid-rows-12 grid-cols-1 sm:grid-rows-1 sm:grid-cols-4 gap-5";
 export const loadingPageStyle = pageBaseStyle + "h-full w-full flex flex-col justify-center items-center text-3xl gap-5";
 
 // Components
-export const formStyle = "flex flex-col items-center gap-5";
+export const formStyle = "flex flex-col items-stretch gap-5";
 export const mobileSubMenuStyle = "visible bg-gray-600 p-5 sm:p-0 rounded-xl sm:bg-inherit absolute sm:static h-80 sm:h-auto w-90 sm:w-auto top-1/6 -translate-y-1/6 left-1/2 -translate-x-1/2 sm:translate-0";
 export const draggableSubMenuStyle = "absolute sm:static top-1/6 -translate-y-1/6 left-1/2 -translate-x-1/2 sm:translate-0 visible min-w-1/4 bg-gray-600 p-2 bg-light border border-2 rounded flex flex-col gap-2";
 
@@ -26,8 +26,8 @@ export const buttonStyleRedSmall = "focus:outline-none text-white bg-red-700 hov
 
 
 // Inputs
-export const textInputStyle = "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500";
-export const inputLabelStyle = "flex gap-2 items-center justify-center";
+export const textInputStyle = "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block mw-60 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500";
+export const inputLabelStyle = "flex gap-2 items-center justify-between";
 
 // Loading elements
 export const loadingSpinnerStyle = "inline w-4 h-4 me-3 text-white animate-spin";
