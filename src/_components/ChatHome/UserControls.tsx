@@ -67,7 +67,7 @@ const UserControls = () => {
         } catch (error) {
             console.error(error);
         } finally {
-            navigate("/signin");
+            navigate("/");
         }
     }
     

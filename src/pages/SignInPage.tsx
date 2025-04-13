@@ -87,9 +87,9 @@ const SignInPage: React.FC = () => {
     return (
         <div id="signin-page"className={pageSignInStyle}>
             <h2 className="font-bold text-xl">Elijah's Chat Project</h2>
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-7">
                 <form onSubmit={(e) => handleLoginSubmit(e)} id="signin-form" className={formStyle}>
-                    <h3 className="align-self-center font-bold">Returning User</h3>
+                    <h3 className="self-center align-self-center font-bold">Returning User</h3>
                     <div className={inputLabelStyle}>
                         <label htmlFor="signin-username">Username</label>
                         <input type="text" id="signin-username" className={textInputStyle} placeholder="Enter your username..." onChange={(e) => handleLoginChange("userName", e.target.value)} />
@@ -104,7 +104,7 @@ const SignInPage: React.FC = () => {
                 
                 
                 <form id="register-form" onSubmit={(e) => handleRegisterSubmit(e)} className={formStyle}>
-                    <h3 className="align-self-center font-bold">New User</h3>
+                    <h3 className="self-center align-self-center font-bold">New User</h3>
                     <div className={inputLabelStyle}>
                         <label htmlFor="register-username">Username</label>
                         <input id="register-username" className={textInputStyle} type="text" placeholder="Enter your username..." name="userName" value={registerCredentials["userName"]} onChange={(e) => handleRegisterChange("userName", e.target.value)} />
