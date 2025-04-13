@@ -128,6 +128,9 @@ const SignIn: React.FC = () => {
                     }
                 </div>
             </div>
+            <div id="blurb">
+                Built by <a href="https://github.com/EljiahR">Elijah Reck</a> • <a href="https://github.com/EljiahR/chat-project.git">Frontend</a> • <a href="https://github.com/EljiahR/ChatProject.Reck.git">Backend</a> 
+            </div>
         </div>
         
     )
