@@ -1,6 +1,6 @@
 // Pages
 export const pageBaseStyle = "h-full w-screen bg-gray-900 text-white p-5 fixed top-0 left-0 right-0 bottom-0";
-export const pageSignInStyle = pageBaseStyle + " flex items-center justify-center flex-col";
+export const pageSignInStyle = pageBaseStyle + " flex items-center justify-between flex-col";
 export const pageChatHomeStyle = pageBaseStyle + " grid grid-rows-12 grid-cols-1 sm:grid-rows-1 sm:grid-cols-4 gap-5";
 export const loadingPageStyle = pageBaseStyle + "h-full w-full flex flex-col justify-center items-center text-3xl gap-5";
 
