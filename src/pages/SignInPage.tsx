@@ -6,11 +6,21 @@ import { buttonStyleBlue, buttonStyleBlueDisabled, buttonStyleGreen, buttonStyle
 import { useAppDispatch } from "../_lib/redux/hooks";
 import { clearChatHub } from "../_lib/redux/chatUiSlice";
 import { clearUser } from "../_lib/redux/userInfoSlice";
+import { PasswordShort, PasswordsNotMatching, UsernameBlank } from "../_lib/signInPageErrors";
+
+interface RegisterErrors {
+    username: string[],
+    password: string[],
+    repeatPassword: string
+}
 
 const SignInPage: React.FC = () => {
     const [isSigningIn, setIsSigningIn] = useState(false);
     const [isRegistering, setIsRegistering] = useState(false);
+    const [repeatPassword, setRepeatPassword] = useState("");
+    const [registerErrors, setRegisterErrors] = useState<RegisterErrors>({username: [], password: [], repeatPassword: ""});
     const dispatch = useAppDispatch();
+    const registerErrorsExist = () => registerErrors.username.length > 0 || registerErrors.password.length > 0 || registerErrors.repeatPassword != "";
     
     const [loginCredentials, setLoginCredentials] = useState({
         userName: "",
@@ -31,12 +41,32 @@ const SignInPage: React.FC = () => {
         setRegisterCredentials({...registerCredentials, [name]: value});
     };
 
-    const [repeatPassword, setRepeatPassword] = useState("");
-    const [passwordsMatch, setPasswordsMatch] = useState(true);
+    
+    useEffect(() => {
+        // Password too short
+        if (registerCredentials.password.length >= 6 && registerErrors.password.includes(PasswordShort)) {
+            setRegisterErrors(prevErrors => ({...prevErrors, password: [...prevErrors.password.filter(err => err != PasswordShort)]}));
+        } else if (registerCredentials.password.length < 6 && !registerErrors.password.includes(PasswordShort)) {
+            setRegisterErrors(prevErrors => ({...prevErrors, password: [...prevErrors.password, PasswordShort]}));
+        }
+
+        // Username blank
+        if (registerCredentials.userName.trim() != "" && registerErrors.username.includes(UsernameBlank)) {
+            setRegisterErrors(prevErrors => ({...prevErrors, username: [...prevErrors.username.filter(err => err != UsernameBlank)]}));
+        } else if (registerCredentials.userName.trim() == "" && !registerErrors.username.includes(UsernameBlank)) {
+            setRegisterErrors(prevErrors => ({...prevErrors, username: [...prevErrors.username, UsernameBlank]}));
+        }
+    }, [registerCredentials]);
 
     useEffect(() => {
-        setPasswordsMatch(repeatPassword == registerCredentials["password"]);
+        if (repeatPassword == registerCredentials["password"] && registerErrors.repeatPassword != "") {
+            setRegisterErrors(prevErrors => ({...prevErrors, repeatPassword: ""}));
+        } else if (repeatPassword != registerCredentials["password"] && registerErrors.repeatPassword.length == 0) {
+            setRegisterErrors(prevErrors => ({...prevErrors, repeatPassword: PasswordsNotMatching}));
+        }
     }, [repeatPassword, registerCredentials]);
+
+    
     
 
     const navigate = useNavigate();
@@ -66,7 +96,9 @@ const SignInPage: React.FC = () => {
 
     const handleRegisterSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        if (!passwordsMatch) return;
+        
+        if (registerErrorsExist()) return;
+        
         try {
             setIsRegistering(true);
             const response = await instance.post("/user/register", registerCredentials, {withCredentials: true});
@@ -122,8 +154,8 @@ const SignInPage: React.FC = () => {
                     <button type="submit" className={isRegistering ? buttonStyleGreenDisabled : buttonStyleGreen} disabled={isRegistering}>{isRegistering ? <><LoadingSpinner className={loadingSpinnerStyle} /> Loading...</> : "Register"}</button>
                 </form>
                 <div id="register-errors">
-                    {!passwordsMatch ? 
-                        <p>Passwords don't match</p> :
+                    {registerErrorsExist() ? 
+                        <div>Errors</div> :
                         <></>
                     }
                 </div>
