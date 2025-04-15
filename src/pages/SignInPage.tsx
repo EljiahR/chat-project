@@ -20,7 +20,6 @@ const SignInPage: React.FC = () => {
     const [repeatPassword, setRepeatPassword] = useState("");
     const [registerErrors, setRegisterErrors] = useState<RegisterErrors>({username: [], password: [], repeatPassword: ""});
     const dispatch = useAppDispatch();
-    const registerErrorsExist = () => registerErrors.username.length > 0 || registerErrors.password.length > 0 || registerErrors.repeatPassword != "";
     
     const [loginCredentials, setLoginCredentials] = useState({
         userName: "",
@@ -40,34 +39,6 @@ const SignInPage: React.FC = () => {
     const handleRegisterChange = (name: string, value: string) => {
         setRegisterCredentials({...registerCredentials, [name]: value});
     };
-
-    
-    useEffect(() => {
-        // Password too short
-        if (registerCredentials.password.length >= 6 && registerErrors.password.includes(PasswordShort)) {
-            setRegisterErrors(prevErrors => ({...prevErrors, password: [...prevErrors.password.filter(err => err != PasswordShort)]}));
-        } else if (registerCredentials.password.length < 6 && !registerErrors.password.includes(PasswordShort)) {
-            setRegisterErrors(prevErrors => ({...prevErrors, password: [...prevErrors.password, PasswordShort]}));
-        }
-
-        // Username blank
-        if (registerCredentials.userName.trim() != "" && registerErrors.username.includes(UsernameBlank)) {
-            setRegisterErrors(prevErrors => ({...prevErrors, username: [...prevErrors.username.filter(err => err != UsernameBlank)]}));
-        } else if (registerCredentials.userName.trim() == "" && !registerErrors.username.includes(UsernameBlank)) {
-            setRegisterErrors(prevErrors => ({...prevErrors, username: [...prevErrors.username, UsernameBlank]}));
-        }
-    }, [registerCredentials]);
-
-    useEffect(() => {
-        if (repeatPassword == registerCredentials["password"] && registerErrors.repeatPassword != "") {
-            setRegisterErrors(prevErrors => ({...prevErrors, repeatPassword: ""}));
-        } else if (repeatPassword != registerCredentials["password"] && registerErrors.repeatPassword.length == 0) {
-            setRegisterErrors(prevErrors => ({...prevErrors, repeatPassword: PasswordsNotMatching}));
-        }
-    }, [repeatPassword, registerCredentials]);
-
-    
-    
 
     const navigate = useNavigate();
 
@@ -96,9 +67,42 @@ const SignInPage: React.FC = () => {
 
     const handleRegisterSubmit = async (e: FormEvent) => {
         e.preventDefault();
+        let errorOccured = false;
+        // Username blank
+        if (registerCredentials.userName.trim() != "" && registerErrors.username.includes(UsernameBlank)) {
+            setRegisterErrors(prevErrors => ({...prevErrors, username: [...prevErrors.username.filter(err => err != UsernameBlank)]}));
+        } else if (registerCredentials.userName.trim() == "") {
+            if (!registerErrors.username.includes(UsernameBlank)) {
+                setRegisterErrors(prevErrors => ({...prevErrors, username: [...prevErrors.username, UsernameBlank]}));
+            }
+            errorOccured = true;
+        }
+
+        // Password too short
+        if (registerCredentials.password.length >= 6 && registerErrors.password.includes(PasswordShort)) {
+            setRegisterErrors(prevErrors => ({...prevErrors, password: [...prevErrors.password.filter(err => err != PasswordShort)]}));
+        } else if (registerCredentials.password.length < 6) {
+            if (!registerErrors.password.includes(PasswordShort)) {
+            setRegisterErrors(prevErrors => ({...prevErrors, password: [...prevErrors.password, PasswordShort]})); 
+            }
+            errorOccured = true;
+        }
+
+        // Passwords dont match
+        if (registerCredentials.password == repeatPassword && registerErrors.repeatPassword != "") {
+            setRegisterErrors(prevErrors => ({...prevErrors, repeatPassword: ""}));
+        } else if (registerCredentials.password != repeatPassword) {
+            if (registerErrors.repeatPassword != PasswordsNotMatching) {
+                setRegisterErrors(prevErrors => ({...prevErrors, repeatPassword: PasswordsNotMatching}));
+            }
+            errorOccured = true;
+        }
         
-        if (registerErrorsExist()) return;
-        
+        if (errorOccured) {
+            console.log("this ran")
+            return;
+        }
+
         try {
             setIsRegistering(true);
             const response = await instance.post("/user/register", registerCredentials, {withCredentials: true});
@@ -140,25 +144,37 @@ const SignInPage: React.FC = () => {
                     <div className={inputLabelStyle}>
                         <label htmlFor="register-username">Username</label>
                         <input id="register-username" className={textInputStyle} type="text" placeholder="Enter your username..." name="userName" value={registerCredentials["userName"]} onChange={(e) => handleRegisterChange("userName", e.target.value)} />
+                        {registerErrors.username.length > 0 ? 
+                            <div>
+                                {registerErrors.username.join(" ")}
+                            </div> :
+                            null
+                        }
                     </div>
                     <div className={inputLabelStyle}>
                         <label htmlFor="register-password">Password</label>
                         <input id="register-password" className={textInputStyle} type="password" placeholder="Password" name="password" value={registerCredentials["password"]} onChange={(e) => handleRegisterChange("password", e.target.value)} />
+                        {registerErrors.password.length > 0 ? 
+                            <div>
+                                {registerErrors.password.join(" ")}
+                            </div> :
+                            null
+                        }
                     </div>
                     
                     <div className={inputLabelStyle}>
                         <label htmlFor="repeat-password">Repeat Password</label>
                         <input id="repeat-password" className={textInputStyle} type="password" placeholder="Repeat password" name="repeat-password" value={repeatPassword} onChange={(e) => setRepeatPassword(e.target.value)} />
+                        {registerErrors.repeatPassword != "" ? 
+                            <div>
+                                {registerErrors.repeatPassword}
+                            </div> :
+                            null
+                        }
                     </div>
                     
                     <button type="submit" className={isRegistering ? buttonStyleGreenDisabled : buttonStyleGreen} disabled={isRegistering}>{isRegistering ? <><LoadingSpinner className={loadingSpinnerStyle} /> Loading...</> : "Register"}</button>
                 </form>
-                <div id="register-errors">
-                    {registerErrorsExist() ? 
-                        <div>Errors</div> :
-                        <></>
-                    }
-                </div>
             </div>
             <p id="blurb" className="text-gray-300 text-sm">
                 Built by <a href="https://github.com/EljiahR" className="underline hover:text-white">Elijah Reck</a> • <a href="https://github.com/EljiahR/chat-project.git" className="underline hover:text-white">Frontend</a> • <a href="https://github.com/EljiahR/ChatProject.Reck.git" className="underline hover:text-white">Backend</a> 
