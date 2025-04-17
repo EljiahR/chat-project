@@ -11,6 +11,7 @@ const MessageControls: React.FC<Props> = ({ SendMessage }) => {
     const inputRef = useRef<HTMLInputElement>(null);
     const dispatch = useAppDispatch();
     const message = useAppSelector((state) => state.chatUi.draftMessage);
+    const usersTyping = useAppSelector((state) => state.userInfo.usersTyping[state.chatUi.selectedChannelId]);
 
     const handleMessageInput = (value: string) => {
         if (value.length < 251) {
@@ -48,7 +49,12 @@ const MessageControls: React.FC<Props> = ({ SendMessage }) => {
                 className="grow-1"
                 ref={inputRef}
             />
-            <button className={buttonStyleLight} type="button" onClick={handleSendMessage}>Send</button>            
+            <button className={buttonStyleLight} type="button" onClick={handleSendMessage}>Send</button>  
+            {usersTyping.length > 0 ? 
+            <div>
+                {usersTyping.join(" ")}
+            </div> : 
+            <></>}          
         </div>
     );
 }
