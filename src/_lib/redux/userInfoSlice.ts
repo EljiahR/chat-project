@@ -13,7 +13,8 @@ const initialState: UserInfoSlice = {
     channels: channelsAdapter.getInitialState(),
     friends: friendsAdapter.getInitialState(),
     channelInvites: channelInvitesAdapter.getInitialState(),
-    friendRequests: friendRequestsAdapter.getInitialState()
+    friendRequests: friendRequestsAdapter.getInitialState(),
+    usersTyping: {}
 }
 
 export const userInfoSlice = createSlice({
