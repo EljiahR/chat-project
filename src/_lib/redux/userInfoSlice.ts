@@ -78,6 +78,15 @@ export const userInfoSlice = createSlice({
             const channelInvite = channelInvitesAdapter.getSelectors((state: UserInfoSlice) => state.channelInvites).selectAll(state).filter((cu) => cu.channelId == action.payload.id);
             channelInvitesAdapter.removeOne(state.channelInvites, channelInvite[0].id);
             channelsAdapter.addOne(state.channels, action.payload);
+        },
+        addUserTyping: (state, action: PayloadAction<{channelId: string, userId: string}>) => {
+            state.usersTyping[action.payload.channelId] = [...state.usersTyping[action.payload.channelId], action.payload.userId];
+        },
+        removeUserTyping: (state, action: PayloadAction<{channelId: string, userId: string}>) => {
+            state.usersTyping[action.payload.channelId] = state.usersTyping[action.payload.channelId].filter((id) => id != action.payload.channelId);
+        },
+        clearChannelTyping: (state, action: PayloadAction<string>) => {
+            state.usersTyping[action.payload] = [];
         }
     }
 });
