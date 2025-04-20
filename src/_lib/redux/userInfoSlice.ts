@@ -54,6 +54,12 @@ export const userInfoSlice = createSlice({
             const channel = state.channels.entities[action.payload.channelId];
             if (channel) {
                 channel.channelMessages = [...channel.channelMessages, action.payload];
+            } else {
+                return;
+            }
+            const typingChannel = state.usersTyping[action.payload.channelId];
+            if (typingChannel && typingChannel.includes(action.payload.userId)) {
+                typingChannel.filter(tc => tc != action.payload.userId);
             }
         },
         removeMessageFromChannel: (state, action: PayloadAction<{channelId: string, messageId: string}>) => {

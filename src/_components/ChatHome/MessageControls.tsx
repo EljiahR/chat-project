@@ -1,8 +1,8 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { buttonStyleLight } from "../../_lib/tailwindShortcuts";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
 import { setMessageInput } from "../../_lib/redux/chatUiSlice";
-import { sendMessageToConnection } from "../../_lib/signalr/signalRMiddleware";
+import { notifyUserStoppedTypingHub, notifyUserTypingHub, sendMessageToConnection } from "../../_lib/signalr/signalRMiddleware";
 
 
 const MessageControls: React.FC = () => {
@@ -13,10 +13,18 @@ const MessageControls: React.FC = () => {
     const isConnected = useAppSelector((state) => state.chatUi.isConnected);
     const draftMessage = useAppSelector((state) => state.chatUi.draftMessage);
     const selectedChannelId = useAppSelector((state) => state.chatUi.selectedChannelId);
+    const [isTyping, setIsTyping] = useState(false);
 
     const handleMessageInput = (value: string) => {
         if (value.length < 251) {
             dispatch(setMessageInput(value));
+            if (value.length > 0 && !isTyping) {
+                setIsTyping(true);
+                dispatch(notifyUserTypingHub(selectedChannelId));
+            } else if (value.length == 0 && isTyping) {
+                setIsTyping(false);
+                dispatch(notifyUserStoppedTypingHub(selectedChannelId))
+            }
         }
     }
 
@@ -25,10 +33,7 @@ const MessageControls: React.FC = () => {
             return;
         }
 
-        SendMessage();
-        if (inputRef.current) {
-            inputRef.current.focus();
-        }
+        handleSendMessage();
     }
 
     const handleSendMessage = () => {
@@ -43,6 +48,7 @@ const MessageControls: React.FC = () => {
             try {
                 console.log("Sending to: ", selectedChannelId);
                 dispatch(sendMessageToConnection({message: draftMessage, channelId: selectedChannelId}))
+                setIsTyping(false);
             } catch (e) {
                 console.log(e);
             }

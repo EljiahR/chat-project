@@ -3,7 +3,8 @@ export interface Message {
     username: string,
     content: string,
     sentAt: string,
-    channelId: string
+    channelId: string,
+    userId: string
 }
 
 export interface Channel {
