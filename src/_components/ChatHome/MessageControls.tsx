@@ -3,7 +3,6 @@ import { buttonStyleLight, usersTypingStyle } from "../../_lib/tailwindShortcuts
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
 import { setMessageInput } from "../../_lib/redux/chatUiSlice";
 import { notifyUserStoppedTypingHub, notifyUserTypingHub, sendMessageToConnection } from "../../_lib/signalr/signalRMiddleware";
-import { addUserTyping, removeUserTyping } from "../../_lib/redux/userInfoSlice";
 import { joinWithConjunction } from "../../_lib/stringHelpers";
 
 
@@ -21,7 +20,7 @@ const MessageControls: React.FC = () => {
 
     const [isTyping, setIsTyping] = useState(false);
     // DELETE THESE BEFORE MERGE
-    const userId = useAppSelector((state) => state.userInfo.id);
+    // const userId = useAppSelector((state) => state.userInfo.id);
 
 
     const handleMessageInput = (value: string) => {
@@ -31,12 +30,12 @@ const MessageControls: React.FC = () => {
                 setIsTyping(true);
                 dispatch(notifyUserTypingHub(selectedChannelId));
                 // TESTING, DELETE BEFORE MERGE
-                dispatch(addUserTyping({channelId: selectedChannelId, userId: userId}))
+                // dispatch(addUserTyping({channelId: selectedChannelId, userId: userId}))
             } else if (value.length == 0 && isTyping) {
                 setIsTyping(false);
                 dispatch(notifyUserStoppedTypingHub(selectedChannelId))
                 // TESTING, DELETE BEFORE MERGE
-                dispatch(removeUserTyping({channelId: selectedChannelId, userId: userId}))
+                // dispatch(removeUserTyping({channelId: selectedChannelId, userId: userId}))
             }
         }
     }
@@ -74,7 +73,7 @@ const MessageControls: React.FC = () => {
         if (isTyping) {
             const interval = setInterval(() => {
                 setEllipses(prev => prev.length < 3 ? prev + "." : "");
-            }, 700);
+            }, 1000);
     
             return () => {
                 clearInterval(interval);
