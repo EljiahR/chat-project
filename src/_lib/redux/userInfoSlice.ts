@@ -92,7 +92,7 @@ export const userInfoSlice = createSlice({
         addUserTyping: (state, action: PayloadAction<{channelId: string, userId: string}>) => {
             const channelToUpdate = state.usersTyping[action.payload.channelId];
             if (channelToUpdate && !channelToUpdate.includes(action.payload.userId)) {
-                channelToUpdate.push(action.payload.channelId);
+                channelToUpdate.push(action.payload.userId);
             } else if (!channelToUpdate) {
                 state.usersTyping[action.payload.channelId] = [action.payload.userId];
             }

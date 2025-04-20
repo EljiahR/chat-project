@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
 import { setMessageInput } from "../../_lib/redux/chatUiSlice";
 import { notifyUserStoppedTypingHub, notifyUserTypingHub, sendMessageToConnection } from "../../_lib/signalr/signalRMiddleware";
 import { addUserTyping, removeUserTyping } from "../../_lib/redux/userInfoSlice";
+import { joinWithConjunction } from "../../_lib/stringHelpers";
 
 
 const MessageControls: React.FC = () => {
@@ -14,9 +15,14 @@ const MessageControls: React.FC = () => {
     const isConnected = useAppSelector((state) => state.chatUi.isConnected);
     const draftMessage = useAppSelector((state) => state.chatUi.draftMessage);
     const selectedChannelId = useAppSelector((state) => state.chatUi.selectedChannelId);
+    const channelMembers = useAppSelector((state) => state.userInfo.channels.entities[selectedChannelId].admins
+                                            .concat(state.userInfo.channels.entities[selectedChannelId].members)
+                                            .concat(state.userInfo.channels.entities[selectedChannelId].owner));
+
     const [isTyping, setIsTyping] = useState(false);
-    // DELETE BEFORE MERGE
+    // DELETE THESE BEFORE MERGE
     const userId = useAppSelector((state) => state.userInfo.id);
+
 
     const handleMessageInput = (value: string) => {
         if (value.length < 251) {
@@ -25,12 +31,12 @@ const MessageControls: React.FC = () => {
                 setIsTyping(true);
                 dispatch(notifyUserTypingHub(selectedChannelId));
                 // TESTING, DELETE BEFORE MERGE
-                dispatch(addUserTyping({channelId: selectedChannelId, userId}))
+                dispatch(addUserTyping({channelId: selectedChannelId, userId: userId}))
             } else if (value.length == 0 && isTyping) {
                 setIsTyping(false);
                 dispatch(notifyUserStoppedTypingHub(selectedChannelId))
                 // TESTING, DELETE BEFORE MERGE
-                dispatch(removeUserTyping({channelId: selectedChannelId, userId}))
+                dispatch(removeUserTyping({channelId: selectedChannelId, userId: userId}))
             }
         }
     }
@@ -76,10 +82,11 @@ const MessageControls: React.FC = () => {
             />
             <button className={buttonStyleLight} type="button" onClick={handleSendMessage}>Send</button>  
             {usersTyping && usersTyping.length > 0 ? 
-            <div>
-                {usersTyping.join(" ")}
-            </div> : 
-            <></>}          
+                <div>
+                    {joinWithConjunction(usersTyping.map(id => channelMembers.find(cm => cm.id == id)?.userName).filter(u => u != undefined))}
+                </div> : 
+                <></>
+            }          
         </div>
     );
 }
