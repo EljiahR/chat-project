@@ -4,7 +4,7 @@ export interface Message {
     content: string,
     sentAt: string,
     channelId: string,
-    userId: string
+    sentById: string
 }
 
 export interface Channel {
