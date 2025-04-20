@@ -3,6 +3,7 @@ import { buttonStyleLight } from "../../_lib/tailwindShortcuts";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
 import { setMessageInput } from "../../_lib/redux/chatUiSlice";
 import { notifyUserStoppedTypingHub, notifyUserTypingHub, sendMessageToConnection } from "../../_lib/signalr/signalRMiddleware";
+import { addUserTyping, removeUserTyping } from "../../_lib/redux/userInfoSlice";
 
 
 const MessageControls: React.FC = () => {
@@ -14,6 +15,8 @@ const MessageControls: React.FC = () => {
     const draftMessage = useAppSelector((state) => state.chatUi.draftMessage);
     const selectedChannelId = useAppSelector((state) => state.chatUi.selectedChannelId);
     const [isTyping, setIsTyping] = useState(false);
+    // DELETE BEFORE MERGE
+    const userId = useAppSelector((state) => state.userInfo.id);
 
     const handleMessageInput = (value: string) => {
         if (value.length < 251) {
@@ -21,9 +24,13 @@ const MessageControls: React.FC = () => {
             if (value.length > 0 && !isTyping) {
                 setIsTyping(true);
                 dispatch(notifyUserTypingHub(selectedChannelId));
+                // TESTING, DELETE BEFORE MERGE
+                dispatch(addUserTyping({channelId: selectedChannelId, userId}))
             } else if (value.length == 0 && isTyping) {
                 setIsTyping(false);
                 dispatch(notifyUserStoppedTypingHub(selectedChannelId))
+                // TESTING, DELETE BEFORE MERGE
+                dispatch(removeUserTyping({channelId: selectedChannelId, userId}))
             }
         }
     }
@@ -68,7 +75,7 @@ const MessageControls: React.FC = () => {
                 ref={inputRef}
             />
             <button className={buttonStyleLight} type="button" onClick={handleSendMessage}>Send</button>  
-            {usersTyping.length > 0 ? 
+            {usersTyping && usersTyping.length > 0 ? 
             <div>
                 {usersTyping.join(" ")}
             </div> : 

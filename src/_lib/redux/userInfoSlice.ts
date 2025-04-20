@@ -57,9 +57,13 @@ export const userInfoSlice = createSlice({
             } else {
                 return;
             }
-            const typingChannel = state.usersTyping[action.payload.channelId];
-            if (typingChannel && typingChannel.includes(action.payload.sentById)) {
-                typingChannel.filter(tc => tc != action.payload.sentById);
+
+            const channelToUpdate = state.usersTyping[action.payload.channelId];
+            if (channelToUpdate) {
+                const userIndex = channelToUpdate.indexOf(action.payload.sentById);
+                if (userIndex > -1) {
+                    channelToUpdate.splice(userIndex, 1);
+                }
             }
         },
         removeMessageFromChannel: (state, action: PayloadAction<{channelId: string, messageId: string}>) => {
@@ -86,10 +90,21 @@ export const userInfoSlice = createSlice({
             channelsAdapter.addOne(state.channels, action.payload);
         },
         addUserTyping: (state, action: PayloadAction<{channelId: string, userId: string}>) => {
-            state.usersTyping[action.payload.channelId] = [...state.usersTyping[action.payload.channelId], action.payload.userId];
+            const channelToUpdate = state.usersTyping[action.payload.channelId];
+            if (channelToUpdate && !channelToUpdate.includes(action.payload.userId)) {
+                channelToUpdate.push(action.payload.channelId);
+            } else if (!channelToUpdate) {
+                state.usersTyping[action.payload.channelId] = [action.payload.userId];
+            }
         },
         removeUserTyping: (state, action: PayloadAction<{channelId: string, userId: string}>) => {
-            state.usersTyping[action.payload.channelId] = state.usersTyping[action.payload.channelId].filter((id) => id != action.payload.channelId);
+            const channelToUpdate = state.usersTyping[action.payload.channelId];
+            if (channelToUpdate) {
+                const userIndex = channelToUpdate.indexOf(action.payload.userId);
+                if (userIndex > -1) {
+                    channelToUpdate.splice(userIndex, 1);
+                }
+            }
         },
         clearChannelTyping: (state, action: PayloadAction<string>) => {
             state.usersTyping[action.payload] = [];
