@@ -8,7 +8,7 @@ export const loadingPageStyle = pageBaseStyle + "h-full w-full flex flex-col jus
 export const formStyle = "flex flex-col items-stretch gap-5";
 export const mobileSubMenuStyle = "visible bg-gray-600 p-5 sm:p-0 rounded-xl sm:bg-inherit absolute sm:static h-80 sm:h-auto w-90 sm:w-auto top-1/6 -translate-y-1/6 left-1/2 -translate-x-1/2 sm:translate-0";
 export const draggableSubMenuStyle = "absolute sm:static top-1/6 -translate-y-1/6 left-1/2 -translate-x-1/2 sm:translate-0 visible min-w-1/4 bg-gray-600 p-2 bg-light border border-2 rounded flex flex-col gap-2";
-export const usersTypingStyle = "";
+export const usersTypingStyle = "absolute top-0 -translate-y-full left-0 bg-gray-500 rounded-t w-1/2 text-sm pl-1";
 
 // Buttons
 export const buttonStyleBlue = "text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800";

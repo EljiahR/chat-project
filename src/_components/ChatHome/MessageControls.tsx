@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { buttonStyleLight, usersTypingStyle } from "../../_lib/tailwindShortcuts";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
 import { setMessageInput } from "../../_lib/redux/chatUiSlice";
@@ -67,9 +67,23 @@ const MessageControls: React.FC = () => {
             }
         }
     };
+
+    const [ellipses, setEllipses] = useState("");
+
+    useEffect(() => {
+        if (isTyping) {
+            const interval = setInterval(() => {
+                setEllipses(prev => prev.length < 3 ? prev + "." : "");
+            }, 700);
+    
+            return () => {
+                clearInterval(interval);
+            }
+        }
+    }, [isTyping]);
     
     return (
-        <div id="message-controls" className="flex gap-2">                
+        <div id="message-controls" className="flex gap-2 relative">                
             <input 
                 id="message-controls-text"
                 type="text" 
@@ -83,7 +97,7 @@ const MessageControls: React.FC = () => {
             <button className={buttonStyleLight} type="button" onClick={handleSendMessage}>Send</button>  
             {usersTyping && usersTyping.length > 0 ? 
                 <div className={usersTypingStyle}>
-                    {joinWithConjunction(usersTyping.map(id => channelMembers.find(cm => cm.id == id)?.userName).filter(u => u != undefined)) + (usersTyping.length > 1 ? " are " : " is ") + "typing" }
+                    {joinWithConjunction(usersTyping.map(id => channelMembers.find(cm => cm.id == id)?.userName).filter(u => u != undefined)) + (usersTyping.length > 1 ? " are " : " is ") + "typing" + ellipses}
                 </div> : 
                 <></>
             }          
