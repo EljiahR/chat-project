@@ -1,12 +1,13 @@
 import { EntityState } from "@reduxjs/toolkit";
-import { Channel, ChannelUser, Friendship, Person, UserInfo } from "../responseTypes";
+import { Channel, ChannelUser, Friendship, Person, UserInfo, UsersTyping } from "../responseTypes";
 import { SubMenu, SubMenuOptions } from "../pageTypes";
 
 export interface UserInfoSlice extends Omit<UserInfo, "friends" | "channels" | "friendRequests" | "channelInvites">{
     friends: EntityState<Person, string>,
     channels: EntityState<Channel, string>,
     friendRequests: EntityState<Friendship, string>,
-    channelInvites: EntityState<ChannelUser, string>
+    channelInvites: EntityState<ChannelUser, string>,
+    usersTyping: UsersTyping
 }
 
 export interface ChatUiSlice {

@@ -10,7 +10,7 @@ import { useAppDispatch, useAppSelector } from "../_lib/redux/hooks";
 import { SubMenu } from "../_lib/pageTypes";
 import { setSelectedSubMenu } from "../_lib/redux/chatUiSlice";
 import { messageSortByDateReverse } from "../_lib/sortFunctions";
-import { closeConnection, sendMessageToConnection, startConnection } from "../_lib/signalr/signalRMiddleware";
+import { closeConnection, startConnection } from "../_lib/signalr/signalRMiddleware";
 import instance from "../_lib/axiosBase";
 import { setUser } from "../_lib/redux/userInfoSlice";
 import { Navigate } from "react-router-dom";
@@ -54,8 +54,6 @@ const ChatHomePage = () => {
 
 const CoreComponent = () => {
     const dispatch = useAppDispatch();
-    const isConnected = useAppSelector((state) => state.chatUi.isConnected);
-    const draftMessage = useAppSelector((state) => state.chatUi.draftMessage);
     const selectedChannelId = useAppSelector((state) => state.chatUi.selectedChannelId);
     const selectedChannel = useAppSelector((state) => state.userInfo.channels.entities[selectedChannelId]);
     const messages = useAppSelector((state) => state.chatUi.selectedChannelId != "" ? state.userInfo.channels.entities[selectedChannelId].channelMessages : []);
@@ -74,16 +72,7 @@ const CoreComponent = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const SendMessage = async () => {
-        if (isConnected && draftMessage != "" && selectedChannelId != "") {
-            try {
-                console.log("Sending to: ", selectedChannelId);
-                dispatch(sendMessageToConnection({message: draftMessage, channelId: selectedChannelId}))
-            } catch (e) {
-                console.log(e);
-            }
-        }
-    };
+
 
     const handleChannelMenuDisplay = (forceClose = false) => {
         const menu = document.querySelector("#channel-menu") as HTMLDivElement;
@@ -140,7 +129,6 @@ const CoreComponent = () => {
                 <Chat 
                     chatMessages={chatMessages != null ? [...chatMessages!].reverse() : []} 
                     handleChannelMenuDisplay={handleChannelMenuDisplay}
-                    SendMessage={SendMessage}
                 />
                 }
             </div>

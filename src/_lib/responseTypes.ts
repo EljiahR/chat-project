@@ -3,7 +3,8 @@ export interface Message {
     username: string,
     content: string,
     sentAt: string,
-    channelId: string
+    channelId: string,
+    sentById: string
 }
 
 export interface Channel {
@@ -76,4 +77,8 @@ export interface SignIn
 
 export interface ChatHistory {
     [channelId: string]: Message[];
+}
+
+export interface UsersTyping {
+    [chanelId: string]: string[]
 }

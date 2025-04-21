@@ -5,10 +5,9 @@ import MessageControls from "./MessageControls";
 interface Props {
     chatMessages: JSX.Element[];
     handleChannelMenuDisplay: () => void;
-    SendMessage: () => void;
 }
 
-const Chat: React.FC<Props> = ({chatMessages, handleChannelMenuDisplay, SendMessage}) => {
+const Chat: React.FC<Props> = ({chatMessages, handleChannelMenuDisplay}) => {
     const channelName = useAppSelector((state) => state.userInfo.channels.entities[state.chatUi.selectedChannelId].name);
 
     return (
@@ -18,10 +17,10 @@ const Chat: React.FC<Props> = ({chatMessages, handleChannelMenuDisplay, SendMess
                     <button className={buttonStyleBlue} onClick={() => handleChannelMenuDisplay()}>Options</button>
                 </div>
                 
-                <div id="chat-box" className="grow overflow-y-auto h-50 flex flex-col-reverse">
+                <div id="chat-box" className="grow overflow-y-auto h-50 flex flex-col-reverse pb-5">
                     {chatMessages}
                 </div>
-                <MessageControls SendMessage={SendMessage} />
+                <MessageControls />
             </div>
     );
 }

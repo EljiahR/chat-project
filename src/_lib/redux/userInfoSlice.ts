@@ -13,7 +13,8 @@ const initialState: UserInfoSlice = {
     channels: channelsAdapter.getInitialState(),
     friends: friendsAdapter.getInitialState(),
     channelInvites: channelInvitesAdapter.getInitialState(),
-    friendRequests: friendRequestsAdapter.getInitialState()
+    friendRequests: friendRequestsAdapter.getInitialState(),
+    usersTyping: {}
 }
 
 export const userInfoSlice = createSlice({
@@ -53,6 +54,16 @@ export const userInfoSlice = createSlice({
             const channel = state.channels.entities[action.payload.channelId];
             if (channel) {
                 channel.channelMessages = [...channel.channelMessages, action.payload];
+            } else {
+                return;
+            }
+
+            const channelToUpdate = state.usersTyping[action.payload.channelId];
+            if (channelToUpdate) {
+                const userIndex = channelToUpdate.indexOf(action.payload.sentById);
+                if (userIndex > -1) {
+                    channelToUpdate.splice(userIndex, 1);
+                }
             }
         },
         removeMessageFromChannel: (state, action: PayloadAction<{channelId: string, messageId: string}>) => {
@@ -77,11 +88,35 @@ export const userInfoSlice = createSlice({
             const channelInvite = channelInvitesAdapter.getSelectors((state: UserInfoSlice) => state.channelInvites).selectAll(state).filter((cu) => cu.channelId == action.payload.id);
             channelInvitesAdapter.removeOne(state.channelInvites, channelInvite[0].id);
             channelsAdapter.addOne(state.channels, action.payload);
+        },
+        addUserTyping: (state, action: PayloadAction<{channelId: string, userId: string}>) => {
+            if (action.payload.userId == state.id) {
+                return;
+            }
+            
+            const channelToUpdate = state.usersTyping[action.payload.channelId];
+            if (channelToUpdate && !channelToUpdate.includes(action.payload.userId)) {
+                channelToUpdate.push(action.payload.userId);
+            } else if (!channelToUpdate) {
+                state.usersTyping[action.payload.channelId] = [action.payload.userId];
+            }
+        },
+        removeUserTyping: (state, action: PayloadAction<{channelId: string, userId: string}>) => {
+            const channelToUpdate = state.usersTyping[action.payload.channelId];
+            if (channelToUpdate) {
+                const userIndex = channelToUpdate.indexOf(action.payload.userId);
+                if (userIndex > -1) {
+                    channelToUpdate.splice(userIndex, 1);
+                }
+            }
+        },
+        clearChannelTyping: (state, action: PayloadAction<string>) => {
+            state.usersTyping[action.payload] = [];
         }
     }
 });
 
-export const { setUser, clearUser, addFriend, addChannel, addUserToChannel, addMessageToChannel, removeMessageFromChannel, addFriendRequest, removeFriendRequest, addChannelInvite, removeChannelInvite, acceptChannelInvite } = userInfoSlice.actions;
+export const { setUser, clearUser, addFriend, addChannel, addUserToChannel, addMessageToChannel, removeMessageFromChannel, addFriendRequest, removeFriendRequest, addChannelInvite, removeChannelInvite, acceptChannelInvite, addUserTyping, removeUserTyping, clearChannelTyping } = userInfoSlice.actions;
 export const {selectAll: selectAllFriends} = friendsAdapter.getSelectors((state: {userInfo: UserInfoSlice}) => state.userInfo.friends);
 export const {selectAll: selectAllChannels} = channelsAdapter.getSelectors((state:{userInfo: UserInfoSlice}) => state.userInfo.channels);
 export const {selectAll: selectAllFriendRequests} = friendRequestsAdapter.getSelectors((state:{userInfo: UserInfoSlice}) => state.userInfo.friendRequests);
