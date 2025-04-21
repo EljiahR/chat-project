@@ -90,7 +90,7 @@ const MessageControls: React.FC = () => {
                 value={message}
                 onChange={(e) => handleMessageInput(e.target.value)}
                 onKeyDown={(e) => handleSendMessageEnterKey(e)}
-                className="grow-1"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 z-2"
                 ref={inputRef}
             />
             <button className={buttonStyleLight} type="button" onClick={handleSendMessage}>Send</button>  

@@ -17,7 +17,7 @@ const Chat: React.FC<Props> = ({chatMessages, handleChannelMenuDisplay}) => {
                     <button className={buttonStyleBlue} onClick={() => handleChannelMenuDisplay()}>Options</button>
                 </div>
                 
-                <div id="chat-box" className="grow overflow-y-auto h-50 flex flex-col-reverse">
+                <div id="chat-box" className="grow overflow-y-auto h-50 flex flex-col-reverse pb-5">
                     {chatMessages}
                 </div>
                 <MessageControls />
