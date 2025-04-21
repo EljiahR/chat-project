@@ -94,12 +94,11 @@ const MessageControls: React.FC = () => {
                 ref={inputRef}
             />
             <button className={buttonStyleLight} type="button" onClick={handleSendMessage}>Send</button>  
-            {usersTyping && usersTyping.length > 0 ? 
-                <div className={usersTypingStyle}>
-                    {joinWithConjunction(usersTyping.map(id => channelMembers.find(cm => cm.id == id)?.userName).filter(u => u != undefined)) + (usersTyping.length > 1 ? " are " : " is ") + "typing" + ellipses}
-                </div> : 
-                <></>
-            }          
+            
+                <div className={usersTypingStyle + (usersTyping && usersTyping.length > 0 ? " -translate-y-full" : "")}>
+                    {usersTyping && usersTyping.length > 0 ? (joinWithConjunction(usersTyping.map(id => channelMembers.find(cm => cm.id == id)?.userName).filter(u => u != undefined)) + (usersTyping.length > 1 ? " are " : " is ") + "typing" + ellipses) : ""}
+                </div>
+               
         </div>
     );
 }
