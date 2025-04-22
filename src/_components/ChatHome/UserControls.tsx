@@ -4,7 +4,7 @@ import { Friendship } from "../../_lib/responseTypes";
 import React from "react";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
 import { clearUser, setChannelNotificationToFalse, setFriendNotificationToFalse } from "../../_lib/redux/userInfoSlice";
-import { buttonStyleLight, buttonStyleLightDisabled, buttonStyleRed, mobileSubMenuStyle } from "../../_lib/tailwindShortcuts";
+import { buttonStyleLight, buttonStyleLightDisabled, buttonStyleRed, mobileSubMenuStyle, notificationBubble } from "../../_lib/tailwindShortcuts";
 import PeopleSubMenu from "./UserControlsSubComponents/PeopleSubMenu";
 import FriendSubMenu from "./UserControlsSubComponents/FriendSubMenu";
 import { SubMenu, SubMenuOptions } from "../../_lib/pageTypes";
@@ -90,9 +90,11 @@ const UserControls = () => {
             </button>
             <button className={buttonStyleLight}  id="friends-btn" onClick={() => handleSubMenuChange(SubMenuOptions.Friends)}>
                 Friends
+                {newFriendRequest ? <div className={notificationBubble}></div> : null}
             </button>
             <button className={buttonStyleLight}  id="invites-btn" onClick={() => handleSubMenuChange(SubMenuOptions.ChannelInvites)}>
                 Invites
+                {newChannelInvite ? <div className={notificationBubble}></div> : null}
             </button>
             <button className={buttonStyleLightDisabled}  id="profile-btn" disabled={true}>
                 Profile
