@@ -14,7 +14,9 @@ const initialState: UserInfoSlice = {
     friends: friendsAdapter.getInitialState(),
     channelInvites: channelInvitesAdapter.getInitialState(),
     friendRequests: friendRequestsAdapter.getInitialState(),
-    usersTyping: {}
+    usersTyping: {},
+    newFriendRequest: false,
+    newChannelInvite: false
 }
 
 export const userInfoSlice = createSlice({
@@ -28,6 +30,12 @@ export const userInfoSlice = createSlice({
             friendsAdapter.setAll(state.friends, action.payload.friends);
             channelInvitesAdapter.setAll(state.channelInvites, action.payload.channelInvites);
             friendRequestsAdapter.setAll(state.friendRequests, action.payload.friendRequests);
+            if (action.payload.channelInvites.length > 0) {
+                state.newChannelInvite = true;
+            }
+            if (action.payload.friendRequests.length > 0) {
+                state.newFriendRequest = true;
+            }
         },
         clearUser: (state) => {
             state.id = "";
@@ -74,12 +82,20 @@ export const userInfoSlice = createSlice({
         },
         addFriendRequest: (state, action: PayloadAction<Friendship>) => {
             friendRequestsAdapter.addOne(state.friendRequests, action.payload);
+            state.newFriendRequest = true;
+        },
+        setFriendNotificationToFalse: (state) => {
+            state.newFriendRequest = false;
         },
         removeFriendRequest: (state, action: PayloadAction<string>) => {
             friendRequestsAdapter.removeOne(state.friendRequests, action.payload);
         },
         addChannelInvite: (state, action: PayloadAction<ChannelUser>) => {
             channelInvitesAdapter.addOne(state.channelInvites, action.payload);
+            state.newChannelInvite = true;
+        },
+        setChannelNotificationToFalse: (state) => {
+            state.newChannelInvite = false;
         },
         removeChannelInvite: (state, action: PayloadAction<string>) => {
             channelInvitesAdapter.removeOne(state.channelInvites, action.payload);
@@ -116,7 +132,7 @@ export const userInfoSlice = createSlice({
     }
 });
 
-export const { setUser, clearUser, addFriend, addChannel, addUserToChannel, addMessageToChannel, removeMessageFromChannel, addFriendRequest, removeFriendRequest, addChannelInvite, removeChannelInvite, acceptChannelInvite, addUserTyping, removeUserTyping, clearChannelTyping } = userInfoSlice.actions;
+export const { setUser, clearUser, addFriend, addChannel, addUserToChannel, addMessageToChannel, removeMessageFromChannel, addFriendRequest, removeFriendRequest, addChannelInvite, removeChannelInvite, acceptChannelInvite, addUserTyping, removeUserTyping, clearChannelTyping, setFriendNotificationToFalse, setChannelNotificationToFalse } = userInfoSlice.actions;
 export const {selectAll: selectAllFriends} = friendsAdapter.getSelectors((state: {userInfo: UserInfoSlice}) => state.userInfo.friends);
 export const {selectAll: selectAllChannels} = channelsAdapter.getSelectors((state:{userInfo: UserInfoSlice}) => state.userInfo.channels);
 export const {selectAll: selectAllFriendRequests} = friendRequestsAdapter.getSelectors((state:{userInfo: UserInfoSlice}) => state.userInfo.friendRequests);

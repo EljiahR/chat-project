@@ -8,7 +8,7 @@ const initialState: ChatUiSlice = {
     draftMessage: "",
     selectedChannelId: "",
     selectedSubMenu: SubMenu.None,
-    selectedSubMenuOptions: SubMenuOptions.None
+    selectedSubMenuOptions: SubMenuOptions.None,
 }
 
 export const chatUiSlice = createSlice({
