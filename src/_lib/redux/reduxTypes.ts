@@ -15,5 +15,7 @@ export interface ChatUiSlice {
     draftMessage: string,
     selectedChannelId: string,
     selectedSubMenu: SubMenu,
-    selectedSubMenuOptions: SubMenuOptions
+    selectedSubMenuOptions: SubMenuOptions,
+    newFriendRequest: boolean,
+    newChannelInvite: boolean
 }
