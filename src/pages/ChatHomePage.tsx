@@ -5,7 +5,7 @@ import ChannelList from "../_components/ChatHome/ChannelList";
 import Chat from "../_components/ChatHome/Chat";
 import HomeChannel from "../_components/ChatHome/HomeChannel";
 import ChannelMenu from "../_components/ChatHome/ChannelMenu";
-import { buttonStyleLight, pageChatHomeStyle } from "../_lib/tailwindShortcuts";
+import { buttonStyleLight, notificationBubble, pageChatHomeStyle } from "../_lib/tailwindShortcuts";
 import { useAppDispatch, useAppSelector } from "../_lib/redux/hooks";
 import { SubMenu } from "../_lib/pageTypes";
 import { setSelectedSubMenu } from "../_lib/redux/chatUiSlice";
@@ -58,6 +58,8 @@ const CoreComponent = () => {
     const selectedChannel = useAppSelector((state) => state.userInfo.channels.entities[selectedChannelId]);
     const messages = useAppSelector((state) => state.chatUi.selectedChannelId != "" ? state.userInfo.channels.entities[selectedChannelId].channelMessages : []);
     const userName = useAppSelector((state) => state.userInfo.userName);
+    const newFriendRequest = useAppSelector((state) => state.userInfo.newFriendRequest);
+    const newChannelInvite = useAppSelector((state) => state.userInfo.newChannelInvite);
 
     // Attempt to connect to hub on mount
     useEffect(() => {
@@ -116,7 +118,10 @@ const CoreComponent = () => {
         <div id="chat-main" className={pageChatHomeStyle}>
             <div id="navbar-controls" className="row-span-1 row-start-1 sm:row-auto col-start-1 sm:hidden flex justify-between">
                 <button onClick={() => dispatch(setSelectedSubMenu(SubMenu.ChannelList))} className={buttonStyleLight}>Channels</button>
-                <button onClick={() => dispatch(setSelectedSubMenu(SubMenu.UserInfo))} className={buttonStyleLight}>{userName}</button>
+                <button onClick={() => dispatch(setSelectedSubMenu(SubMenu.UserInfo))} className={buttonStyleLight}>
+                    {userName}
+                    {newChannelInvite || newFriendRequest ? <div className={notificationBubble}></div> : null}
+                </button>
             </div>
             <div id="navbar" className="invisible sm:visible row-start-1 sm:row-auto col-start-1 sm:col-span-1 sm:flex sm:flex-col justify-between">
                 <ChannelList  />
