@@ -3,7 +3,7 @@ import instance from "../../_lib/axiosBase";
 import { Friendship } from "../../_lib/responseTypes";
 import React from "react";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
-import { clearUser } from "../../_lib/redux/userInfoSlice";
+import { clearUser, setChannelNotificationToFalse, setFriendNotificationToFalse } from "../../_lib/redux/userInfoSlice";
 import { buttonStyleLight, buttonStyleLightDisabled, buttonStyleRed, mobileSubMenuStyle } from "../../_lib/tailwindShortcuts";
 import PeopleSubMenu from "./UserControlsSubComponents/PeopleSubMenu";
 import FriendSubMenu from "./UserControlsSubComponents/FriendSubMenu";
@@ -17,6 +17,8 @@ const UserControls = () => {
     const selectedChannelId = useAppSelector((state) => state.chatUi.selectedChannelId);
     const subMenu = useAppSelector((state) => state.chatUi.selectedSubMenu);
     const subMenuOption = useAppSelector((state) => state.chatUi.selectedSubMenuOptions);
+    const newFriendRequest = useAppSelector((state) => state.userInfo.newFriendRequest);
+    const newChannelInvite = useAppSelector((state) => state.userInfo.newChannelInvite);
 
     const handleNewFriendRequest = async (id: string) => {
         try {
@@ -70,17 +72,26 @@ const UserControls = () => {
             navigate("/");
         }
     }
+
+    const handleSubMenuChange = (option: SubMenuOptions) => {
+        dispatch(setSelectedSubMenuOption(option));
+        if (option == SubMenuOptions.ChannelInvites && newChannelInvite) {
+            dispatch(setChannelNotificationToFalse());
+        } else if (option == SubMenuOptions.Friends && newFriendRequest) {
+            dispatch(setFriendNotificationToFalse());
+        }
+    }
     
     return (
         <>
         <div className={(subMenu == SubMenu.UserInfo ? mobileSubMenuStyle + " " : "") + "flex flex-col gap-2"} id="nav-bar">
-            <button className={buttonStyleLight} id="people-btn" onClick={() => dispatch(setSelectedSubMenuOption(SubMenuOptions.People))}>
+            <button className={buttonStyleLight} id="people-btn" onClick={() => handleSubMenuChange(SubMenuOptions.People)}>
                 People
             </button>
-            <button className={buttonStyleLight}  id="friends-btn" onClick={() => dispatch(setSelectedSubMenuOption(SubMenuOptions.Friends))}>
+            <button className={buttonStyleLight}  id="friends-btn" onClick={() => handleSubMenuChange(SubMenuOptions.Friends)}>
                 Friends
             </button>
-            <button className={buttonStyleLight}  id="invites-btn" onClick={() => dispatch(setSelectedSubMenuOption(SubMenuOptions.ChannelInvites))}>
+            <button className={buttonStyleLight}  id="invites-btn" onClick={() => handleSubMenuChange(SubMenuOptions.ChannelInvites)}>
                 Invites
             </button>
             <button className={buttonStyleLightDisabled}  id="profile-btn" disabled={true}>
