@@ -30,6 +30,12 @@ export const userInfoSlice = createSlice({
             friendsAdapter.setAll(state.friends, action.payload.friends);
             channelInvitesAdapter.setAll(state.channelInvites, action.payload.channelInvites);
             friendRequestsAdapter.setAll(state.friendRequests, action.payload.friendRequests);
+            if (action.payload.channelInvites.length > 0) {
+                state.newChannelInvite = true;
+            }
+            if (action.payload.friendRequests.length > 0) {
+                state.newFriendRequest = true;
+            }
         },
         clearUser: (state) => {
             state.id = "";
