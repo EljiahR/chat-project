@@ -9,8 +9,6 @@ const initialState: ChatUiSlice = {
     selectedChannelId: "",
     selectedSubMenu: SubMenu.None,
     selectedSubMenuOptions: SubMenuOptions.None,
-    newFriendRequest: false,
-    newChannelInvite: false
 }
 
 export const chatUiSlice = createSlice({
@@ -44,12 +42,6 @@ export const chatUiSlice = createSlice({
         },
         setSelectedSubMenuOption: (state, action: PayloadAction<SubMenuOptions>) => {
             state.selectedSubMenuOptions = action.payload == state.selectedSubMenuOptions ? SubMenuOptions.None : action.payload;
-        },
-        setNewFriendRequest: (state, action: PayloadAction<boolean>) => {
-            state.newFriendRequest = action.payload;
-        },
-        setNewChannelInvite: (state, action: PayloadAction<boolean>) => {
-            state.newChannelInvite = action.payload;
         }
     }
 });

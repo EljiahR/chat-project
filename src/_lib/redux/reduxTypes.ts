@@ -7,7 +7,9 @@ export interface UserInfoSlice extends Omit<UserInfo, "friends" | "channels" | "
     channels: EntityState<Channel, string>,
     friendRequests: EntityState<Friendship, string>,
     channelInvites: EntityState<ChannelUser, string>,
-    usersTyping: UsersTyping
+    usersTyping: UsersTyping,
+    newFriendRequest: boolean,
+    newChannelInvite: boolean
 }
 
 export interface ChatUiSlice {
@@ -16,6 +18,4 @@ export interface ChatUiSlice {
     selectedChannelId: string,
     selectedSubMenu: SubMenu,
     selectedSubMenuOptions: SubMenuOptions,
-    newFriendRequest: boolean,
-    newChannelInvite: boolean
 }
