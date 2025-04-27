@@ -5,7 +5,7 @@ import ChannelList from "../_components/ChatHome/ChannelList";
 import Chat from "../_components/ChatHome/Chat";
 import HomeChannel from "../_components/ChatHome/HomeChannel";
 import ChannelMenu from "../_components/ChatHome/ChannelMenu";
-import { buttonStyleLight, notificationBubble, pageChatHomeStyle } from "../_lib/tailwindShortcuts";
+import { buttonStyleLight, chatMessageContentStyle, chatMessageDateStyle, chatMessageStyle, chatMessageUserStyle, notificationBubble, pageChatHomeStyle } from "../_lib/tailwindShortcuts";
 import { useAppDispatch, useAppSelector } from "../_lib/redux/hooks";
 import { SubMenu } from "../_lib/pageTypes";
 import { setSelectedSubMenu } from "../_lib/redux/chatUiSlice";
@@ -96,8 +96,31 @@ const CoreComponent = () => {
         else {
             const channelMessages = messages ? messages.slice().sort(messageSortByDateReverse) : [];
             if (channelMessages) {
-                return channelMessages.map((channelMessage, index) => {
-                    return <div className="chat-message" key={index}>{`${channelMessage.username}: ${channelMessage.content}`}</div>
+                let currentUserId = "";
+                const condensedMessages = channelMessages.map((message, index, arr) => {
+                    if (message.sentById == currentUserId) {
+                        return null;
+                    } else {
+                        currentUserId = message.sentById;
+                    }
+                    const condensedMessage = {...message};
+                    let i = 1;
+                    let nextMessage = arr[index + i];
+                    while (nextMessage && nextMessage.sentById == currentUserId) {
+                        condensedMessage.content += "\n" + nextMessage.content;
+                        i++;
+                        nextMessage = arr[index + i];
+                    }
+
+                    return condensedMessage;
+                });
+                return condensedMessages.filter(m => m != null).map((channelMessage, index) => {
+                    const newDate = new Date(channelMessage.sentAt);
+                    return (
+                        <div className={chatMessageStyle} key={index}>
+                            <div className={chatMessageUserStyle}>{channelMessage.username}<div className={chatMessageDateStyle}>{newDate.toLocaleString()}</div></div>
+                            <div className={chatMessageContentStyle}>{channelMessage.content}</div>
+                        </div>)
                 })
             }
         }
@@ -127,7 +150,7 @@ const CoreComponent = () => {
                 <ChannelList  />
                 <UserControls />
             </div>
-            <div id="chat-container" className="row-span-11 sm:row-span-1 sm:col-span-3 h-full">
+            <div id="chat-container" className="row-span-11 sm:row-span-1 sm:col-span-5 h-full">
                 {selectedChannel == null ? 
                 <HomeChannel /> 
                 :
