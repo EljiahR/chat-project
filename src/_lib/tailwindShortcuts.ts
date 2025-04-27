@@ -10,7 +10,7 @@ export const mobileSubMenuStyle = "visible bg-gray-600 p-5 sm:p-0 rounded-xl sm:
 export const draggableSubMenuStyle = "absolute sm:static top-1/6 -translate-y-1/6 left-1/2 -translate-x-1/2 sm:translate-0 visible min-w-1/4 bg-gray-600 p-2 bg-light border border-2 rounded flex flex-col gap-2";
 export const usersTypingStyle = "absolute top-0 left-2 left-0 bg-gray-500 rounded-t w-1/2 text-sm pl-1 z-1 transition duration-150 ease-in-out";
 export const chatMessageStyle = "flex flex-col";
-export const chatMessageUserStyle = "font-bold text-yellow-200 flex gap-1 items-center";
+export const chatMessageUserStyle = "font-bold text-purple-200 flex gap-1 items-center";
 export const chatMessageContentStyle = "break-all whitespace-pre-line";
 export const chatMessageDateStyle = "font-light text-sm";
 
