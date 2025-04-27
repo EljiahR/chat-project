@@ -127,7 +127,7 @@ const CoreComponent = () => {
                 <ChannelList  />
                 <UserControls />
             </div>
-            <div id="chat-container" className="row-span-11 sm:row-span-1 sm:col-span-3 h-full">
+            <div id="chat-container" className="row-span-11 sm:row-span-1 sm:col-span-5 h-full">
                 {selectedChannel == null ? 
                 <HomeChannel /> 
                 :
