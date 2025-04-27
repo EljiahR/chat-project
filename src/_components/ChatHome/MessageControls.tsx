@@ -82,7 +82,7 @@ const MessageControls: React.FC = () => {
     }, [isTyping]);
     
     return (
-        <div id="message-controls" className="flex gap-2 relative">                
+        <div id="message-controls" className="flex gap-2 relative !mt-5">                
             <input 
                 id="message-controls-text"
                 type="text" 
