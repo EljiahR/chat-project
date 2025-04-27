@@ -96,7 +96,25 @@ const CoreComponent = () => {
         else {
             const channelMessages = messages ? messages.slice().sort(messageSortByDateReverse) : [];
             if (channelMessages) {
-                return channelMessages.map((channelMessage, index) => {
+                let currentUserId = "";
+                const condensedMessages = channelMessages.map((message, index, arr) => {
+                    if (message.sentById == currentUserId) {
+                        return null;
+                    } else {
+                        currentUserId = message.sentById;
+                    }
+                    const condensedMessage = {...message};
+                    let i = 1;
+                    let nextMessage = arr[index + i];
+                    while (nextMessage && nextMessage.sentById == currentUserId) {
+                        condensedMessage.content += "\n" + nextMessage.content;
+                        i++;
+                        nextMessage = arr[index + i];
+                    }
+
+                    return condensedMessage;
+                });
+                return condensedMessages.filter(m => m != null).map((channelMessage, index) => {
                     return (
                         <div className={chatMessageStyle} key={index}>
                             <div className={chatMessageUserStyle}>{channelMessage.username}</div>
