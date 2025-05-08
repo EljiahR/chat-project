@@ -1,6 +1,6 @@
 import { ComponentType, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import instance from "../../_lib/axiosBase";
+import instance from "../../_lib/api";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
 import { setUser } from "../../_lib/redux/userInfoSlice";
 

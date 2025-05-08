@@ -1,4 +1,4 @@
-import instance from "../../_lib/axiosBase";
+import instance from "../../_lib/api";
 import {  Channel } from "../../_lib/responseTypes";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
 import { addChannel, selectAllChannels } from "../../_lib/redux/userInfoSlice";

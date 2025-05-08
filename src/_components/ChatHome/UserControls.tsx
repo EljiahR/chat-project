@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import instance from "../../_lib/axiosBase";
+import instance from "../../_lib/api";
 import { Friendship } from "../../_lib/responseTypes";
 import React from "react";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";

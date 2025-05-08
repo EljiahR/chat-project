@@ -11,7 +11,7 @@ import { SubMenu } from "../_lib/pageTypes";
 import { setSelectedSubMenu } from "../_lib/redux/chatUiSlice";
 import { messageSortByDateReverse } from "../_lib/sortFunctions";
 import { closeConnection, startConnection } from "../_lib/signalr/signalRMiddleware";
-import instance from "../_lib/axiosBase";
+import instance from "../_lib/api";
 import { setUser } from "../_lib/redux/userInfoSlice";
 import { Navigate } from "react-router-dom";
 import LoadingScreen from "../_components/Generics/LoadingScreen";

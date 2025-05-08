@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Person } from "../../../_lib/responseTypes";
 import Draggable from "react-draggable";
 import { buttonStyleGreenSmall, buttonStyleRedSmall, draggableSubMenuStyle } from "../../../_lib/tailwindShortcuts";
-import instance from "../../../_lib/axiosBase";
+import instance from "../../../_lib/api";
 import { SubMenuOptions } from "../../../_lib/pageTypes";
 import { useAppDispatch } from "../../../_lib/redux/hooks";
 import { setSelectedSubMenuOption } from "../../../_lib/redux/chatUiSlice";

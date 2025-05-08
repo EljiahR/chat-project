@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import instance from "../_lib/axiosBase";
+import instance from "../_lib/api";
 import LoadingSpinner from "../_lib/svgs/LoadingSpinner.svg?react";
 import { buttonStyleBlue, buttonStyleBlueDisabled, buttonStyleGreen, buttonStyleGreenDisabled, formStyle, inputLabelStyle, loadingSpinnerStyle, pageSignInStyle, signInErrorStyle, textInputErrorStyle, textInputStyle } from "../_lib/tailwindShortcuts";
 import { useAppDispatch } from "../_lib/redux/hooks";
