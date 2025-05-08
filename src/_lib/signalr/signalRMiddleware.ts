@@ -15,7 +15,9 @@ export const signalRMiddleware: Middleware = store => next => action => {
     
     if (startConnection.match(action)) {
         connection = new signalR.HubConnectionBuilder()
-            .withUrl(backendUrl + "/ChatHub")
+            .withUrl(backendUrl + "/ChatHub", {
+                accessTokenFactory: () => localStorage.getItem("accessToken") ?? ""
+            })
             .withAutomaticReconnect()
             .build();
 
