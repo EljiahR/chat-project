@@ -1,6 +1,6 @@
 import { jwtDecode } from "jwt-decode";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { api, login, logout, status } from "../_lib/api";
+import { api, apiLogin, apiLogout, apiRegister, apiStatus } from "../_lib/api";
 import { UserInfo } from "../_lib/responseTypes";
 
 type JwtPayload = {
@@ -9,9 +9,10 @@ type JwtPayload = {
 
 type AuthContextType = {
     accessToken: string | null;
-    handleLogin: (username: string, password: string) => Promise<void>;
-    handleLogout: () => void;
-    handleStatus: () => Promise<UserInfo>
+    login: (username: string, password: string) => Promise<UserInfo>;
+    logout: () => void;
+    status: () => Promise<UserInfo>;
+    register: (username: string, email: string, password: string) => Promise<UserInfo>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -31,32 +32,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode}> = ({ children 
             if (refreshToken) {
                 api.post("/user/refresh", { refreshToken })
                     .then(res => setAccessToken(res.data.accessToken))
-                    .catch(() => logout());
+                    .catch(() => apiLogout());
             }
         }, expirationTime - refreshBuffer);
 
         return () => clearTimeout(timeout);
     }, [accessToken]);
 
-    const handleLogin = async (username: string, password: string) => {
-        const data = await login(username, password);
+    const login = async (username: string, password: string) => {
+        const data = await apiLogin(username, password);
         setAccessToken(data.accessToken);
         localStorage.setItem("refreshToken", data.refreshToken);
+        return data.info;
     };
 
-    const handleLogout = async () => {
+    const logout = async () => {
         setAccessToken(null);
         localStorage.removeItem("refreshToken");
-        await logout();
+        await apiLogout();
     };
 
-    const handleStatus = async () => {
+    const status = async () => {
         const refreshToken = localStorage.getItem("refreshToken");
-        return await status(refreshToken ?? "");
+        const data = await apiStatus(refreshToken ?? "");
+        return data.info;
+    }
+
+    const register = async (username: string, email: string, password: string) => {
+        const data = await apiRegister(username, email, password);
+        setAccessToken(data.accessToken);
+        localStorage.setItem("refreshToken", data.refreshToken);
+        return data.info;
     }
 
     return (
-        <AuthContext.Provider value={{ accessToken, handleLogin, handleLogout, handleStatus }}>
+        <AuthContext.Provider value={{ accessToken, login, logout, status, register }}>
             {children}
         </AuthContext.Provider>
     )

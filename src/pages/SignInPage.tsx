@@ -1,12 +1,12 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import instance from "../_lib/api";
 import LoadingSpinner from "../_lib/svgs/LoadingSpinner.svg?react";
 import { buttonStyleBlue, buttonStyleBlueDisabled, buttonStyleGreen, buttonStyleGreenDisabled, formStyle, inputLabelStyle, loadingSpinnerStyle, pageSignInStyle, signInErrorStyle, textInputErrorStyle, textInputStyle } from "../_lib/tailwindShortcuts";
 import { useAppDispatch } from "../_lib/redux/hooks";
 import { clearChatHub } from "../_lib/redux/chatUiSlice";
 import { clearUser } from "../_lib/redux/userInfoSlice";
 import { PasswordShort, PasswordsNotMatching, UsernameBlank } from "../_lib/signInPageErrors";
+import { useAuth } from "../_components/AuthContext";
 
 interface RegisterErrors {
     username: string[],
@@ -20,6 +20,7 @@ const SignInPage: React.FC = () => {
     const [repeatPassword, setRepeatPassword] = useState("");
     const [registerErrors, setRegisterErrors] = useState<RegisterErrors>({username: [], password: [], repeatPassword: ""});
     const dispatch = useAppDispatch();
+    const { login, register } = useAuth();
     
     const [loginCredentials, setLoginCredentials] = useState({
         userName: "",
@@ -75,10 +76,10 @@ const SignInPage: React.FC = () => {
         e.preventDefault();
         try {
             setIsSigningIn(true);
-            const response = await instance.post("/user/signin", loginCredentials, {withCredentials: true});
+            const data = await login(loginCredentials.userName, loginCredentials.password);
             dispatch(clearChatHub());
             dispatch(clearUser());
-            console.log("Login successful. ", response.data);
+            console.log("Login successful. ", data);
             navigate("/chat");
         } catch (error) {
             console.error("Trouble attempting login. " + error);
@@ -127,14 +128,18 @@ const SignInPage: React.FC = () => {
 
         try {
             setIsRegistering(true);
-            const response = await instance.post("/user/register", registerCredentials, {withCredentials: true});
-            console.log("Register successful ", response.data);
+            const data = await register(registerCredentials.userName, registerCredentials.email, registerCredentials.password);
+            console.log("Register successful ", data);
             setRegisterCredentials({
                 userName: "",
                 email: "",
                 password: ""
             });
             setRepeatPassword("");
+            dispatch(clearChatHub());
+            dispatch(clearUser());
+            console.log("Login successful. ", data);
+            navigate("/chat");
         } catch (error) {
             console.error("Trouble registering. " + error);
         } finally {

@@ -24,12 +24,12 @@ enum AuthenticationStates {
 const ChatHomePage = () => {
     const dispatch = useAppDispatch();
     const [authenticationState, setAuthenticationState] = useState(AuthenticationStates.Loading);
-    const { handleStatus } = useAuth();
+    const { status } = useAuth();
 
     useEffect(() => {
         const checkAuthStatus = async () => {
             try {
-                const data = await handleStatus();
+                const data = await status();
                 dispatch(setUser(data));
                 console.log(data)
                 setAuthenticationState(AuthenticationStates.Authorized);

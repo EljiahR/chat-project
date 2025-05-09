@@ -71,8 +71,10 @@ export interface UserInfo
 
 export interface SignIn
 {
-    message: string,
-    info: UserInfo
+    message: string;
+    info: UserInfo;
+    accessToken: string;
+    refreshToken: string
 }
 
 export interface ChatHistory {
