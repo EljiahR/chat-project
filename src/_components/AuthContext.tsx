@@ -1,6 +1,6 @@
 import { jwtDecode } from "jwt-decode";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { api, apiFindByName, apiLogin, apiLogout, apiNewChannel, apiRefreshToken, apiRegister, apiStatus } from "../_lib/api";
+import { apiFindByName, apiLogin, apiLogout, apiNewChannel, apiRefreshToken, apiRegister, apiStatus } from "../_lib/api";
 import { Channel, Person, UserInfo } from "../_lib/responseTypes";
 import { Navigate } from "react-router-dom";
 
