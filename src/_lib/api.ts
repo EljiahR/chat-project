@@ -1,6 +1,6 @@
 import axios from "axios";
 import backendUrl from "./backendUrl";
-import { SignIn } from "./responseTypes";
+import { Channel, Person, SignIn } from "./responseTypes";
 
 export const api = axios.create({
     baseURL: backendUrl
@@ -20,12 +20,22 @@ export const apiLogout = async () => {
     await api.post("/user/signout");
 }
 
-export const apiStatus = async (refreshToken: string) => {
-    const response = await api.get<SignIn>("/user/status", {headers: {Authorization: `Bearer ${refreshToken}`}});
+export const apiStatus = async (accessToken: string) => {
+    const response = await api.get<SignIn>("/user/status", {headers: {Authorization: `Bearer ${accessToken}`}});
     return response.data;
 }
 
 export const apiRegister = async (username: string, email: string, password: string) => {
     const response = await api.post<SignIn>("/user/register", {username, email, password}, {withCredentials: true});
+    return response.data;
+}
+
+export const apiFindByName = async (searchQuery: string, accessToken: string) => {
+    const response = await api.get<Person[]>(`/User/FindByName/${searchQuery}`, {headers: {Authorization: `Bearer ${accessToken}`}});
+    return response.data;
+}
+
+export const apiNewChannel = async (newChannelName: string, accessToken: string) => {
+    const response = await api.post<Channel>("/channel/new", {name: newChannelName}, {headers: {Authorization: `Bearer ${accessToken}`}});
     return response.data;
 }

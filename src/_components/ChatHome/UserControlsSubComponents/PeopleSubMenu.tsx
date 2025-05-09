@@ -2,10 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import { Person } from "../../../_lib/responseTypes";
 import Draggable from "react-draggable";
 import { buttonStyleGreenSmall, buttonStyleRedSmall, draggableSubMenuStyle } from "../../../_lib/tailwindShortcuts";
-import instance from "../../../_lib/api";
 import { SubMenuOptions } from "../../../_lib/pageTypes";
 import { useAppDispatch } from "../../../_lib/redux/hooks";
 import { setSelectedSubMenuOption } from "../../../_lib/redux/chatUiSlice";
+import { useAuth } from "../../AuthContext";
 
 interface Props {
     handleNewFriendRequest: (id: string) => void,
@@ -23,6 +23,7 @@ const PeopleSubMenu = ({handleNewFriendRequest}: Props) => {
     const [searchResults, setSearchResults] = useState<Person[]>([]);
     const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
     const nodeRef = useRef(null);
+    const { findByName } = useAuth();
 
     useEffect(() => {
         const handleResize = () => {
@@ -37,9 +38,9 @@ const PeopleSubMenu = ({handleNewFriendRequest}: Props) => {
     const handleSearch = async (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key == "Enter") {
             try {
-                const response = await instance.get(`/User/FindByName/${searchQuery}`, {withCredentials: true});
-                console.log("Search results", response.data);
-                setSearchResults(response.data);
+                const data = await findByName(searchQuery);
+                console.log("Search results", data);
+                setSearchResults(data);
             } catch (error) {
                 console.error(error);
                 setSearchResults([]);

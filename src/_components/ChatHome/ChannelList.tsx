@@ -1,28 +1,25 @@
-import instance from "../../_lib/api";
-import {  Channel } from "../../_lib/responseTypes";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
 import { addChannel, selectAllChannels } from "../../_lib/redux/userInfoSlice";
 import { buttonStyleLight, mobileSubMenuStyle } from "../../_lib/tailwindShortcuts";
 import { SubMenu } from "../../_lib/pageTypes";
 import { setSelectedChannel } from "../../_lib/redux/chatUiSlice";
+import { useAuth } from "../AuthContext";
 
 const ChannelList = () => {
     const userInfo = useAppSelector((state) => state.userInfo);
     const channels = useAppSelector(selectAllChannels);
     const selectedSubMenu = useAppSelector((state) => state.chatUi.selectedSubMenu)
     const dispatch = useAppDispatch();
+    const { newChannel } = useAuth();
     
     const handleNewChannel = async () => {
         const newChannelName = prompt("Enter new channel name: ");
         if (newChannelName == null || newChannelName.trim() == "") return;
         
-        const newChannel = {name: newChannelName};
         try {
-            const response = await instance.post("/channel/new", newChannel, {withCredentials: true});
-            console.log("New channel created", response.data);
-            const createdChannel: Channel = response.data;
-
-            dispatch(addChannel(createdChannel));
+            const data = await newChannel(newChannelName)
+            console.log("New channel created", data);
+            dispatch(addChannel(data));
         } catch (error) {
             console.error("Failed to create channel: " + error);
         }

@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import instance from "../../_lib/api";
 import { Friendship } from "../../_lib/responseTypes";
 import React from "react";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
@@ -11,6 +10,7 @@ import { SubMenu, SubMenuOptions } from "../../_lib/pageTypes";
 import ChannelInvitesSubMenu from "./UserControlsSubComponents/ChannelInvitesSubMenu";
 import { clearChatHub, setSelectedSubMenuOption } from "../../_lib/redux/chatUiSlice";
 import { acceptChannelInviteHub, acceptFriendRequestHub, sendChannelInviteHub, sendFriendRequestHub } from "../../_lib/signalr/signalRMiddleware";
+import { useAuth } from "../AuthContext";
 
 const UserControls = () => {
     const dispatch = useAppDispatch();
@@ -19,6 +19,7 @@ const UserControls = () => {
     const subMenuOption = useAppSelector((state) => state.chatUi.selectedSubMenuOptions);
     const newFriendRequest = useAppSelector((state) => state.userInfo.newFriendRequest);
     const newChannelInvite = useAppSelector((state) => state.userInfo.newChannelInvite);
+    const { logout } = useAuth();
 
     const handleNewFriendRequest = async (id: string) => {
         try {
@@ -62,7 +63,7 @@ const UserControls = () => {
     const handleLogout = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
         try {
-            await instance.post("/user/signout", {}, {withCredentials: true});
+            await logout();
             dispatch(clearUser());
             dispatch(clearChatHub());
             console.log("Logged out successfully!");

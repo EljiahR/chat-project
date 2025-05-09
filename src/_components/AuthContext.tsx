@@ -1,7 +1,7 @@
 import { jwtDecode } from "jwt-decode";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { api, apiLogin, apiLogout, apiRegister, apiStatus } from "../_lib/api";
-import { UserInfo } from "../_lib/responseTypes";
+import { api, apiFindByName, apiLogin, apiLogout, apiNewChannel, apiRegister, apiStatus } from "../_lib/api";
+import { Channel, Person, UserInfo } from "../_lib/responseTypes";
 
 type JwtPayload = {
     exp: number;
@@ -13,6 +13,8 @@ type AuthContextType = {
     logout: () => void;
     status: () => Promise<UserInfo>;
     register: (username: string, email: string, password: string) => Promise<UserInfo>;
+    findByName: (searchQuery: string) => Promise<Person[]>;
+    newChannel: (newChannelName: string) => Promise<Channel>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -77,8 +79,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode}> = ({ children 
     };
 
     const status = async () => {
-        const refreshToken = localStorage.getItem("refreshToken");
-        const data = await apiStatus(refreshToken ?? "");
+        const data = await apiStatus(accessToken ?? "");
         return data.info;
     }
 
@@ -89,8 +90,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode}> = ({ children 
         return data.info;
     }
 
+    const findByName = async (searchQuery: string) => {
+        return await apiFindByName(searchQuery, accessToken ?? "");
+    }
+
+    const newChannel = async (newChannelName: string) => {
+        return await apiNewChannel(newChannelName, accessToken ?? "");  
+    }
+
     return (
-        <AuthContext.Provider value={{ accessToken, login, logout, status, register }}>
+        <AuthContext.Provider value={{ accessToken, login, logout, status, register, findByName, newChannel }}>
             {children}
         </AuthContext.Provider>
     )
