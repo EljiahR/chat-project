@@ -18,4 +18,5 @@ export interface ChatUiSlice {
     selectedChannelId: string,
     selectedSubMenu: SubMenu,
     selectedSubMenuOptions: SubMenuOptions,
+    accessToken: string | null
 }

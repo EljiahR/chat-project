@@ -1,8 +1,10 @@
 import { jwtDecode } from "jwt-decode";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect } from "react";
 import { apiFindByName, apiLogin, apiLogout, apiNewChannel, apiRefreshToken, apiRegister, apiStatus } from "../_lib/api";
 import { Channel, Person, UserInfo } from "../_lib/responseTypes";
 import { Navigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../_lib/redux/hooks";
+import { clearAccessToken, setAccessToken } from "../_lib/redux/chatUiSlice";
 
 type JwtPayload = {
     exp: number;
@@ -21,7 +23,8 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode}> = ({ children }) => {
-    const [accessToken, setAccessToken] = useState<string | null>(null);
+    const dispatch = useAppDispatch();
+    const accessToken = useAppSelector((state) => state.chatUi.accessToken);
 
     const refreshToken = async () => {
         const refreshToken = localStorage.getItem("refreshToken");
@@ -32,9 +35,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode}> = ({ children 
          
         try {
             const newTokens = await apiRefreshToken(refreshToken);
-            setAccessToken(newTokens.accessToken);
+            dispatch(setAccessToken(newTokens.accessToken))
             localStorage.setItem("refreshToken", newTokens.refreshToken);
         } catch (err) {
+            console.error(err);
             await logout();
             return;
         }
@@ -82,7 +86,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode}> = ({ children 
     };
 
     const logout = async () => {
-        setAccessToken(null);
+        dispatch(clearAccessToken());
         localStorage.removeItem("refreshToken");
         await apiLogout();
         Navigate({to: "/"});
@@ -90,7 +94,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode}> = ({ children 
 
     const status = async () => {
         const data = await apiStatus(accessToken ?? "");
-        return data.info;
+        return data;
     }
 
     const register = async (username: string, email: string, password: string) => {

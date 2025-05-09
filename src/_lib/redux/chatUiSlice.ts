@@ -9,6 +9,7 @@ const initialState: ChatUiSlice = {
     selectedChannelId: "",
     selectedSubMenu: SubMenu.None,
     selectedSubMenuOptions: SubMenuOptions.None,
+    accessToken: null
 }
 
 export const chatUiSlice = createSlice({
@@ -42,9 +43,15 @@ export const chatUiSlice = createSlice({
         },
         setSelectedSubMenuOption: (state, action: PayloadAction<SubMenuOptions>) => {
             state.selectedSubMenuOptions = action.payload == state.selectedSubMenuOptions ? SubMenuOptions.None : action.payload;
+        },
+        setAccessToken: (state, action: PayloadAction<string>) => {
+            state.accessToken = action.payload;
+        },
+        clearAccessToken: (state) => {
+            state.accessToken = null;
         }
     }
 });
-export const { clearChatHub, setIsConnected, setMessageInput, clearMessageInput, setSelectedChannel, setSelectedSubMenu, setSelectedSubMenuOption } = chatUiSlice.actions;
+export const { clearChatHub, setIsConnected, setMessageInput, clearMessageInput, setSelectedChannel, setSelectedSubMenu, setSelectedSubMenuOption, setAccessToken, clearAccessToken } = chatUiSlice.actions;
 
 export default chatUiSlice.reducer;

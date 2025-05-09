@@ -4,7 +4,7 @@ import LoadingSpinner from "../_lib/svgs/LoadingSpinner.svg?react";
 import { buttonStyleBlue, buttonStyleBlueDisabled, buttonStyleGreen, buttonStyleGreenDisabled, formStyle, inputLabelStyle, loadingSpinnerStyle, pageSignInStyle, signInErrorStyle, textInputErrorStyle, textInputStyle } from "../_lib/tailwindShortcuts";
 import { useAppDispatch } from "../_lib/redux/hooks";
 import { clearChatHub } from "../_lib/redux/chatUiSlice";
-import { clearUser } from "../_lib/redux/userInfoSlice";
+import { clearUser, setUser } from "../_lib/redux/userInfoSlice";
 import { PasswordShort, PasswordsNotMatching, UsernameBlank } from "../_lib/signInPageErrors";
 import { useAuth } from "../_components/AuthContext";
 
@@ -77,9 +77,11 @@ const SignInPage: React.FC = () => {
         try {
             setIsSigningIn(true);
             const data = await login(loginCredentials.userName, loginCredentials.password);
+            console.log("DATA: ", data);
             dispatch(clearChatHub());
+            console.log("Here?")
             dispatch(clearUser());
-            console.log("Login successful. ", data);
+            dispatch(setUser(data));
             navigate("/chat");
         } catch (error) {
             console.error("Trouble attempting login. " + error);

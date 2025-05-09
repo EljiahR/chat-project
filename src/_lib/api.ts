@@ -1,6 +1,6 @@
 import axios from "axios";
 import backendUrl from "./backendUrl";
-import { Channel, Person, SignIn } from "./responseTypes";
+import { Channel, Person, SignIn, UserInfo } from "./responseTypes";
 
 export const api = axios.create({
     baseURL: backendUrl
@@ -21,7 +21,7 @@ export const apiLogout = async () => {
 }
 
 export const apiStatus = async (accessToken: string) => {
-    const response = await api.get<SignIn>("/user/status", {headers: {Authorization: `Bearer ${accessToken}`}});
+    const response = await api.get<UserInfo>("/user/status", {headers: {Authorization: `Bearer ${accessToken}`}});
     return response.data;
 }
 

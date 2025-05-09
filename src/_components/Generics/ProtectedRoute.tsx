@@ -19,7 +19,7 @@ const ProtectedRoute = ({ component: Component }: Props) => {
     const userInfo = useAppSelector((state) => state.userInfo);
     const dispatch = useAppDispatch();
     const [authenticationState, setAuthenticationState] = useState(AuthenticationStates.Loading);
-    const { status } = useAuth();
+    const { status, accessToken } = useAuth();
 
     useEffect(() => {
         const checkAuthStatus = async () => {
@@ -33,8 +33,11 @@ const ProtectedRoute = ({ component: Component }: Props) => {
                 console.error("Not authorized", error);
             }
         }
-
-        checkAuthStatus();
+        if (!accessToken) {
+            checkAuthStatus();
+        } else {
+            setAuthenticationState(AuthenticationStates.Authorized);
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     

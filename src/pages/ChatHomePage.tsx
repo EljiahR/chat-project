@@ -30,8 +30,8 @@ const ChatHomePage = () => {
         const checkAuthStatus = async () => {
             try {
                 const data = await status();
+                console.log("Data from status call:", data);
                 dispatch(setUser(data));
-                console.log(data)
                 setAuthenticationState(AuthenticationStates.Authorized);
             } catch (error) {
                 setAuthenticationState(AuthenticationStates.Unauthorized);
