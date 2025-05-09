@@ -20,24 +20,48 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode}> = ({ children }) => {
     const [accessToken, setAccessToken] = useState<string | null>(null);
 
+    const refreshToken = async () => {
+        const refreshToken = localStorage.getItem("refreshToken");
+        if (refreshToken) {
+            api.post("/user/refresh", { refreshToken })
+                .then(res => setAccessToken(res.data.accessToken))
+                .catch(() => apiLogout());
+        }
+    };
+
     useEffect(() => {
         if (!accessToken) return;
+        
+        let timeoutId: ReturnType<typeof setTimeout>;
 
-        const { exp } = jwtDecode<JwtPayload>(accessToken);
-        const expirationTime = exp * 1000 - Date.now();
-        const refreshBuffer = 60 * 1000;
+        const checkAndRefreshToken = async () => {
+            const { exp } = jwtDecode<JwtPayload>(accessToken);
+            const now = Date.now();
+            const expirationTime = exp * 1000 - now;
+            const refreshBuffer = 60 * 1000;
 
-        const timeout = setTimeout(() => {
-            const refreshToken = localStorage.getItem("refreshToken");
-            if (refreshToken) {
-                api.post("/user/refresh", { refreshToken })
-                    .then(res => setAccessToken(res.data.accessToken))
-                    .catch(() => apiLogout());
+            if (expirationTime < refreshBuffer) {
+                await refreshToken();
             }
-        }, expirationTime - refreshBuffer);
 
-        return () => clearTimeout(timeout);
-    }, [accessToken]);
+            const nextInterval = Math.max(10000, expirationTime - refreshBuffer);
+            timeoutId = setTimeout(checkAndRefreshToken, nextInterval);
+        };
+
+        checkAndRefreshToken();
+
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === "visible") {
+                checkAndRefreshToken();
+            }
+        };
+
+        document.addEventListener("visibilitychange", handleVisibilityChange);
+
+        return () => {
+            clearTimeout(timeoutId);
+        }
+    }, []);
 
     const login = async (username: string, password: string) => {
         const data = await apiLogin(username, password);
