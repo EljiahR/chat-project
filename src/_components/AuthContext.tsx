@@ -1,6 +1,7 @@
 import { jwtDecode } from "jwt-decode";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { api, login, logout } from "../_lib/api";
+import { api, login, logout, status } from "../_lib/api";
+import { UserInfo } from "../_lib/responseTypes";
 
 type JwtPayload = {
     exp: number;
@@ -10,6 +11,7 @@ type AuthContextType = {
     accessToken: string | null;
     handleLogin: (username: string, password: string) => Promise<void>;
     handleLogout: () => void;
+    handleStatus: () => Promise<UserInfo>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -48,8 +50,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode}> = ({ children 
         await logout();
     };
 
+    const handleStatus = async () => {
+        const refreshToken = localStorage.getItem("refreshToken");
+        return await status(refreshToken ?? "");
+    }
+
     return (
-        <AuthContext.Provider value={{ accessToken, handleLogin, handleLogout }}>
+        <AuthContext.Provider value={{ accessToken, handleLogin, handleLogout, handleStatus }}>
             {children}
         </AuthContext.Provider>
     )

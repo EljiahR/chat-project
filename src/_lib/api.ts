@@ -1,5 +1,6 @@
 import axios from "axios";
 import backendUrl from "./backendUrl";
+import { UserInfo } from "./responseTypes";
 
 export const api = axios.create({
     baseURL: backendUrl
@@ -17,4 +18,9 @@ export const refreshToken = async (refreshToken: string) => {
 
 export const logout = async () => {
     await api.post("/user/signout");
+}
+
+export const status = async (refreshToken: string) => {
+    const response = await api.get<UserInfo>("/user/status", {headers: {Authorization: `Bearer ${refreshToken}`}});
+    return response.data;
 }
