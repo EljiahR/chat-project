@@ -1,7 +1,8 @@
 import { jwtDecode } from "jwt-decode";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { api, apiFindByName, apiLogin, apiLogout, apiNewChannel, apiRegister, apiStatus } from "../_lib/api";
+import { api, apiFindByName, apiLogin, apiLogout, apiNewChannel, apiRefreshToken, apiRegister, apiStatus } from "../_lib/api";
 import { Channel, Person, UserInfo } from "../_lib/responseTypes";
+import { Navigate } from "react-router-dom";
 
 type JwtPayload = {
     exp: number;
@@ -24,10 +25,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode}> = ({ children 
 
     const refreshToken = async () => {
         const refreshToken = localStorage.getItem("refreshToken");
-        if (refreshToken) {
-            api.post("/user/refresh", { refreshToken })
-                .then(res => setAccessToken(res.data.accessToken))
-                .catch(() => apiLogout());
+        if (!refreshToken) {
+            await logout();
+            return;
+        }
+         
+        try {
+            const newTokens = await apiRefreshToken(refreshToken);
+            setAccessToken(newTokens.accessToken);
+            localStorage.setItem("refreshToken", newTokens.refreshToken);
+        } catch (err) {
+            await logout();
+            return;
         }
     };
 
@@ -76,6 +85,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode}> = ({ children 
         setAccessToken(null);
         localStorage.removeItem("refreshToken");
         await apiLogout();
+        Navigate({to: "/"});
     };
 
     const status = async () => {
