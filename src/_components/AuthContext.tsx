@@ -35,7 +35,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode}> = ({ children 
         try {
             const newTokens = await apiRefreshToken(refreshToken);
             dispatch(setAccessToken(newTokens.accessToken));
-            localStorage.setItem("refreshToken", newTokens.refreshToken);
+            if (newTokens.refreshToken) {
+                localStorage.setItem("refreshToken", newTokens.refreshToken);
+            }
+
+            return newTokens.accessToken;
         } catch (err) {
             console.error(err);
             await logout();
@@ -92,11 +96,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode}> = ({ children 
     };
 
     const status = async () => {
+        let data: UserInfo;
         if (!accessToken || accessToken == "") {
-            await refreshToken();
+            const newToken = await refreshToken();
+            data = await apiStatus(newToken ?? "");
+        } else {
+            data = await apiStatus(accessToken ?? "");
         }
 
-        const data = await apiStatus(accessToken ?? "");
         return data;
     }
 
