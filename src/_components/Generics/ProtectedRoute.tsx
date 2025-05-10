@@ -19,7 +19,8 @@ const ProtectedRoute = ({ component: Component }: Props) => {
     const userInfo = useAppSelector((state) => state.userInfo);
     const dispatch = useAppDispatch();
     const [authenticationState, setAuthenticationState] = useState(AuthenticationStates.Loading);
-    const { status, accessToken } = useAuth();
+    const { status } = useAuth();
+    const accessToken = useAppSelector((state) => state.auth.accessToken);
 
     useEffect(() => {
         const checkAuthStatus = async () => {

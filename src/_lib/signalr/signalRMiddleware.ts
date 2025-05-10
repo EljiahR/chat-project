@@ -4,14 +4,10 @@ import backendUrl from "../backendUrl";
 import { Channel, ChannelUser, Friendship, Message, Person } from "../responseTypes";
 import { clearMessageInput, setIsConnected } from "../redux/chatUiSlice";
 import { acceptChannelInvite, addChannelInvite, addFriend, addFriendRequest, addMessageToChannel, addUserToChannel, addUserTyping, removeFriendRequest, removeMessageFromChannel, removeUserTyping } from "../redux/userInfoSlice";
-import { useAppSelector } from "../redux/hooks";
-
 
 let connection: signalR.HubConnection;
 
 export const signalRMiddleware: Middleware = store => next => action => {  
-    //const accessToken = useAppSelector((state) => state.chatUi.accessToken);
-
     if (closeConnection.match(action)) {
         connection?.stop();
     }
