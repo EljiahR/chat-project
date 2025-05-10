@@ -66,6 +66,7 @@ export const signalRMiddleware: Middleware = store => next => action => {
             })
             .catch (e => {
                 store.dispatch(setIsConnected(false));
+                console.error(e);
             });
     }
 

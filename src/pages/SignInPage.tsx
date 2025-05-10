@@ -140,7 +140,7 @@ const SignInPage: React.FC = () => {
             setRepeatPassword("");
             dispatch(clearChatHub());
             dispatch(clearUser());
-            
+            dispatch(setUser(data));
             navigate("/chat");
         } catch (error) {
             console.error("Trouble registering. " + error);

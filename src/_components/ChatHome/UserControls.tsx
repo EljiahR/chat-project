@@ -54,7 +54,7 @@ const UserControls = () => {
             dispatch(acceptChannelInviteHub(channelId));
             
         } catch (error) {
-            console.error("Error accepting channel invite", error);
+            console.error("Error accepting channel invite to: " + inviteId, error);
         }
     }
     
