@@ -14,6 +14,7 @@ import { setUser } from "../_lib/redux/userInfoSlice";
 import { Navigate } from "react-router-dom";
 import LoadingScreen from "../_components/Generics/LoadingScreen";
 import { useAuth } from "../_components/AuthContext";
+import { getHoursDifference } from "../_lib/timeFunctions";
 
 enum AuthenticationStates {
     Loading,
@@ -91,21 +92,24 @@ const CoreComponent = () => {
     const chatMessages = useMemo(() => {
         if (selectedChannelId == "") { 
             return [];
-        }
-        else {
+        } else {
             const channelMessages = messages ? messages.slice().sort(messageSortByDateReverse) : [];
             if (channelMessages) {
                 let currentUserId = "";
+                let currentTime: Date | null = null;
                 const condensedMessages = channelMessages.map((message, index, arr) => {
-                    if (message.sentById == currentUserId) {
+                    const thisTime = new Date(message.sentAt);
+                    if (message.sentById == currentUserId && currentTime != null && getHoursDifference(currentTime, thisTime) < 1) {
                         return null;
                     } else {
                         currentUserId = message.sentById;
+                        currentTime = thisTime;
                     }
+
                     const condensedMessage = {...message};
                     let i = 1;
                     let nextMessage = arr[index + i];
-                    while (nextMessage && nextMessage.sentById == currentUserId) {
+                    while (nextMessage && nextMessage.sentById == currentUserId && getHoursDifference(currentTime, new Date(nextMessage.sentAt)) < 1) {
                         condensedMessage.content += "\n" + nextMessage.content;
                         i++;
                         nextMessage = arr[index + i];
