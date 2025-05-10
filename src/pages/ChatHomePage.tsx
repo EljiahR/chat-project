@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import UserControls from "../_components/ChatHome/UserControls";
-import { UserInfo } from "../_lib/responseTypes";
 import ChannelList from "../_components/ChatHome/ChannelList";
 import Chat from "../_components/ChatHome/Chat";
 import HomeChannel from "../_components/ChatHome/HomeChannel";
@@ -11,10 +10,10 @@ import { SubMenu } from "../_lib/pageTypes";
 import { setSelectedSubMenu } from "../_lib/redux/chatUiSlice";
 import { messageSortByDateReverse } from "../_lib/sortFunctions";
 import { closeConnection, startConnection } from "../_lib/signalr/signalRMiddleware";
-import instance from "../_lib/axiosBase";
 import { setUser } from "../_lib/redux/userInfoSlice";
 import { Navigate } from "react-router-dom";
 import LoadingScreen from "../_components/Generics/LoadingScreen";
+import { useAuth } from "../_components/AuthContext";
 
 enum AuthenticationStates {
     Loading,
@@ -25,13 +24,13 @@ enum AuthenticationStates {
 const ChatHomePage = () => {
     const dispatch = useAppDispatch();
     const [authenticationState, setAuthenticationState] = useState(AuthenticationStates.Loading);
+    const { status } = useAuth();
 
     useEffect(() => {
         const checkAuthStatus = async () => {
             try {
-                const response = await instance.get<UserInfo>("/user/status", {withCredentials: true});
-                dispatch(setUser(response.data));
-                console.log(response.data)
+                const data = await status();
+                dispatch(setUser(data));
                 setAuthenticationState(AuthenticationStates.Authorized);
             } catch (error) {
                 setAuthenticationState(AuthenticationStates.Unauthorized);

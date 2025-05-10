@@ -1,12 +1,19 @@
 import { FormEvent, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import instance from "../_lib/axiosBase";
+import { Navigate, useNavigate } from "react-router-dom";
 import LoadingSpinner from "../_lib/svgs/LoadingSpinner.svg?react";
 import { buttonStyleBlue, buttonStyleBlueDisabled, buttonStyleGreen, buttonStyleGreenDisabled, formStyle, inputLabelStyle, loadingSpinnerStyle, pageSignInStyle, signInErrorStyle, textInputErrorStyle, textInputStyle } from "../_lib/tailwindShortcuts";
 import { useAppDispatch } from "../_lib/redux/hooks";
 import { clearChatHub } from "../_lib/redux/chatUiSlice";
-import { clearUser } from "../_lib/redux/userInfoSlice";
+import { clearUser, setUser } from "../_lib/redux/userInfoSlice";
 import { PasswordShort, PasswordsNotMatching, UsernameBlank } from "../_lib/signInPageErrors";
+import { useAuth } from "../_components/AuthContext";
+import LoadingScreen from "../_components/Generics/LoadingScreen";
+
+enum AuthenticationStates {
+    Loading,
+    Authorized,
+    Unauthorized
+}
 
 interface RegisterErrors {
     username: string[],
@@ -14,12 +21,47 @@ interface RegisterErrors {
     repeatPassword: string
 }
 
-const SignInPage: React.FC = () => {
+const SignInPage = () => {
+    const dispatch = useAppDispatch();
+    const [authenticationState, setAuthenticationState] = useState(AuthenticationStates.Loading);
+    const { status } = useAuth();
+
+    useEffect(() => {
+        const checkAuthStatus = async () => {
+            try {
+                const data = await status();
+                dispatch(setUser(data));
+                setAuthenticationState(AuthenticationStates.Authorized);
+            } catch (error) {
+                setAuthenticationState(AuthenticationStates.Unauthorized);
+                console.error("Not authorized", error);
+            }
+        }
+        const refreshToken = localStorage.getItem("refreshToken");
+        if (refreshToken) {
+            checkAuthStatus();
+        } else {
+            setAuthenticationState(AuthenticationStates.Unauthorized);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+    
+    return (
+        authenticationState == AuthenticationStates.Loading ? 
+            <LoadingScreen /> : 
+            authenticationState == AuthenticationStates.Authorized ? 
+                <Navigate to={"/chat"} /> : 
+                <CoreComponent />
+    )
+}
+
+const CoreComponent: React.FC = () => {
     const [isSigningIn, setIsSigningIn] = useState(false);
     const [isRegistering, setIsRegistering] = useState(false);
     const [repeatPassword, setRepeatPassword] = useState("");
     const [registerErrors, setRegisterErrors] = useState<RegisterErrors>({username: [], password: [], repeatPassword: ""});
     const dispatch = useAppDispatch();
+    const { login, register } = useAuth();
     
     const [loginCredentials, setLoginCredentials] = useState({
         userName: "",
@@ -75,10 +117,12 @@ const SignInPage: React.FC = () => {
         e.preventDefault();
         try {
             setIsSigningIn(true);
-            const response = await instance.post("/user/signin", loginCredentials, {withCredentials: true});
+            const data = await login(loginCredentials.userName, loginCredentials.password);
+            
             dispatch(clearChatHub());
+            
             dispatch(clearUser());
-            console.log("Login successful. ", response.data);
+            dispatch(setUser(data));
             navigate("/chat");
         } catch (error) {
             console.error("Trouble attempting login. " + error);
@@ -121,20 +165,24 @@ const SignInPage: React.FC = () => {
         }
         
         if (errorOccured) {
-            console.log("this ran")
+            
             return;
         }
 
         try {
             setIsRegistering(true);
-            const response = await instance.post("/user/register", registerCredentials, {withCredentials: true});
-            console.log("Register successful ", response.data);
+            const data = await register(registerCredentials.userName, registerCredentials.email, registerCredentials.password);
+            
             setRegisterCredentials({
                 userName: "",
                 email: "",
                 password: ""
             });
             setRepeatPassword("");
+            dispatch(clearChatHub());
+            dispatch(clearUser());
+            dispatch(setUser(data));
+            navigate("/chat");
         } catch (error) {
             console.error("Trouble registering. " + error);
         } finally {

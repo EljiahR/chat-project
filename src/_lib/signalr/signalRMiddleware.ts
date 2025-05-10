@@ -5,17 +5,20 @@ import { Channel, ChannelUser, Friendship, Message, Person } from "../responseTy
 import { clearMessageInput, setIsConnected } from "../redux/chatUiSlice";
 import { acceptChannelInvite, addChannelInvite, addFriend, addFriendRequest, addMessageToChannel, addUserToChannel, addUserTyping, removeFriendRequest, removeMessageFromChannel, removeUserTyping } from "../redux/userInfoSlice";
 
-
 let connection: signalR.HubConnection;
 
 export const signalRMiddleware: Middleware = store => next => action => {  
     if (closeConnection.match(action)) {
         connection?.stop();
     }
+
+    const accessToken = store.getState().auth.accessToken;
     
-    if (startConnection.match(action)) {
+    if (startConnection.match(action) && accessToken && accessToken != "") {
         connection = new signalR.HubConnectionBuilder()
-            .withUrl(backendUrl + "/ChatHub")
+            .withUrl(backendUrl + "/ChatHub", {
+                accessTokenFactory: () => accessToken ?? ""
+            })
             .withAutomaticReconnect()
             .build();
 
@@ -62,8 +65,8 @@ export const signalRMiddleware: Middleware = store => next => action => {
                 store.dispatch(setIsConnected(true));
             })
             .catch (e => {
-                console.log("Connection Error: ", e)
                 store.dispatch(setIsConnected(false));
+                console.error(e);
             });
     }
 

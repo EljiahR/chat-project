@@ -19,3 +19,7 @@ export interface ChatUiSlice {
     selectedSubMenu: SubMenu,
     selectedSubMenuOptions: SubMenuOptions,
 }
+
+export interface AuthSlice {
+    accessToken: string | null;
+}

@@ -1,12 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userInfoReducer from "./userInfoSlice";
 import chatUiReducer from "./chatUiSlice";
+import authReducer from "./authSlice";
 import { signalRMiddleware } from "../signalr/signalRMiddleware";
 
 export const store = configureStore({
     reducer: {
         userInfo: userInfoReducer,
-        chatUi: chatUiReducer
+        chatUi: chatUiReducer,
+        auth: authReducer
     },
     middleware: (getDefaultMiddleware) => 
         getDefaultMiddleware().concat(signalRMiddleware),
