@@ -18,5 +18,12 @@ export interface ChatUiSlice {
     selectedChannelId: string,
     selectedSubMenu: SubMenu,
     selectedSubMenuOptions: SubMenuOptions,
+<<<<<<< HEAD
     accessToken: string | null
+=======
+}
+
+export interface AuthSlice {
+    accessToken: string | null;
+>>>>>>> 8d54bb1 (Moved access token to redux store, moved AuthProvider to inside of store provider)
 }

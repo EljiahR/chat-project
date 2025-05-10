@@ -4,14 +4,16 @@ import { apiFindByName, apiLogin, apiLogout, apiNewChannel, apiRefreshToken, api
 import { Channel, Person, UserInfo } from "../_lib/responseTypes";
 import { Navigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../_lib/redux/hooks";
-import { clearAccessToken, setAccessToken } from "../_lib/redux/chatUiSlice";
+<<<<<<< HEAD
+=======
+import { clearAccessToken, setAccessToken } from "../_lib/redux/authSlice";
+>>>>>>> 8d54bb1 (Moved access token to redux store, moved AuthProvider to inside of store provider)
 
 type JwtPayload = {
     exp: number;
 }
 
 type AuthContextType = {
-    accessToken: string | null;
     login: (username: string, password: string) => Promise<UserInfo>;
     logout: () => void;
     status: () => Promise<UserInfo>;
@@ -23,8 +25,11 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode}> = ({ children }) => {
+<<<<<<< HEAD
+=======
+    const accessToken = useAppSelector((state) => state.auth.accessToken);
     const dispatch = useAppDispatch();
-    const accessToken = useAppSelector((state) => state.chatUi.accessToken);
+>>>>>>> 8d54bb1 (Moved access token to redux store, moved AuthProvider to inside of store provider)
 
     const refreshToken = async () => {
         const refreshToken = localStorage.getItem("refreshToken");
@@ -35,7 +40,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode}> = ({ children 
          
         try {
             const newTokens = await apiRefreshToken(refreshToken);
-            dispatch(setAccessToken(newTokens.accessToken))
+<<<<<<< HEAD
+            dispatch(setAccessToken(newTokens.accessToken));
+=======
+>>>>>>> 8d54bb1 (Moved access token to redux store, moved AuthProvider to inside of store provider)
             localStorage.setItem("refreshToken", newTokens.refreshToken);
         } catch (err) {
             console.error(err);
@@ -80,7 +88,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode}> = ({ children 
 
     const login = async (username: string, password: string) => {
         const data = await apiLogin(username, password);
-        setAccessToken(data.accessToken);
+        dispatch(setAccessToken(data.accessToken));
         localStorage.setItem("refreshToken", data.refreshToken);
         return data.info;
     };
@@ -99,7 +107,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode}> = ({ children 
 
     const register = async (username: string, email: string, password: string) => {
         const data = await apiRegister(username, email, password);
-        setAccessToken(data.accessToken);
+        dispatch(setAccessToken(data.accessToken));
         localStorage.setItem("refreshToken", data.refreshToken);
         return data.info;
     }
@@ -113,7 +121,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode}> = ({ children 
     }
 
     return (
-        <AuthContext.Provider value={{ accessToken, login, logout, status, register, findByName, newChannel }}>
+        <AuthContext.Provider value={{ login, logout, status, register, findByName, newChannel }}>
             {children}
         </AuthContext.Provider>
     )
