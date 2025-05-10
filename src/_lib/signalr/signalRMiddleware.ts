@@ -14,7 +14,7 @@ export const signalRMiddleware: Middleware = store => next => action => {
 
     const accessToken = store.getState().auth.accessToken;
     
-    if (startConnection.match(action)) {
+    if (startConnection.match(action) && accessToken && accessToken != "") {
         connection = new signalR.HubConnectionBuilder()
             .withUrl(backendUrl + "/ChatHub", {
                 accessTokenFactory: () => accessToken ?? ""
@@ -65,7 +65,6 @@ export const signalRMiddleware: Middleware = store => next => action => {
                 store.dispatch(setIsConnected(true));
             })
             .catch (e => {
-                console.log("Connection Error: ", e)
                 store.dispatch(setIsConnected(false));
             });
     }

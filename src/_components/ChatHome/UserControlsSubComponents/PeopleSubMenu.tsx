@@ -39,7 +39,7 @@ const PeopleSubMenu = ({handleNewFriendRequest}: Props) => {
         if (e.key == "Enter") {
             try {
                 const data = await findByName(searchQuery);
-                console.log("Search results", data);
+                
                 setSearchResults(data);
             } catch (error) {
                 console.error(error);

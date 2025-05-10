@@ -77,9 +77,9 @@ const SignInPage: React.FC = () => {
         try {
             setIsSigningIn(true);
             const data = await login(loginCredentials.userName, loginCredentials.password);
-            console.log("DATA: ", data);
+            
             dispatch(clearChatHub());
-            console.log("Here?")
+            
             dispatch(clearUser());
             dispatch(setUser(data));
             navigate("/chat");
@@ -124,14 +124,14 @@ const SignInPage: React.FC = () => {
         }
         
         if (errorOccured) {
-            console.log("this ran")
+            
             return;
         }
 
         try {
             setIsRegistering(true);
             const data = await register(registerCredentials.userName, registerCredentials.email, registerCredentials.password);
-            console.log("Register successful ", data);
+            
             setRegisterCredentials({
                 userName: "",
                 email: "",
@@ -140,7 +140,7 @@ const SignInPage: React.FC = () => {
             setRepeatPassword("");
             dispatch(clearChatHub());
             dispatch(clearUser());
-            console.log("Login successful. ", data);
+            
             navigate("/chat");
         } catch (error) {
             console.error("Trouble registering. " + error);

@@ -27,7 +27,7 @@ const ProtectedRoute = ({ component: Component }: Props) => {
             try {
                 const data = await status();
                 dispatch(setUser(data));
-                console.log(data)
+                
                 setAuthenticationState(AuthenticationStates.Authorized);
             } catch (error) {
                 setAuthenticationState(AuthenticationStates.Unauthorized);

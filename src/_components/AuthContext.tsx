@@ -92,6 +92,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode}> = ({ children 
     };
 
     const status = async () => {
+        if (!accessToken || accessToken == "") {
+            await refreshToken();
+        }
+
         const data = await apiStatus(accessToken ?? "");
         return data;
     }

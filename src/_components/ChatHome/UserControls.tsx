@@ -24,7 +24,7 @@ const UserControls = () => {
     const handleNewFriendRequest = async (id: string) => {
         try {
             dispatch(sendFriendRequestHub(id));
-            console.log("Friend request sent!");
+            
         } catch (error) {
             console.error("Error sending request", error);
         }
@@ -34,7 +34,7 @@ const UserControls = () => {
         if (selectedChannelId == "") return;
         try {
             dispatch(sendChannelInviteHub({channelId: selectedChannelId, newUserId: userId}));
-            console.log("Channel invite sent!");
+            
         } catch (error) {
             console.error("Error adding user to channel", error);
         }
@@ -43,7 +43,7 @@ const UserControls = () => {
     const handleAcceptFriendRequest = async (request: Friendship) => {
         try {
             dispatch(acceptFriendRequestHub(request));
-            console.log("Friend request accepted!");
+            
         } catch (error) {
             console.error("Error accepting friend request", error);
         }
@@ -52,7 +52,7 @@ const UserControls = () => {
     const handleAcceptChannelInvite = async (inviteId: string, channelId: string) => {
         try {
             dispatch(acceptChannelInviteHub(channelId));
-            console.log(`Channel invite ${inviteId} accepted!`);
+            
         } catch (error) {
             console.error("Error accepting channel invite", error);
         }
@@ -66,7 +66,7 @@ const UserControls = () => {
             await logout();
             dispatch(clearUser());
             dispatch(clearChatHub());
-            console.log("Logged out successfully!");
+            
         } catch (error) {
             console.error(error);
         } finally {

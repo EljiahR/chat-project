@@ -18,7 +18,7 @@ const ChannelList = () => {
         
         try {
             const data = await newChannel(newChannelName)
-            console.log("New channel created", data);
+            
             dispatch(addChannel(data));
         } catch (error) {
             console.error("Failed to create channel: " + error);

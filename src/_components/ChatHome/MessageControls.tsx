@@ -58,11 +58,11 @@ const MessageControls: React.FC = () => {
     const SendMessage = async () => {
         if (isConnected && draftMessage != "" && selectedChannelId != "") {
             try {
-                console.log("Sending to: ", selectedChannelId);
+                
                 dispatch(sendMessageToConnection({message: draftMessage, channelId: selectedChannelId}))
                 setIsTyping(false);
             } catch (e) {
-                console.log(e);
+                
             }
         }
     };
