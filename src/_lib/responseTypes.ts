@@ -1,10 +1,18 @@
 export interface Message {
-    id: string,
-    username: string,
-    content: string,
-    sentAt: string,
-    channelId: string,
-    sentById: string
+    id: string;
+    username: string;
+    content: string;
+    sentAt: string;
+    channelId: string;
+    sentById: string;
+}
+
+export interface CondensedMessage {
+    username: string;
+    messages: Message[];
+    earliestSentAt: string;
+    channelId: string;
+    sentById: string;
 }
 
 export interface Channel {

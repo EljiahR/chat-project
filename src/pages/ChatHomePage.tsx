@@ -15,6 +15,7 @@ import { Navigate } from "react-router-dom";
 import LoadingScreen from "../_components/Generics/LoadingScreen";
 import { useAuth } from "../_components/AuthContext";
 import { getHoursDifference } from "../_lib/timeFunctions";
+import { CondensedMessage } from "../_lib/responseTypes";
 
 enum AuthenticationStates {
     Loading,
@@ -95,34 +96,39 @@ const CoreComponent = () => {
         } else {
             const channelMessages = messages ? messages.slice().sort(messageSortByDateReverse) : [];
             if (channelMessages) {
-                let currentUserId = "";
-                let currentTime: Date | null = null;
-                const condensedMessages = channelMessages.map((message, index, arr) => {
-                    const thisTime = new Date(message.sentAt);
-                    if (message.sentById == currentUserId && currentTime != null && getHoursDifference(currentTime, thisTime) < 1) {
-                        return null;
-                    } else {
-                        currentUserId = message.sentById;
-                        currentTime = thisTime;
+                let lastUserId: string | null = null;
+                let lastSentTime: Date | null = null;
+                let currentCondensedMessage: CondensedMessage | null = null;
+                const condensedMessages: CondensedMessage[] = [];
+                for (let i = 0; i < channelMessages.length; i++) {
+                    const currentMessage = channelMessages[i];
+                    if (!lastUserId || currentMessage.sentById != lastUserId || !lastSentTime || getHoursDifference(lastSentTime, new Date(currentMessage.sentAt)) > 0.5) {
+                        lastUserId = currentMessage.sentById;
+                        lastSentTime = new Date(currentMessage.sentAt);
+                        currentCondensedMessage = {
+                            username: currentMessage.username,
+                            messages: [currentMessage],
+                            earliestSentAt: currentMessage.sentAt,
+                            channelId: currentMessage.channelId,
+                            sentById: currentMessage.sentById
+                        };
+                        condensedMessages.push(currentCondensedMessage);
+                    } else if(currentCondensedMessage) {
+                        currentCondensedMessage.messages = [...currentCondensedMessage.messages, currentMessage];
+                        lastSentTime = new Date(currentMessage.sentAt);
                     }
+                }
 
-                    const condensedMessage = {...message};
-                    let i = 1;
-                    let nextMessage = arr[index + i];
-                    while (nextMessage && nextMessage.sentById == currentUserId && getHoursDifference(currentTime, new Date(nextMessage.sentAt)) < 1) {
-                        condensedMessage.content += "\n" + nextMessage.content;
-                        i++;
-                        nextMessage = arr[index + i];
-                    }
-
-                    return condensedMessage;
-                });
-                return condensedMessages.filter(m => m != null).map((channelMessage, index) => {
-                    const newDate = new Date(channelMessage.sentAt);
+                return condensedMessages.filter(m => m != null).map((condensedMessage, index) => {
+                    const newDate = new Date(condensedMessage.earliestSentAt);
                     return (
-                        <div className={chatMessageStyle} key={index}>
-                            <div className={chatMessageUserStyle}>{channelMessage.username}<div className={chatMessageDateStyle}>{newDate.toLocaleString()}</div></div>
-                            <div className={chatMessageContentStyle}>{channelMessage.content}</div>
+                        <div className={chatMessageStyle} key={index + condensedMessage.messages[0].id}>
+                            <div className={chatMessageUserStyle}>{condensedMessage.username}<div className={chatMessageDateStyle}>{newDate.toLocaleString()}</div></div>
+                            {condensedMessage.messages.map((message) => {
+                                return (
+                                    <div className={chatMessageContentStyle} key={message.id}>{message.content}</div>
+                                )
+                            })}
                         </div>)
                 })
             }
