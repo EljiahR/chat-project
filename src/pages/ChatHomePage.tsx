@@ -114,19 +114,19 @@ const CoreComponent = () => {
                         };
                         condensedMessages.push(currentCondensedMessage);
                     } else if(currentCondensedMessage) {
-                        currentCondensedMessage.messages = [...messages, currentMessage];
-                        lastSentTime = new Date(currentMessage.sentById);
+                        currentCondensedMessage.messages = [...currentCondensedMessage.messages, currentMessage];
+                        lastSentTime = new Date(currentMessage.sentAt);
                     }
                 }
 
                 return condensedMessages.filter(m => m != null).map((condensedMessage, index) => {
                     const newDate = new Date(condensedMessage.earliestSentAt);
                     return (
-                        <div className={chatMessageStyle} key={index}>
+                        <div className={chatMessageStyle} key={index + condensedMessage.messages[0].id}>
                             <div className={chatMessageUserStyle}>{condensedMessage.username}<div className={chatMessageDateStyle}>{newDate.toLocaleString()}</div></div>
                             {condensedMessage.messages.map((message) => {
                                 return (
-                                    <div className={chatMessageContentStyle}>{message.content}</div>
+                                    <div className={chatMessageContentStyle} key={message.id}>{message.content}</div>
                                 )
                             })}
                         </div>)
