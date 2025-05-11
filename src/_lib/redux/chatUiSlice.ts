@@ -41,6 +41,7 @@ export const chatUiSlice = createSlice({
             state.selectedSubMenuOptions = SubMenuOptions.None;
         },
         setSelectedSubMenuOption: (state, action: PayloadAction<SubMenuOptions>) => {
+            state.selectedSubMenu = SubMenu.None
             state.selectedSubMenuOptions = action.payload == state.selectedSubMenuOptions ? SubMenuOptions.None : action.payload;
         }
     }
