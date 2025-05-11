@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Person } from "../../../_lib/responseTypes";
 import Draggable from "react-draggable";
 import { buttonStyleGreenSmall, buttonStyleRedSmall, draggableSubMenuStyle } from "../../../_lib/tailwindShortcuts";
@@ -8,32 +8,23 @@ import { setSelectedSubMenuOption } from "../../../_lib/redux/chatUiSlice";
 import { useAuth } from "../../AuthContext";
 
 interface Props {
-    handleNewFriendRequest: (id: string) => void,
+    handleNewFriendRequest: (id: string) => void;
+    isMobile: boolean;
 }
 
-interface CoreProps extends Props {
-    searchQuery: string,
-    searchResults: Person[]
-    handleSearch: (e: React.KeyboardEvent<HTMLInputElement>) => void,
-    setSearchQuery: React.Dispatch<React.SetStateAction<string>>
+interface CoreProps extends Omit<Props, "isMobile"> {
+    searchQuery: string;
+    searchResults: Person[];
+    handleSearch: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+    setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const PeopleSubMenu = ({handleNewFriendRequest}: Props) => {
+const PeopleSubMenu = ({handleNewFriendRequest, isMobile}: Props) => {
     const [searchQuery, setSearchQuery] = useState("");
     const [searchResults, setSearchResults] = useState<Person[]>([]);
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
+
     const nodeRef = useRef(null);
     const { findByName } = useAuth();
-
-    useEffect(() => {
-        const handleResize = () => {
-            setIsMobile(window.innerWidth <= 768);
-        };
-
-        window.addEventListener('resize', handleResize);
-
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
 
     const handleSearch = async (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key == "Enter") {

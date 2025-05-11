@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Friendship } from "../../_lib/responseTypes";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
 import { clearUser, setChannelNotificationToFalse, setFriendNotificationToFalse } from "../../_lib/redux/userInfoSlice";
 import { buttonStyleLight, buttonStyleLightDisabled, buttonStyleRed, mobileSubMenuStyle, notificationBubble } from "../../_lib/tailwindShortcuts";
@@ -8,7 +8,7 @@ import PeopleSubMenu from "./UserControlsSubComponents/PeopleSubMenu";
 import FriendSubMenu from "./UserControlsSubComponents/FriendSubMenu";
 import { SubMenu, SubMenuOptions } from "../../_lib/pageTypes";
 import ChannelInvitesSubMenu from "./UserControlsSubComponents/ChannelInvitesSubMenu";
-import { clearChatHub, setSelectedSubMenuOption } from "../../_lib/redux/chatUiSlice";
+import { clearChatHub, setSelectedSubMenu, setSelectedSubMenuOption } from "../../_lib/redux/chatUiSlice";
 import { acceptChannelInviteHub, acceptFriendRequestHub, sendChannelInviteHub, sendFriendRequestHub } from "../../_lib/signalr/signalRMiddleware";
 import { useAuth } from "../AuthContext";
 
@@ -19,7 +19,18 @@ const UserControls = () => {
     const subMenuOption = useAppSelector((state) => state.chatUi.selectedSubMenuOptions);
     const newFriendRequest = useAppSelector((state) => state.userInfo.newFriendRequest);
     const newChannelInvite = useAppSelector((state) => state.userInfo.newChannelInvite);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
     const { logout } = useAuth();
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const handleNewFriendRequest = async (id: string) => {
         try {
@@ -105,7 +116,7 @@ const UserControls = () => {
             </button>
         </div>
         {subMenuOption == SubMenuOptions.People ? 
-            <PeopleSubMenu handleNewFriendRequest={handleNewFriendRequest} /> 
+            <PeopleSubMenu handleNewFriendRequest={handleNewFriendRequest} isMobile={isMobile} /> 
         :
         subMenuOption == SubMenuOptions.Friends ?
             <FriendSubMenu handleAcceptFriendRequest={handleAcceptFriendRequest} handleInviteToChannel={handleInviteToChannel} /> 
