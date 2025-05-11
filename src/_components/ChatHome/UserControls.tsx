@@ -8,7 +8,7 @@ import PeopleSubMenu from "./UserControlsSubComponents/PeopleSubMenu";
 import FriendSubMenu from "./UserControlsSubComponents/FriendSubMenu";
 import { SubMenu, SubMenuOptions } from "../../_lib/pageTypes";
 import ChannelInvitesSubMenu from "./UserControlsSubComponents/ChannelInvitesSubMenu";
-import { clearChatHub, setSelectedSubMenu, setSelectedSubMenuOption } from "../../_lib/redux/chatUiSlice";
+import { clearChatHub, setSelectedSubMenuOption } from "../../_lib/redux/chatUiSlice";
 import { acceptChannelInviteHub, acceptFriendRequestHub, sendChannelInviteHub, sendFriendRequestHub } from "../../_lib/signalr/signalRMiddleware";
 import { useAuth } from "../AuthContext";
 
@@ -119,10 +119,10 @@ const UserControls = () => {
             <PeopleSubMenu handleNewFriendRequest={handleNewFriendRequest} isMobile={isMobile} /> 
         :
         subMenuOption == SubMenuOptions.Friends ?
-            <FriendSubMenu handleAcceptFriendRequest={handleAcceptFriendRequest} handleInviteToChannel={handleInviteToChannel} /> 
+            <FriendSubMenu handleAcceptFriendRequest={handleAcceptFriendRequest} handleInviteToChannel={handleInviteToChannel} isMobile={isMobile} /> 
         :
         subMenuOption == SubMenuOptions.ChannelInvites ?    
-            <ChannelInvitesSubMenu handleAcceptChannelInvite={handleAcceptChannelInvite} /> 
+            <ChannelInvitesSubMenu handleAcceptChannelInvite={handleAcceptChannelInvite} isMobile={isMobile} /> 
         :
             <></>
         }

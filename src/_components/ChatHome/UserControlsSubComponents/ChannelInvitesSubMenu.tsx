@@ -7,8 +7,11 @@ import { setSelectedSubMenuOption } from "../../../_lib/redux/chatUiSlice";
 import { selectAllChannelInvites } from "../../../_lib/redux/userInfoSlice";
 
 interface Props {
-    handleAcceptChannelInvite: (inviteId: string, channelId: string) => void,
+    handleAcceptChannelInvite: (inviteId: string, channelId: string) => void;
+    isMobile: boolean;
 }
+
+interface CoreComponentProps extends Omit<Props, "isMobile"> {}
 
 const ChannelInvitesSubMenu = ({handleAcceptChannelInvite}: Props) => {
     const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
@@ -36,7 +39,7 @@ const ChannelInvitesSubMenu = ({handleAcceptChannelInvite}: Props) => {
     )
 }
 
-const CoreComponent = ({handleAcceptChannelInvite}: Props) => {
+const CoreComponent = ({handleAcceptChannelInvite}: CoreComponentProps) => {
     const dispatch = useAppDispatch();
     const channelInvites = useAppSelector(selectAllChannelInvites);
 

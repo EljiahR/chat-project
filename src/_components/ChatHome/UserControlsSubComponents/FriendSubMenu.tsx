@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import Draggable from "react-draggable";
 import { buttonStyleBlueSmall, buttonStyleGreenSmall, buttonStyleRedSmall, draggableSubMenuStyle } from "../../../_lib/tailwindShortcuts";
 import { SubMenuOptions } from "../../../_lib/pageTypes";
@@ -10,23 +10,16 @@ import { Friendship } from "../../../_lib/responseTypes";
 interface Props {
     handleAcceptFriendRequest: (request: Friendship) => void,
     handleInviteToChannel: (userId: string) => void,
+    isMobile: boolean
 }
 
-const FriendSubMenu = ({handleAcceptFriendRequest, handleInviteToChannel}: Props) => {
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
+interface CoreComponentProps extends Omit<Props, "isMobile"> {
+
+}
+
+const FriendSubMenu = ({handleAcceptFriendRequest, handleInviteToChannel, isMobile}: Props) => {
     const nodeRef = useRef(null);
     
-    useEffect(() => {
-        const handleResize = () => {
-          setIsMobile(window.innerWidth <= 768);
-        };
-    
-        window.addEventListener('resize', handleResize);
-    
-        return () => window.removeEventListener('resize', handleResize);
-      }, []);
-
-
     return (
         isMobile ?
         <CoreComponent handleAcceptFriendRequest={handleAcceptFriendRequest} handleInviteToChannel={handleInviteToChannel} />
@@ -39,7 +32,7 @@ const FriendSubMenu = ({handleAcceptFriendRequest, handleInviteToChannel}: Props
     )
 }
 
-const CoreComponent = ({handleAcceptFriendRequest, handleInviteToChannel}: Props) => {
+const CoreComponent = ({handleAcceptFriendRequest, handleInviteToChannel}: CoreComponentProps) => {
     const dispatch = useAppDispatch();
     const friends = useAppSelector(selectAllFriends);
     const friendRequests = useAppSelector(selectAllFriendRequests);
