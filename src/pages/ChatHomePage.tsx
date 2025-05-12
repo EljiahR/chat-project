@@ -90,6 +90,10 @@ const CoreComponent = () => {
         }
     }
 
+    const handleMessageContextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        e.preventDefault();
+    }
+
     const chatMessages = useMemo(() => {
         if (selectedChannelId == "") { 
             return [];
@@ -126,7 +130,13 @@ const CoreComponent = () => {
                             <div className={chatMessageUserStyle}>{condensedMessage.username}<div className={chatMessageDateStyle}>{newDate.toLocaleString()}</div></div>
                             {condensedMessage.messages.map((message) => {
                                 return (
-                                    <div className={chatMessageContentStyle + (message.modifiers.includes("Action") ? " " + messageActionStyle : "")} key={message.id}>{message.content}</div>
+                                    <div 
+                                        className={chatMessageContentStyle + (message.modifiers.includes("Action") ? " " + messageActionStyle : "")} 
+                                        key={message.id}
+                                        onContextMenu={(e) => handleMessageContextMenu(e)}
+                                    >
+                                        {message.content}
+                                    </div>
                                 )
                             })}
                         </div>)
