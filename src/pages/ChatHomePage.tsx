@@ -4,7 +4,7 @@ import ChannelList from "../_components/ChatHome/ChannelList";
 import Chat from "../_components/ChatHome/Chat";
 import HomeChannel from "../_components/ChatHome/HomeChannel";
 import ChannelMenu from "../_components/ChatHome/ChannelMenu";
-import { buttonStyleLight, chatMessageContentStyle, chatMessageDateStyle, chatMessageStyle, chatMessageUserStyle, notificationBubble, pageChatHomeStyle } from "../_lib/tailwindShortcuts";
+import { buttonStyleLight, chatMessageContentStyle, chatMessageDateStyle, chatMessageStyle, chatMessageUserStyle, messageActionStyle, notificationBubble, pageChatHomeStyle } from "../_lib/tailwindShortcuts";
 import { useAppDispatch, useAppSelector } from "../_lib/redux/hooks";
 import { SubMenu } from "../_lib/pageTypes";
 import { setSelectedSubMenu } from "../_lib/redux/chatUiSlice";
@@ -126,7 +126,7 @@ const CoreComponent = () => {
                             <div className={chatMessageUserStyle}>{condensedMessage.username}<div className={chatMessageDateStyle}>{newDate.toLocaleString()}</div></div>
                             {condensedMessage.messages.map((message) => {
                                 return (
-                                    <div className={chatMessageContentStyle} key={message.id}>{message.content}</div>
+                                    <div className={chatMessageContentStyle + (message.modifiers.includes("Action") ? " " + messageActionStyle : "")} key={message.id}>{message.content}</div>
                                 )
                             })}
                         </div>)
