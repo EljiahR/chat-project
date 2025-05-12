@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import UserControls from "../_components/ChatHome/UserControls";
 import ChannelList from "../_components/ChatHome/ChannelList";
 import Chat from "../_components/ChatHome/Chat";
@@ -16,6 +16,8 @@ import LoadingScreen from "../_components/Generics/LoadingScreen";
 import { useAuth } from "../_components/AuthContext";
 import { getHoursDifference } from "../_lib/timeFunctions";
 import { CondensedMessage } from "../_lib/responseTypes";
+import { MessageContextMenuItems } from "../_components/ChatHome/MessageContextMenu";
+import { ContextMenu } from "primereact/contextmenu";
 
 enum AuthenticationStates {
     Loading,
@@ -61,6 +63,7 @@ const CoreComponent = () => {
     const userName = useAppSelector((state) => state.userInfo.userName);
     const newFriendRequest = useAppSelector((state) => state.userInfo.newFriendRequest);
     const newChannelInvite = useAppSelector((state) => state.userInfo.newChannelInvite);
+    const cm = useRef<ContextMenu>(null);
 
     // Attempt to connect to hub on mount
     useEffect(() => {
@@ -88,10 +91,6 @@ const CoreComponent = () => {
             menu.classList.remove("translate-x-full");
             menu.classList.add("translate-x-0");
         }
-    }
-
-    const handleMessageContextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        e.preventDefault();
     }
 
     const chatMessages = useMemo(() => {
@@ -128,17 +127,18 @@ const CoreComponent = () => {
                     return (
                         <div className={chatMessageStyle} key={index + condensedMessage.messages[0].id}>
                             <div className={chatMessageUserStyle}>{condensedMessage.username}<div className={chatMessageDateStyle}>{newDate.toLocaleString()}</div></div>
-                            {condensedMessage.messages.map((message) => {
-                                return (
-                                    <div 
-                                        className={chatMessageContentStyle + (message.modifiers.includes("Action") ? " " + messageActionStyle : "")} 
-                                        key={message.id}
-                                        onContextMenu={(e) => handleMessageContextMenu(e)}
-                                    >
-                                        {message.content}
-                                    </div>
-                                )
-                            })}
+                                {condensedMessage.messages.map((message) => {
+                                    return (
+                                        <div 
+                                            className={chatMessageContentStyle + (message.modifiers.includes("Action") ? " " + messageActionStyle : "")} 
+                                            key={message.id}
+                                            onContextMenu={(e) => cm.current != null ? cm.current.show(e) : null}
+                                        >
+                                            {message.content}
+                                        </div>
+                                    )
+                                })}
+                                <ContextMenu model={MessageContextMenuItems} ref={cm} />
                         </div>)
                 })
             }
