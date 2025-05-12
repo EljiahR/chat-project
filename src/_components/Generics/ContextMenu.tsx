@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 
-export const MessageContextMenu = (xPos: string, yPos: string) => {
+export const ContextMenu: React.FC<{children: React.ReactNode}> = ({children}) => {
     const [showMenu, setShowMenu] = useState(false);
     const [x, setX] = useState("0px");
     const [y, setY] = useState("0px");
@@ -27,8 +27,9 @@ export const MessageContextMenu = (xPos: string, yPos: string) => {
     };
     
     return showMenu ? 
-        <ul className="absolute" style={{ top: xPos, left: yPos }}>
-            <li>Delete</li>
-        </ul> 
+        <div className="absolute" style={{ top: x, left: y }}>
+            {children}
+        </div> 
         : null;
 } 
+
