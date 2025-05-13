@@ -108,6 +108,8 @@ const CoreComponent = () => {
         if (cm.current && messageUserId == userId) {
             setSelectedMessageId(messageId);
             cm.current.show(e);
+        } else {
+            e.preventDefault();
         }
     }
 
