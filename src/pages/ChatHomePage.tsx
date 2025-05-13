@@ -114,7 +114,9 @@ const CoreComponent = () => {
         }
     }
 
-    const handleDeleteMessage = () => {};
+    const handleDeleteMessage = () => {
+        dispatch(d)
+    };
 
     const chatMessages = useMemo(() => {
         if (selectedChannelId == "") { 
