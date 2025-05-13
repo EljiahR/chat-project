@@ -28,7 +28,9 @@ export const signalRMiddleware: Middleware = store => next => action => {
                 });
 
                 // DeleteMessage return {channelId, messageId}
-                connection.on("DeleteMessage", ({channelId, messageId}: DeleteMessageProps) => {
+                connection.on("DeleteMessage", (channelId: string, messageId: string) => {
+                    console.log("Deleted id: ", messageId);
+                    console.log("From channel: ", channelId);
                     store.dispatch(removeMessageFromChannel({channelId, messageId}));
                 });
 
@@ -124,11 +126,6 @@ export const signalRMiddleware: Middleware = store => next => action => {
 interface ReceiveNewMemberProps {
     channelId: string;
     user: Person;
-}
-
-interface DeleteMessageProps {
-    channelId: string;
-    messageId: string;
 }
 
 interface ChannelUserProps {
