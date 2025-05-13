@@ -42,4 +42,4 @@ export const loadingSpinnerStyle = "inline w-4 h-4 me-3 text-white animate-spin"
 export const pageLoadingSpinnerStyle = "inline w-8 h-8 me-3 text-white animate-spin";
 
 // Message styling
-export const messageActionStyle = "italic text-gray-800";
+export const messageActionStyle = "italic text-gray-300";

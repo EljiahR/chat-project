@@ -74,7 +74,8 @@ const CoreComponent = () => {
         label: "Delete",
         command: () => {
             handleDeleteMessage(selectedChannelId, selectedMessageId);
-        }
+        },
+        className: "max-w-sm mx-auto p-2 rounded-lg border border bg-gray-50 text-sm flex items-center justify-center select-none text-gray-600"
 
     }]
     // Attempt to connect to hub on mount
