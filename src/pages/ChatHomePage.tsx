@@ -1,27 +1,31 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import UserControls from "../_components/ChatHome/UserControls";
 import ChannelList from "../_components/ChatHome/ChannelList";
 import Chat from "../_components/ChatHome/Chat";
 import HomeChannel from "../_components/ChatHome/HomeChannel";
 import ChannelMenu from "../_components/ChatHome/ChannelMenu";
-import { buttonStyleLight, chatMessageContentStyle, chatMessageDateStyle, chatMessageStyle, chatMessageUserStyle, notificationBubble, pageChatHomeStyle } from "../_lib/tailwindShortcuts";
+import { buttonStyleLight, chatMessageContentStyle, chatMessageDateStyle, chatMessageStyle, chatMessageUserStyle, messageActionStyle, notificationBubble, pageChatHomeStyle } from "../_lib/tailwindShortcuts";
 import { useAppDispatch, useAppSelector } from "../_lib/redux/hooks";
 import { SubMenu } from "../_lib/pageTypes";
 import { setSelectedSubMenu } from "../_lib/redux/chatUiSlice";
 import { messageSortByDateReverse } from "../_lib/sortFunctions";
-import { closeConnection, startConnection } from "../_lib/signalr/signalRMiddleware";
+import { closeConnection, deleteMessageToConnection, startConnection } from "../_lib/signalr/signalRMiddleware";
 import { setUser } from "../_lib/redux/userInfoSlice";
 import { Navigate } from "react-router-dom";
 import LoadingScreen from "../_components/Generics/LoadingScreen";
 import { useAuth } from "../_components/AuthContext";
 import { getHoursDifference } from "../_lib/timeFunctions";
 import { CondensedMessage } from "../_lib/responseTypes";
+import { ContextMenu } from "primereact/contextmenu";
+import { MenuItem } from "primereact/menuitem";
 
 enum AuthenticationStates {
     Loading,
     Authorized,
     Unauthorized
 }
+
+
 
 const ChatHomePage = () => {
     const dispatch = useAppDispatch();
@@ -59,9 +63,21 @@ const CoreComponent = () => {
     const selectedChannel = useAppSelector((state) => state.userInfo.channels.entities[selectedChannelId]);
     const messages = useAppSelector((state) => state.chatUi.selectedChannelId != "" ? state.userInfo.channels.entities[selectedChannelId].channelMessages : []);
     const userName = useAppSelector((state) => state.userInfo.userName);
+    const userId = useAppSelector((state) => state.userInfo.id);
     const newFriendRequest = useAppSelector((state) => state.userInfo.newFriendRequest);
     const newChannelInvite = useAppSelector((state) => state.userInfo.newChannelInvite);
+    const [selectedMessageId, setSelectedMessageId] = useState<string | null>(null);
+    const cm = useRef<ContextMenu>(null);
 
+    const MessageContextMenuItems: MenuItem[] = [{
+        id: "MessageContext",
+        label: "Delete",
+        command: () => {
+            handleDeleteMessage(selectedChannelId, selectedMessageId);
+        },
+        className: "max-w-sm mx-auto p-2 rounded-lg border border bg-gray-50 text-sm flex items-center justify-center select-none text-gray-600"
+
+    }]
     // Attempt to connect to hub on mount
     useEffect(() => {
         const previousTitle = document.title;
@@ -75,8 +91,6 @@ const CoreComponent = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-
-
     const handleChannelMenuDisplay = (forceClose = false) => {
         const menu = document.querySelector("#channel-menu") as HTMLDivElement;
         if (menu == null) return;
@@ -89,6 +103,20 @@ const CoreComponent = () => {
             menu.classList.add("translate-x-0");
         }
     }
+
+    const onRightClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, messageId: string, messageUserId: string) => {
+        if (cm.current && messageUserId == userId) {
+            setSelectedMessageId(messageId);
+            cm.current.show(e);
+        } else {
+            e.preventDefault();
+        }
+    }
+
+    const handleDeleteMessage = (channelId: string, messageId: string | null) => {
+        if (!messageId) return;
+        dispatch(deleteMessageToConnection({channelId, messageId}));
+    };
 
     const chatMessages = useMemo(() => {
         if (selectedChannelId == "") { 
@@ -124,16 +152,23 @@ const CoreComponent = () => {
                     return (
                         <div className={chatMessageStyle} key={index + condensedMessage.messages[0].id}>
                             <div className={chatMessageUserStyle}>{condensedMessage.username}<div className={chatMessageDateStyle}>{newDate.toLocaleString()}</div></div>
-                            {condensedMessage.messages.map((message) => {
-                                return (
-                                    <div className={chatMessageContentStyle} key={message.id}>{message.content}</div>
-                                )
-                            })}
+                                {condensedMessage.messages.map((message) => {
+                                    return (
+                                        <div 
+                                            className={chatMessageContentStyle + (message.modifiers.includes("Action") ? " " + messageActionStyle : "")} 
+                                            key={message.id}
+                                            onContextMenu={(e) => onRightClick(e, message.id, message.sentById)}
+                                        >
+                                            {message.content}
+                                        </div>
+                                    )
+                                })}
+                                <ContextMenu model={MessageContextMenuItems} ref={cm} onHide={() => setSelectedMessageId(null)} />
                         </div>)
                 })
             }
         }
-    }, [selectedChannelId, messages])
+    }, [selectedChannelId, messages, selectedMessageId])
 
     useEffect(() => {
         if (selectedChannel != null) {

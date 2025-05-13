@@ -5,6 +5,7 @@ export interface Message {
     sentAt: string;
     channelId: string;
     sentById: string;
+    modifiers: string[];
 }
 
 export interface CondensedMessage {
@@ -16,18 +17,20 @@ export interface CondensedMessage {
 }
 
 export interface Channel {
-    id: string,
-    name: string,
-    owner: Person,
-    admins: Person[],
-    members: Person[],
-    channelMessages: Message[]
+    id: string;
+    name: string;
+    owner: Person;
+    admins: Person[];
+    members: Person[];
+    channelMessages: Message[];
+    isPendingInvite: boolean;
+    isFrozen: boolean;
 }
 
 export interface Person {
-    userName: string,
-    id: string,
-    isFriend: boolean
+    userName: string;
+    id: string;
+    isFriend: boolean;
 }
 
 export enum FriendshipStatus {
@@ -37,12 +40,12 @@ export enum FriendshipStatus {
 }
 
 export interface Friendship {
-    id: string,
-    initiatorId: string,
-    receiverId: string,
-    initiator: Person,
-    receiver: Person,
-    status: FriendshipStatus
+    id: string;
+    initiatorId: string;
+    receiverId: string;
+    initiator: Person;
+    receiver: Person;
+    status: FriendshipStatus;
 }
 
 export enum ChannelRole {
@@ -58,23 +61,23 @@ export enum UserStatus {
 }
 
 export interface ChannelUser {
-    id: string,
-    userId: string,
-    user: Person,
-    channelId: string,
-    channel: Channel,
-    role: ChannelRole,
-    status: UserStatus
+    id: string;
+    userId: string;
+    user: Person;
+    channelId: string;
+    channel: Channel;
+    role: ChannelRole;
+    status: UserStatus;
 }
 
 export interface UserInfo
 {
-    id: string,
-    userName: string,
-    channels: Channel[],
-    friends: Person[],
-    friendRequests: Friendship[],
-    channelInvites: ChannelUser[]
+    id: string;
+    userName: string;
+    channels: Channel[];
+    friends: Person[];
+    friendRequests: Friendship[];
+    channelInvites: ChannelUser[];
 }
 
 export interface SignIn
@@ -82,7 +85,7 @@ export interface SignIn
     message: string;
     info: UserInfo;
     accessToken: string;
-    refreshToken: string
+    refreshToken: string;
 }
 
 export interface ChatHistory {
@@ -90,5 +93,5 @@ export interface ChatHistory {
 }
 
 export interface UsersTyping {
-    [chanelId: string]: string[]
+    [chanelId: string]: string[];
 }

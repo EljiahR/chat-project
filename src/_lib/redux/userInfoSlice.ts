@@ -77,7 +77,11 @@ export const userInfoSlice = createSlice({
         removeMessageFromChannel: (state, action: PayloadAction<{channelId: string, messageId: string}>) => {
             const channel = state.channels.entities[action.payload.channelId];
             if (channel) {
-                channel.channelMessages = channel.channelMessages.filter(m => m.id != action.payload.messageId);
+                const channelMessage = channel.channelMessages.find(m => m.id == action.payload.messageId);
+                if (channelMessage) {
+                    channelMessage.content = "User deleted message";
+                    channelMessage.modifiers = ["Action"];
+                }
             }
         },
         addFriendRequest: (state, action: PayloadAction<Friendship>) => {
