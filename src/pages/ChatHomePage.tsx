@@ -9,7 +9,7 @@ import { useAppDispatch, useAppSelector } from "../_lib/redux/hooks";
 import { SubMenu } from "../_lib/pageTypes";
 import { setSelectedSubMenu } from "../_lib/redux/chatUiSlice";
 import { messageSortByDateReverse } from "../_lib/sortFunctions";
-import { closeConnection, startConnection } from "../_lib/signalr/signalRMiddleware";
+import { closeConnection, deleteMessageToConnection, startConnection } from "../_lib/signalr/signalRMiddleware";
 import { setUser } from "../_lib/redux/userInfoSlice";
 import { Navigate } from "react-router-dom";
 import LoadingScreen from "../_components/Generics/LoadingScreen";
@@ -74,7 +74,7 @@ const CoreComponent = () => {
         items: [
             {
                 label: "Delete",
-                command: () => handleDeleteMessage(selectedMessageId);
+                command: () => handleDeleteMessage()
             }
         ]
 
@@ -115,7 +115,8 @@ const CoreComponent = () => {
     }
 
     const handleDeleteMessage = () => {
-        dispatch(d)
+        if (!selectedMessageId) return;
+        dispatch(deleteMessageToConnection({channelId: selectedChannelId, messageId: selectedMessageId}))
     };
 
     const chatMessages = useMemo(() => {
