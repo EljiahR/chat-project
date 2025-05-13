@@ -16,14 +16,16 @@ import LoadingScreen from "../_components/Generics/LoadingScreen";
 import { useAuth } from "../_components/AuthContext";
 import { getHoursDifference } from "../_lib/timeFunctions";
 import { CondensedMessage } from "../_lib/responseTypes";
-import { MessageContextMenuItems } from "../_components/ChatHome/MessageContextMenu";
 import { ContextMenu } from "primereact/contextmenu";
+import { MenuItem } from "primereact/menuitem";
 
 enum AuthenticationStates {
     Loading,
     Authorized,
     Unauthorized
 }
+
+
 
 const ChatHomePage = () => {
     const dispatch = useAppDispatch();
@@ -61,10 +63,22 @@ const CoreComponent = () => {
     const selectedChannel = useAppSelector((state) => state.userInfo.channels.entities[selectedChannelId]);
     const messages = useAppSelector((state) => state.chatUi.selectedChannelId != "" ? state.userInfo.channels.entities[selectedChannelId].channelMessages : []);
     const userName = useAppSelector((state) => state.userInfo.userName);
+    const userId = useAppSelector((state) => state.userInfo.id);
     const newFriendRequest = useAppSelector((state) => state.userInfo.newFriendRequest);
     const newChannelInvite = useAppSelector((state) => state.userInfo.newChannelInvite);
+    const [selectedMessageId, setSelectedMessageId] = useState<string | null>(null);
     const cm = useRef<ContextMenu>(null);
 
+    const MessageContextMenuItems: MenuItem[] = [{
+        id: "MessageContext",
+        items: [
+            {
+                label: "Delete",
+                command: () => handleDeleteMessage(selectedMessageId);
+            }
+        ]
+
+    }]
     // Attempt to connect to hub on mount
     useEffect(() => {
         const previousTitle = document.title;
@@ -92,6 +106,15 @@ const CoreComponent = () => {
             menu.classList.add("translate-x-0");
         }
     }
+
+    const onRightClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, messageId: string, messageUserId: string) => {
+        if (cm.current && messageUserId == userId) {
+            setSelectedMessageId(messageId);
+            cm.current.show(e);
+        }
+    }
+
+    const handleDeleteMessage = () => {};
 
     const chatMessages = useMemo(() => {
         if (selectedChannelId == "") { 
@@ -132,13 +155,13 @@ const CoreComponent = () => {
                                         <div 
                                             className={chatMessageContentStyle + (message.modifiers.includes("Action") ? " " + messageActionStyle : "")} 
                                             key={message.id}
-                                            onContextMenu={(e) => cm.current != null ? cm.current.show(e) : null}
+                                            onContextMenu={(e) => onRightClick(e, message.id, message.sentById)}
                                         >
                                             {message.content}
                                         </div>
                                     )
                                 })}
-                                <ContextMenu model={MessageContextMenuItems} ref={cm} />
+                                <ContextMenu model={MessageContextMenuItems} ref={cm} onHide={() => setSelectedMessageId(null)} />
                         </div>)
                 })
             }
