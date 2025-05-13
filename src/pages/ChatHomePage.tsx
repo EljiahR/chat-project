@@ -71,12 +71,10 @@ const CoreComponent = () => {
 
     const MessageContextMenuItems: MenuItem[] = [{
         id: "MessageContext",
-        items: [
-            {
-                label: "Delete",
-                command: () => handleDeleteMessage()
-            }
-        ]
+        label: "Delete",
+        command: () => {
+            handleDeleteMessage(selectedChannelId, selectedMessageId);
+        }
 
     }]
     // Attempt to connect to hub on mount
@@ -91,8 +89,6 @@ const CoreComponent = () => {
         });
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-
 
     const handleChannelMenuDisplay = (forceClose = false) => {
         const menu = document.querySelector("#channel-menu") as HTMLDivElement;
@@ -114,9 +110,9 @@ const CoreComponent = () => {
         }
     }
 
-    const handleDeleteMessage = () => {
-        if (!selectedMessageId) return;
-        dispatch(deleteMessageToConnection({channelId: selectedChannelId, messageId: selectedMessageId}))
+    const handleDeleteMessage = (channelId: string, messageId: string | null) => {
+        if (!messageId) return;
+        dispatch(deleteMessageToConnection({channelId, messageId}));
     };
 
     const chatMessages = useMemo(() => {
@@ -169,7 +165,7 @@ const CoreComponent = () => {
                 })
             }
         }
-    }, [selectedChannelId, messages])
+    }, [selectedChannelId, messages, selectedMessageId])
 
     useEffect(() => {
         if (selectedChannel != null) {

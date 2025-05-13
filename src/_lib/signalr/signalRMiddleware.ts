@@ -11,7 +11,6 @@ export const signalRMiddleware: Middleware = store => next => action => {
     if (closeConnection.match(action)) {
         connection?.stop();
     }
-
     const accessToken = store.getState().auth.accessToken;
     
     if (startConnection.match(action) && accessToken && accessToken != "") {
