@@ -113,3 +113,11 @@ h1 {
     transform: scale(0.8);
   }
 }
+
+.noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}

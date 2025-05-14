@@ -68,6 +68,22 @@ const CoreComponent = () => {
     const newChannelInvite = useAppSelector((state) => state.userInfo.newChannelInvite);
     const [selectedMessageId, setSelectedMessageId] = useState<string | null>(null);
     const cm = useRef<ContextMenu>(null);
+    const touchTimerRef = useRef<number | null>(null);
+
+    const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>, messageId: string, messageUserId: string) => {
+        if (cm.current && messageUserId == userId) {
+            setSelectedMessageId(messageId);
+            touchTimerRef.current = setTimeout(() => {
+                cm.current?.show(e);
+            }, 600);
+        } else {
+            e.preventDefault();
+        }
+    }
+
+    const clearTouchTimer = () => {
+        clearTimeout(touchTimerRef.current ?? undefined);
+    }
 
     const MessageContextMenuItems: MenuItem[] = [{
         id: "MessageContext",
@@ -158,6 +174,9 @@ const CoreComponent = () => {
                                             className={chatMessageContentStyle + (message.modifiers.includes("Action") ? " " + messageActionStyle : "")} 
                                             key={message.id}
                                             onContextMenu={(e) => onRightClick(e, message.id, message.sentById)}
+                                            onTouchStart={(e) => handleTouchStart(e, message.id, message.sentById)}
+                                            onTouchEnd={clearTouchTimer}
+                                            onTouchCancel={clearTouchTimer}
                                         >
                                             {message.content}
                                         </div>
