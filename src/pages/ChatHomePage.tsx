@@ -70,13 +70,13 @@ const CoreComponent = () => {
     const cm = useRef<ContextMenu>(null);
     const touchTimerRef = useRef<number | null>(null);
 
-    const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>, messageId: string, messageUserId: string, canDelete: boolean) => {
-        e.preventDefault();
-        if (canDelete && cm.current && messageUserId == userId) {
+    const handleTouchStart = (e: React.PointerEvent<HTMLDivElement>, messageId: string, messageUserId: string, canDelete: boolean) => {
+        if (e.pointerType !== 'touch' && canDelete && cm.current && messageUserId == userId) {
+            e.preventDefault();
             setSelectedMessageId(messageId);
             touchTimerRef.current = setTimeout(() => {
                 cm.current?.show(e);
-            }, 600);
+            }, 200);
         }
     }
 
@@ -173,9 +173,9 @@ const CoreComponent = () => {
                                             className={chatMessageContentStyle + (message.modifiers.includes("Action") ? " " + messageActionStyle : "")} 
                                             key={message.id}
                                             onContextMenu={(e) => onRightClick(e, message.id, message.sentById, !message.modifiers.includes("NoDelete"))}
-                                            onTouchStart={(e) => handleTouchStart(e, message.id, message.sentById, !message.modifiers.includes("NoDelete"))}
-                                            onTouchEnd={clearTouchTimer}
-                                            onTouchCancel={clearTouchTimer}
+                                            onPointerDown={(e) => handleTouchStart(e, message.id, message.sentById, !message.modifiers.includes("NoDelete"))}
+                                            onPointerUp={clearTouchTimer}
+                                            onPointerCancel={clearTouchTimer}
                                         >
                                             {message.content}
                                         </div>
