@@ -28,16 +28,6 @@ enum AuthenticationStates {
     Unauthorized
 }
 
-const leadingActions = () => (
-    <LeadingActions>
-        <SwipeAction onClick={() => console.log("oof")}>
-            Delete
-        </SwipeAction>
-    </LeadingActions>
-);
-
-
-
 const ChatHomePage = () => {
     const dispatch = useAppDispatch();
     const [authenticationState, setAuthenticationState] = useState(AuthenticationStates.Loading);
@@ -80,6 +70,13 @@ const CoreComponent = () => {
     const [selectedMessageId, setSelectedMessageId] = useState<string | null>(null);
     const cm = useRef<ContextMenu>(null);
 
+    const leadingActions = (messageId: string) => (
+        <LeadingActions>
+            <SwipeAction onClick={() => handleDeleteMessage(selectedChannelId, messageId)}>
+                Delete
+            </SwipeAction>
+        </LeadingActions>
+    );
 
     const MessageContextMenuItems: MenuItem[] = [{
         id: "MessageContext",
@@ -173,13 +170,13 @@ const CoreComponent = () => {
                                                     key={message.id}
                                                     onContextMenu={(e) => onRightClick(e, message.id, message.sentById, !message.modifiers.includes("NoDelete"))}
                                                 >
-                                                    {message.content + " d"}
+                                                    {message.content}
                                                 </div>
                                             </BrowserView> */}
                                             <MobileView>
-                                                <SwipeableList type={Type.IOS} swipeStartThreshold={2}>
-                                                    <SwipeableListItem leadingActions={leadingActions()} blockSwipe={userId !== message.sentById}>
-                                                        {message.content + " m"}
+                                                <SwipeableList className={chatMessageContentStyle + (message.modifiers.includes("Action") ? " " + messageActionStyle : "")} type={Type.IOS} swipeStartThreshold={2}>
+                                                    <SwipeableListItem leadingActions={leadingActions(message.id)} blockSwipe={userId !== message.sentById || message.modifiers.includes("NoDelete")}>
+                                                        {message.content}
                                                     </SwipeableListItem>
                                                 </SwipeableList>
                                             </MobileView>
