@@ -68,6 +68,21 @@ const CoreComponent = () => {
     const newChannelInvite = useAppSelector((state) => state.userInfo.newChannelInvite);
     const [selectedMessageId, setSelectedMessageId] = useState<string | null>(null);
     const cm = useRef<ContextMenu>(null);
+    const touchTimerRef = useRef<number | null>(null);
+
+    const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>, messageId: string, messageUserId: string, canDelete: boolean) => {
+        e.preventDefault();
+        if (canDelete && cm.current && messageUserId == userId) {
+            setSelectedMessageId(messageId);
+            touchTimerRef.current = setTimeout(() => {
+                cm.current?.show(e);
+            }, 600);
+        }
+    }
+
+    const clearTouchTimer = () => {
+        clearTimeout(touchTimerRef.current ?? undefined);
+    }
 
     const MessageContextMenuItems: MenuItem[] = [{
         id: "MessageContext",
@@ -104,8 +119,8 @@ const CoreComponent = () => {
         }
     }
 
-    const onRightClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, messageId: string, messageUserId: string) => {
-        if (cm.current && messageUserId == userId) {
+    const onRightClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, messageId: string, messageUserId: string, canDelete: boolean) => {
+        if (canDelete && cm.current && messageUserId == userId) {
             setSelectedMessageId(messageId);
             cm.current.show(e);
         } else {
@@ -157,7 +172,10 @@ const CoreComponent = () => {
                                         <div 
                                             className={chatMessageContentStyle + (message.modifiers.includes("Action") ? " " + messageActionStyle : "")} 
                                             key={message.id}
-                                            onContextMenu={(e) => onRightClick(e, message.id, message.sentById)}
+                                            onContextMenu={(e) => onRightClick(e, message.id, message.sentById, !message.modifiers.includes("NoDelete"))}
+                                            onTouchStart={(e) => handleTouchStart(e, message.id, message.sentById, !message.modifiers.includes("NoDelete"))}
+                                            onTouchEnd={clearTouchTimer}
+                                            onTouchCancel={clearTouchTimer}
                                         >
                                             {message.content}
                                         </div>

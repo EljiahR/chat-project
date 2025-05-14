@@ -11,7 +11,7 @@ export const draggableSubMenuStyle = "absolute sm:static top-1/6 -translate-y-1/
 export const usersTypingStyle = "absolute top-0 left-2 left-0 bg-gray-500 rounded-t w-1/2 text-sm pl-1 z-1 transition duration-150 ease-in-out";
 export const chatMessageStyle = "flex flex-col";
 export const chatMessageUserStyle = "font-bold text-purple-200 flex gap-1 items-center";
-export const chatMessageContentStyle = "break-all whitespace-pre-line";
+export const chatMessageContentStyle = "break-all whitespace-pre-line noselect";
 export const chatMessageDateStyle = "font-light text-sm";
 
 // Buttons

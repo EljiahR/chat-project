@@ -80,7 +80,7 @@ export const userInfoSlice = createSlice({
                 const channelMessage = channel.channelMessages.find(m => m.id == action.payload.messageId);
                 if (channelMessage) {
                     channelMessage.content = "User deleted message";
-                    channelMessage.modifiers = ["Action"];
+                    channelMessage.modifiers = ["Action", "NoDelete"];
                 }
             }
         },
