@@ -18,12 +18,23 @@ import { getHoursDifference } from "../_lib/timeFunctions";
 import { CondensedMessage } from "../_lib/responseTypes";
 import { ContextMenu } from "primereact/contextmenu";
 import { MenuItem } from "primereact/menuitem";
+import { LeadingActions, SwipeableList, SwipeableListItem, SwipeAction, Type } from "react-swipeable-list";
+import { BrowserView, MobileView } from "react-device-detect";
+import 'react-swipeable-list/dist/styles.css';
 
 enum AuthenticationStates {
     Loading,
     Authorized,
     Unauthorized
 }
+
+const leadingActions = () => (
+    <LeadingActions>
+        <SwipeAction onClick={() => console.log("oof")}>
+            Delete
+        </SwipeAction>
+    </LeadingActions>
+);
 
 
 
@@ -68,21 +79,7 @@ const CoreComponent = () => {
     const newChannelInvite = useAppSelector((state) => state.userInfo.newChannelInvite);
     const [selectedMessageId, setSelectedMessageId] = useState<string | null>(null);
     const cm = useRef<ContextMenu>(null);
-    const touchTimerRef = useRef<number | null>(null);
 
-    const handleTouchStart = (e: React.PointerEvent<HTMLDivElement>, messageId: string, messageUserId: string, canDelete: boolean) => {
-        if (e.pointerType !== 'touch' && canDelete && cm.current && messageUserId == userId) {
-            e.preventDefault();
-            setSelectedMessageId(messageId);
-            touchTimerRef.current = setTimeout(() => {
-                cm.current?.show(e);
-            }, 200);
-        }
-    }
-
-    const clearTouchTimer = () => {
-        clearTimeout(touchTimerRef.current ?? undefined);
-    }
 
     const MessageContextMenuItems: MenuItem[] = [{
         id: "MessageContext",
@@ -169,16 +166,26 @@ const CoreComponent = () => {
                             <div className={chatMessageUserStyle}>{condensedMessage.username}<div className={chatMessageDateStyle}>{newDate.toLocaleString()}</div></div>
                                 {condensedMessage.messages.map((message) => {
                                     return (
-                                        <div 
-                                            className={chatMessageContentStyle + (message.modifiers.includes("Action") ? " " + messageActionStyle : "")} 
-                                            key={message.id}
-                                            onContextMenu={(e) => onRightClick(e, message.id, message.sentById, !message.modifiers.includes("NoDelete"))}
-                                            onPointerDown={(e) => handleTouchStart(e, message.id, message.sentById, !message.modifiers.includes("NoDelete"))}
-                                            onPointerUp={clearTouchTimer}
-                                            onPointerCancel={clearTouchTimer}
-                                        >
-                                            {message.content}
-                                        </div>
+                                        <>
+                                            {/* <BrowserView>
+                                                <div 
+                                                    className={chatMessageContentStyle + (message.modifiers.includes("Action") ? " " + messageActionStyle : "")} 
+                                                    key={message.id}
+                                                    onContextMenu={(e) => onRightClick(e, message.id, message.sentById, !message.modifiers.includes("NoDelete"))}
+                                                >
+                                                    {message.content + " d"}
+                                                </div>
+                                            </BrowserView> */}
+                                            <MobileView>
+                                                <SwipeableList type={Type.IOS} swipeStartThreshold={2}>
+                                                    <SwipeableListItem leadingActions={leadingActions()} blockSwipe={userId !== message.sentById}>
+                                                        {message.content + " m"}
+                                                    </SwipeableListItem>
+                                                </SwipeableList>
+                                            </MobileView>
+                                        </>
+                                        
+                                        
                                     )
                                 })}
                                 <ContextMenu model={MessageContextMenuItems} ref={cm} onHide={() => setSelectedMessageId(null)} />
