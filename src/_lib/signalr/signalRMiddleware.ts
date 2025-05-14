@@ -29,8 +29,6 @@ export const signalRMiddleware: Middleware = store => next => action => {
 
                 // DeleteMessage return {channelId, messageId}
                 connection.on("DeleteMessage", (channelId: string, messageId: string) => {
-                    console.log("Deleted id: ", messageId);
-                    console.log("From channel: ", channelId);
                     store.dispatch(removeMessageFromChannel({channelId, messageId}));
                 });
 
