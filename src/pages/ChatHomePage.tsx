@@ -71,9 +71,9 @@ const CoreComponent = () => {
     const cm = useRef<ContextMenu>(null);
 
     const leadingActions = (messageId: string) => (
-        <LeadingActions>
+        <LeadingActions >
             <SwipeAction onClick={() => handleDeleteMessage(selectedChannelId, messageId)}>
-                Delete
+                <div className="bg-red-700 flex items-center text-nowrap">Delete</div>
             </SwipeAction>
         </LeadingActions>
     );
@@ -164,15 +164,6 @@ const CoreComponent = () => {
                                 {condensedMessage.messages.map((message) => {
                                     return (
                                         <>
-                                            {/* <BrowserView>
-                                                <div 
-                                                    className={chatMessageContentStyle + (message.modifiers.includes("Action") ? " " + messageActionStyle : "")} 
-                                                    key={message.id}
-                                                    onContextMenu={(e) => onRightClick(e, message.id, message.sentById, !message.modifiers.includes("NoDelete"))}
-                                                >
-                                                    {message.content}
-                                                </div>
-                                            </BrowserView> */}
                                             <MobileView>
                                                 <SwipeableList className={chatMessageContentStyle + (message.modifiers.includes("Action") ? " " + messageActionStyle : "")} type={Type.IOS} swipeStartThreshold={2}>
                                                     <SwipeableListItem leadingActions={leadingActions(message.id)} blockSwipe={userId !== message.sentById || message.modifiers.includes("NoDelete")}>
@@ -180,6 +171,15 @@ const CoreComponent = () => {
                                                     </SwipeableListItem>
                                                 </SwipeableList>
                                             </MobileView>
+                                            <BrowserView>
+                                                <div 
+                                                    className={chatMessageContentStyle + (message.modifiers.includes("Action") ? " " + messageActionStyle : "")} 
+                                                    key={message.id}
+                                                    onContextMenu={(e) => onRightClick(e, message.id, message.sentById, !message.modifiers.includes("NoDelete"))}
+                                                >
+                                                    {message.content}
+                                                </div>
+                                            </BrowserView>
                                         </>
                                         
                                         
