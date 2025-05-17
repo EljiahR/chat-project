@@ -60,6 +60,7 @@ export const signalRMiddleware: Middleware = store => next => action => {
                 connection.on("ReceiveUserStoppedTyping", (props: ChannelUserProps) => {
                     store.dispatch(removeUserTyping(props));
                 })
+                // ReceiveChannelUpdate returns 
 
                 store.dispatch(setIsConnected(true));
             })
