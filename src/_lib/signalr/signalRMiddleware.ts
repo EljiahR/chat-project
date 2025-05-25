@@ -86,6 +86,12 @@ export const signalRMiddleware: Middleware = store => next => action => {
         return next(action);
     }
 
+    // Update channel
+    if (updateChannelToConnecttion.match(action)) {
+        connection?.invoke("UpdateChannel", action.payload);
+        return next(action);
+    }
+
     // Send friend request
     if (sendFriendRequestHub.match(action)) {
         connection?.invoke("SendFriendRequest", action.payload);
@@ -139,6 +145,7 @@ export const startConnection = createAction("chat/connect");
 export const closeConnection = createAction("chat/disconnect");
 export const sendMessageToConnection = createAction<{message: string, channelId: string}>("chat/sendMessage");
 export const deleteMessageToConnection = createAction<{channelId: string, messageId: string}>("chat/removeMessage");
+export const updateChannelToConnecttion = createAction<ChannelUpdate>("chat/updateChannel");
 export const sendFriendRequestHub = createAction<string>("chat/sendFriendRequest");
 export const acceptFriendRequestHub = createAction<Friendship>("chat/acceptFriendRequest");
 export const sendChannelInviteHub = createAction<{channelId: string, newUserId: string}>("chat/sendChannelInvite");
