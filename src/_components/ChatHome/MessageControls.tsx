@@ -17,6 +17,8 @@ const MessageControls: React.FC = () => {
     const channelMembers = useAppSelector((state) => state.userInfo.channels.entities[selectedChannelId].admins
                                             .concat(state.userInfo.channels.entities[selectedChannelId].members)
                                             .concat(state.userInfo.channels.entities[selectedChannelId].owner));
+    const userId = useAppSelector((state) => state.userInfo.id);
+    const selectedChannel = useAppSelector((state) => state.userInfo.channels.entities[selectedChannelId]);
 
     const [isTyping, setIsTyping] = useState(false);
     // DELETE THESE BEFORE MERGE
@@ -62,10 +64,14 @@ const MessageControls: React.FC = () => {
                 dispatch(sendMessageToConnection({message: draftMessage, channelId: selectedChannelId}))
                 setIsTyping(false);
             } catch (e) {
-                
+                console.error(e);
             }
         }
     };
+
+    const inputIsDisabled = () => {
+        return userId != selectedChannel.owner.id && selectedChannel.isFrozen;
+    }
 
     const [ellipses, setEllipses] = useState("");
 
@@ -92,8 +98,9 @@ const MessageControls: React.FC = () => {
                 onKeyDown={(e) => handleSendMessageEnterKey(e)}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 z-2"
                 ref={inputRef}
+                disabled={inputIsDisabled()}
             />
-            <button className={buttonStyleLight} type="button" onClick={handleSendMessage}>Send</button>  
+            <button className={buttonStyleLight} type="button" onClick={handleSendMessage} disabled={inputIsDisabled()}>Send</button>  
             
                 <div className={usersTypingStyle + (usersTyping && usersTyping.length > 0 ? " -translate-y-full" : "")}>
                     {usersTyping && usersTyping.length > 0 ? (joinWithConjunction(usersTyping.map(id => channelMembers.find(cm => cm.id == id)?.userName).filter(u => u != undefined)) + (usersTyping.length > 1 ? " are " : " is ") + "typing" + ellipses) : ""}
