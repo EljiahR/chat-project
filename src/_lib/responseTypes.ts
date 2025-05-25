@@ -99,5 +99,5 @@ export interface UsersTyping {
 export interface ChannelUpdate {
     id: string;
     name?: string;
-    isFrozen: boolean; 
+    isFrozen?: boolean; 
 }

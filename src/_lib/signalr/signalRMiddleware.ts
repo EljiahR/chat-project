@@ -1,9 +1,9 @@
 import * as signalR from "@microsoft/signalr";
 import { createAction, Middleware } from "@reduxjs/toolkit";
 import backendUrl from "../backendUrl";
-import { Channel, ChannelUser, Friendship, Message, Person } from "../responseTypes";
+import { Channel, ChannelUpdate, ChannelUser, Friendship, Message, Person } from "../responseTypes";
 import { clearMessageInput, setIsConnected } from "../redux/chatUiSlice";
-import { acceptChannelInvite, addChannelInvite, addFriend, addFriendRequest, addMessageToChannel, addUserToChannel, addUserTyping, removeFriendRequest, removeMessageFromChannel, removeUserTyping } from "../redux/userInfoSlice";
+import { acceptChannelInvite, addChannelInvite, addFriend, addFriendRequest, addMessageToChannel, addUserToChannel, addUserTyping, removeFriendRequest, removeMessageFromChannel, removeUserTyping, updateChannel } from "../redux/userInfoSlice";
 
 let connection: signalR.HubConnection;
 
@@ -51,16 +51,19 @@ export const signalRMiddleware: Middleware = store => next => action => {
                 });
                 connection.on("JoinChannel", (newChannel: Channel) => {
                     store.dispatch(acceptChannelInvite(newChannel));
-                })
+                });
                 // ReceiveUserTyping return { channelId: string, userId: string }
                 connection.on("ReceiveUserTyping", (props: ChannelUserProps) => {
                     store.dispatch(addUserTyping(props));
-                })
+                });
                 // ReceiveUserStoppedTyping return { channelId: string, userId: string }
                 connection.on("ReceiveUserStoppedTyping", (props: ChannelUserProps) => {
                     store.dispatch(removeUserTyping(props));
-                })
-                // ReceiveChannelUpdate returns 
+                });
+                // ReceiveChannelUpdate returns ChannelUpdate
+                connection.on("ReceiveChannelUpdate", (channelUpdate: ChannelUpdate) => {
+                    store.dispatch(updateChannel(channelUpdate));
+                });
 
                 store.dispatch(setIsConnected(true));
             })

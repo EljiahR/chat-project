@@ -1,5 +1,5 @@
 import { createEntityAdapter, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Channel, ChannelUser, Friendship, Message, Person, UserInfo } from "../responseTypes";
+import { Channel, ChannelUpdate, ChannelUser, Friendship, Message, Person, UserInfo } from "../responseTypes";
 import { UserInfoSlice } from "./reduxTypes";
 
 const channelsAdapter = createEntityAdapter<Channel>();
@@ -50,6 +50,17 @@ export const userInfoSlice = createSlice({
         },
         addChannel: (state, action: PayloadAction<Channel>) => {
             channelsAdapter.addOne(state.channels, action.payload);
+        },
+        updateChannel: (state, action: PayloadAction<ChannelUpdate>) => {
+            const channel = state.channels.entities[action.payload.id];
+            if (channel) {
+                if (action.payload.isFrozen != null) {
+                    channel.isFrozen = action.payload.isFrozen;
+                }
+                if (action.payload.name != null) {
+                    channel.name = action.payload.name;
+                }
+            }
         },
         addUserToChannel: (state, action: PayloadAction<{channelId: string, user: Person}>) => {
             const { channelId, user } = action.payload;
@@ -136,7 +147,7 @@ export const userInfoSlice = createSlice({
     }
 });
 
-export const { setUser, clearUser, addFriend, addChannel, addUserToChannel, addMessageToChannel, removeMessageFromChannel, addFriendRequest, removeFriendRequest, addChannelInvite, removeChannelInvite, acceptChannelInvite, addUserTyping, removeUserTyping, clearChannelTyping, setFriendNotificationToFalse, setChannelNotificationToFalse } = userInfoSlice.actions;
+export const { setUser, clearUser, addFriend, addChannel, updateChannel, addUserToChannel, addMessageToChannel, removeMessageFromChannel, addFriendRequest, removeFriendRequest, addChannelInvite, removeChannelInvite, acceptChannelInvite, addUserTyping, removeUserTyping, clearChannelTyping, setFriendNotificationToFalse, setChannelNotificationToFalse } = userInfoSlice.actions;
 export const {selectAll: selectAllFriends} = friendsAdapter.getSelectors((state: {userInfo: UserInfoSlice}) => state.userInfo.friends);
 export const {selectAll: selectAllChannels} = channelsAdapter.getSelectors((state:{userInfo: UserInfoSlice}) => state.userInfo.channels);
 export const {selectAll: selectAllFriendRequests} = friendRequestsAdapter.getSelectors((state:{userInfo: UserInfoSlice}) => state.userInfo.friendRequests);
