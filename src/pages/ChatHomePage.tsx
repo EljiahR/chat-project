@@ -190,6 +190,7 @@ const CoreComponent = () => {
                 })
             }
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedChannelId, messages, selectedMessageId])
 
     useEffect(() => {

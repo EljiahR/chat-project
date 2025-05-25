@@ -1,9 +1,9 @@
 import * as signalR from "@microsoft/signalr";
 import { createAction, Middleware } from "@reduxjs/toolkit";
 import backendUrl from "../backendUrl";
-import { Channel, ChannelUser, Friendship, Message, Person } from "../responseTypes";
+import { Channel, ChannelUpdate, ChannelUser, Friendship, Message, Person } from "../responseTypes";
 import { clearMessageInput, setIsConnected } from "../redux/chatUiSlice";
-import { acceptChannelInvite, addChannelInvite, addFriend, addFriendRequest, addMessageToChannel, addUserToChannel, addUserTyping, removeFriendRequest, removeMessageFromChannel, removeUserTyping } from "../redux/userInfoSlice";
+import { acceptChannelInvite, addChannelInvite, addFriend, addFriendRequest, addMessageToChannel, addUserToChannel, addUserTyping, removeFriendRequest, removeMessageFromChannel, removeUserTyping, updateChannel } from "../redux/userInfoSlice";
 
 let connection: signalR.HubConnection;
 
@@ -51,15 +51,19 @@ export const signalRMiddleware: Middleware = store => next => action => {
                 });
                 connection.on("JoinChannel", (newChannel: Channel) => {
                     store.dispatch(acceptChannelInvite(newChannel));
-                })
+                });
                 // ReceiveUserTyping return { channelId: string, userId: string }
                 connection.on("ReceiveUserTyping", (props: ChannelUserProps) => {
                     store.dispatch(addUserTyping(props));
-                })
+                });
                 // ReceiveUserStoppedTyping return { channelId: string, userId: string }
                 connection.on("ReceiveUserStoppedTyping", (props: ChannelUserProps) => {
                     store.dispatch(removeUserTyping(props));
-                })
+                });
+                // ReceiveChannelUpdate returns ChannelUpdate
+                connection.on("ReceiveChannelUpdate", (channelUpdate: ChannelUpdate) => {
+                    store.dispatch(updateChannel(channelUpdate));
+                });
 
                 store.dispatch(setIsConnected(true));
             })
@@ -79,6 +83,12 @@ export const signalRMiddleware: Middleware = store => next => action => {
     // Delete message
     if (deleteMessageToConnection.match(action)) {
         connection?.invoke("RemoveMessage", action.payload.channelId, action.payload.messageId);
+        return next(action);
+    }
+
+    // Update channel
+    if (updateChannelToConnection.match(action)) {
+        connection?.invoke("UpdateChannel", action.payload);
         return next(action);
     }
 
@@ -135,6 +145,7 @@ export const startConnection = createAction("chat/connect");
 export const closeConnection = createAction("chat/disconnect");
 export const sendMessageToConnection = createAction<{message: string, channelId: string}>("chat/sendMessage");
 export const deleteMessageToConnection = createAction<{channelId: string, messageId: string}>("chat/removeMessage");
+export const updateChannelToConnection = createAction<ChannelUpdate>("chat/updateChannel");
 export const sendFriendRequestHub = createAction<string>("chat/sendFriendRequest");
 export const acceptFriendRequestHub = createAction<Friendship>("chat/acceptFriendRequest");
 export const sendChannelInviteHub = createAction<{channelId: string, newUserId: string}>("chat/sendChannelInvite");

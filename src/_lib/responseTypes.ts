@@ -95,3 +95,9 @@ export interface ChatHistory {
 export interface UsersTyping {
     [chanelId: string]: string[];
 }
+
+export interface ChannelUpdate {
+    id: string;
+    name?: string;
+    isFrozen?: boolean; 
+}
