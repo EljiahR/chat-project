@@ -136,7 +136,7 @@ const CoreComponent = () => {
     };
 
     const chatMessages = useMemo(() => {
-        if (selectedChannelId == "" || selectedChannel != null) { 
+        if (selectedChannelId == "" || !selectedChannel) { 
             return [];
         } else {
             const channelMessages = messages ? messages.slice().sort(messageSortByDateReverse) : [];
