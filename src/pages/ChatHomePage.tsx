@@ -7,10 +7,10 @@ import ChannelMenu from "../_components/ChatHome/ChannelMenu";
 import { buttonStyleLight, chatMessageContentStyle, chatMessageDateStyle, chatMessageStyle, chatMessageUserStyle, messageActionStyle, notificationBubble, pageChatHomeStyle } from "../_lib/tailwindShortcuts";
 import { useAppDispatch, useAppSelector } from "../_lib/redux/hooks";
 import { SubMenu } from "../_lib/pageTypes";
-import { setSelectedSubMenu } from "../_lib/redux/chatUiSlice";
+import { setSelectedChannel, setSelectedSubMenu } from "../_lib/redux/chatUiSlice";
 import { messageSortByDateReverse } from "../_lib/sortFunctions";
 import { closeConnection, deleteMessageToConnection, startConnection } from "../_lib/signalr/signalRMiddleware";
-import { setUser } from "../_lib/redux/userInfoSlice";
+import { selectAllChannels, setUser } from "../_lib/redux/userInfoSlice";
 import { Navigate } from "react-router-dom";
 import LoadingScreen from "../_components/Generics/LoadingScreen";
 import { useAuth } from "../_components/AuthContext";
@@ -61,7 +61,8 @@ const ChatHomePage = () => {
 const CoreComponent = () => {
     const dispatch = useAppDispatch();
     const selectedChannelId = useAppSelector((state) => state.chatUi.selectedChannelId);
-    const selectedChannel = useAppSelector((state) => state.userInfo.channels.entities[selectedChannelId]);
+    const channels = useAppSelector(selectAllChannels);
+    const selectedChannel = channels.find(c => c.id == selectedChannelId);
     const messages = useAppSelector((state) => state.chatUi.selectedChannelId != "" ? state.userInfo.channels.entities[selectedChannelId].channelMessages : []);
     const userName = useAppSelector((state) => state.userInfo.userName);
     const userId = useAppSelector((state) => state.userInfo.id);
@@ -92,6 +93,13 @@ const CoreComponent = () => {
         const previousTitle = document.title;
         document.title = "Home";
         dispatch(startConnection());
+        const previousChannelId = localStorage.getItem("selectedChannel");
+        if (previousChannelId) {
+            const previousChannel = channels.find(c => c.id === previousChannelId);
+            if (previousChannel) {
+                dispatch(setSelectedChannel(previousChannel));
+            }
+        }
 
         return (() => {
             document.title = previousTitle;
