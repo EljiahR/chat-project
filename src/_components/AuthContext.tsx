@@ -91,6 +91,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode}> = ({ children 
     const logout = async () => {
         dispatch(clearAccessToken());
         localStorage.removeItem("refreshToken");
+        localStorage.removeItem("selectedChannel");
         await apiLogout();
         Navigate({to: "/"});
     };

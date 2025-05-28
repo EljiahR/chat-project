@@ -4,6 +4,7 @@ import { buttonStyleLight, mobileSubMenuStyle } from "../../_lib/tailwindShortcu
 import { SubMenu } from "../../_lib/pageTypes";
 import { setSelectedChannel } from "../../_lib/redux/chatUiSlice";
 import { useAuth } from "../AuthContext";
+import { Channel } from "../../_lib/responseTypes";
 
 const ChannelList = () => {
     const userInfo = useAppSelector((state) => state.userInfo);
@@ -20,9 +21,16 @@ const ChannelList = () => {
             const data = await newChannel(newChannelName)
             
             dispatch(addChannel(data));
+            dispatch(setSelectedChannel(data));
+            localStorage.setItem("selectedChannel", data.id);
         } catch (error) {
             console.error("Failed to create channel: " + error);
         }
+    }
+
+    const handleSelectedChannel = (channel: Channel) => {
+        dispatch(setSelectedChannel(channel))
+        localStorage.setItem("selectedChannel", channel.id);
     }
     
     return (
@@ -30,7 +38,7 @@ const ChannelList = () => {
             {userInfo != null ? 
                 channels.map(channel => {
                     return (
-                        <button key={channel.id} title={channel.name} className={`${buttonStyleLight} channel-selector`} onClick={() => dispatch(setSelectedChannel(channel))}>
+                        <button key={channel.id} title={channel.name} className={`${buttonStyleLight} channel-selector`} onClick={() => handleSelectedChannel(channel)}>
                             {channel.name}
                         </button>
                     )
