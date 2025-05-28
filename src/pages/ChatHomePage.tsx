@@ -63,7 +63,7 @@ const CoreComponent = () => {
     const selectedChannelId = useAppSelector((state) => state.chatUi.selectedChannelId);
     const channels = useAppSelector(selectAllChannels);
     const selectedChannel = channels.find(c => c.id == selectedChannelId);
-    const messages = useAppSelector((state) => state.chatUi.selectedChannelId != "" ? state.userInfo.channels.entities[selectedChannelId].channelMessages : []);
+    const messages = selectedChannelId != "" && selectedChannel ? useAppSelector((state) => state.userInfo.channels.entities[selectedChannelId].channelMessages) : [];
     const userName = useAppSelector((state) => state.userInfo.userName);
     const userId = useAppSelector((state) => state.userInfo.id);
     const newFriendRequest = useAppSelector((state) => state.userInfo.newFriendRequest);
