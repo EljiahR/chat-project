@@ -70,6 +70,7 @@ const CoreComponent = () => {
     const newChannelInvite = useAppSelector((state) => state.userInfo.newChannelInvite);
     const [selectedMessageId, setSelectedMessageId] = useState<string | null>(null);
     const cm = useRef<ContextMenu>(null);
+    const { status } = useAuth();
 
     const leadingActions = (messageId: string) => (
         <LeadingActions >
@@ -103,7 +104,7 @@ const CoreComponent = () => {
 
         const onVisibilityChange = () => {
             if (document.visibilityState === "visible") {
-                dispatch(tryReconnect());
+                window.location.reload();
             }
         }
         document.addEventListener("visibilitychange", onVisibilityChange);
