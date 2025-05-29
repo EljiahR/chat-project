@@ -9,7 +9,7 @@ import { useAppDispatch, useAppSelector } from "../_lib/redux/hooks";
 import { SubMenu } from "../_lib/pageTypes";
 import { setSelectedChannel, setSelectedSubMenu } from "../_lib/redux/chatUiSlice";
 import { messageSortByDateReverse } from "../_lib/sortFunctions";
-import { closeConnection, deleteMessageToConnection, startConnection, tryReconnect } from "../_lib/signalr/signalRMiddleware";
+import { closeConnection, deleteMessageToConnection, startConnection } from "../_lib/signalr/signalRMiddleware";
 import { selectAllChannels, setUser } from "../_lib/redux/userInfoSlice";
 import { Navigate } from "react-router-dom";
 import LoadingScreen from "../_components/Generics/LoadingScreen";
@@ -70,7 +70,6 @@ const CoreComponent = () => {
     const newChannelInvite = useAppSelector((state) => state.userInfo.newChannelInvite);
     const [selectedMessageId, setSelectedMessageId] = useState<string | null>(null);
     const cm = useRef<ContextMenu>(null);
-    const { status } = useAuth();
 
     const leadingActions = (messageId: string) => (
         <LeadingActions >
