@@ -13,7 +13,7 @@ export const signalRMiddleware: Middleware = store => next => action => {
     }
     const accessToken = store.getState().auth.accessToken;
     
-    if (startConnection.match(action) && accessToken && accessToken != "") {
+    const connectToHub = () => {
         connection = new signalR.HubConnectionBuilder()
             .withUrl(backendUrl + "/ChatHub", {
                 accessTokenFactory: () => accessToken ?? ""
@@ -71,6 +71,13 @@ export const signalRMiddleware: Middleware = store => next => action => {
                 store.dispatch(setIsConnected(false));
                 console.error(e);
             });
+    }
+    if (startConnection.match(action) && accessToken && accessToken != "") {
+        connectToHub();
+    }
+
+    if (tryReconnect.match(action) && (!connection || connection.state === signalR.HubConnectionState.Disconnected)) {
+        connectToHub();
     }
 
     // Send a message
@@ -142,6 +149,7 @@ interface ChannelUserProps {
 }
 
 export const startConnection = createAction("chat/connect");
+export const tryReconnect = createAction("chat/reconnect");
 export const closeConnection = createAction("chat/disconnect");
 export const sendMessageToConnection = createAction<{message: string, channelId: string}>("chat/sendMessage");
 export const deleteMessageToConnection = createAction<{channelId: string, messageId: string}>("chat/removeMessage");
