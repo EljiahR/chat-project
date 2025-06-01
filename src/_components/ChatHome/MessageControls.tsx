@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { buttonStyleLight, usersTypingStyle } from "../../_lib/tailwindShortcuts";
+import { buttonStyleLight, buttonStyleLightDisabled, usersTypingStyle } from "../../_lib/tailwindShortcuts";
 import { useAppDispatch, useAppSelector } from "../../_lib/redux/hooks";
 import { setMessageInput } from "../../_lib/redux/chatUiSlice";
 import { notifyUserStoppedTypingHub, notifyUserTypingHub, sendMessageToConnection } from "../../_lib/signalr/signalRMiddleware";
@@ -19,7 +19,7 @@ const MessageControls: React.FC = () => {
                                             .concat(state.userInfo.channels.entities[selectedChannelId].owner));
     const userId = useAppSelector((state) => state.userInfo.id);
     const selectedChannel = useAppSelector((state) => state.userInfo.channels.entities[selectedChannelId]);
-
+    const [channelIsDisabled, setChannelIsDisabled] = useState(false);
     const [isTyping, setIsTyping] = useState(false);
     // DELETE THESE BEFORE MERGE
     // const userId = useAppSelector((state) => state.userInfo.id);
@@ -69,9 +69,9 @@ const MessageControls: React.FC = () => {
         }
     };
 
-    const inputIsDisabled = () => {
-        return userId != selectedChannel.owner.id && selectedChannel.isFrozen;
-    }
+    useEffect(() => {
+        setChannelIsDisabled(selectedChannel.isFrozen && userId != selectedChannel.owner.id); 
+    }, [selectedChannel])
 
     const [ellipses, setEllipses] = useState("");
 
@@ -92,15 +92,15 @@ const MessageControls: React.FC = () => {
             <input 
                 id="message-controls-text"
                 type="text" 
-                placeholder="Type your message..."
+                placeholder={channelIsDisabled ? "This channel is currently frozen" : "Type your message..."}
                 value={message}
                 onChange={(e) => handleMessageInput(e.target.value)}
                 onKeyDown={(e) => handleSendMessageEnterKey(e)}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 z-2"
                 ref={inputRef}
-                disabled={inputIsDisabled()}
+                disabled={channelIsDisabled}
             />
-            <button className={buttonStyleLight} type="button" onClick={handleSendMessage} disabled={inputIsDisabled()}>Send</button>  
+            <button className={channelIsDisabled ? buttonStyleLightDisabled : buttonStyleLight} type="button" onClick={handleSendMessage} disabled={channelIsDisabled}>Send</button>  
             
                 <div className={usersTypingStyle + (usersTyping && usersTyping.length > 0 ? " -translate-y-full" : "")}>
                     {usersTyping && usersTyping.length > 0 ? (joinWithConjunction(usersTyping.map(id => channelMembers.find(cm => cm.id == id)?.userName).filter(u => u != undefined)) + (usersTyping.length > 1 ? " are " : " is ") + "typing" + ellipses) : ""}
