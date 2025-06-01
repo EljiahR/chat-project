@@ -130,7 +130,7 @@ const CoreComponent = () => {
     }
 
     const onRightClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, messageId: string, messageUserId: string, canDelete: boolean) => {
-        if (canDelete && cm.current && messageUserId == userId) {
+        if (canDelete && cm.current && (messageUserId == userId || userId === selectedChannel?.owner.id)) {
             setSelectedMessageId(messageId);
             cm.current.show(e);
         } else {
@@ -182,7 +182,7 @@ const CoreComponent = () => {
                                         <>
                                             <MobileView>
                                                 <SwipeableList className={chatMessageContentStyle + (message.modifiers.includes("Action") ? " " + messageActionStyle : "")} type={Type.IOS} swipeStartThreshold={2}>
-                                                    <SwipeableListItem leadingActions={leadingActions(message.id)} blockSwipe={userId !== message.sentById || message.modifiers.includes("NoDelete")}>
+                                                    <SwipeableListItem leadingActions={leadingActions(message.id)} blockSwipe={(userId !== message.sentById && userId !== selectedChannel.owner.id) || message.modifiers.includes("NoDelete")}>
                                                         {message.content}
                                                     </SwipeableListItem>
                                                 </SwipeableList>
